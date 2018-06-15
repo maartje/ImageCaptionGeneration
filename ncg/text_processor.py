@@ -1,4 +1,4 @@
-from vocabulary import Vocabulary
+from ncg.vocabulary import Vocabulary
 from mosestokenizer import MosesTokenizer, MosesDetokenizer
 
 EOS = "EOS"
@@ -11,7 +11,7 @@ def build_vocabulary(sentences, min_occurence):
     for sentence in sentences:
         tokens = sentence2tokens(sentence)
         vocab.addWords(tokens)
-    vocab.removeLowFrequentWords(min_occurence)
+    vocab.build_indexes(min_occurence)
     return vocab
 
 def sentence2sentence(sentence): 
@@ -43,7 +43,7 @@ def tokens2indices(tokens, vocab):
             return vocab.word2index[t] 
         else:
             return vocab.word2index[UNKNOWN]
-    return [token2index[t] for t in tokens]
+    return [token2index(t) for t in tokens]
 
 def indices2tokens(indices, vocab):
     return [vocab.index2word[i] for i in indices]    
