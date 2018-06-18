@@ -1,5 +1,3 @@
-from ncg.text_processor import sentence2tokens
-
 class Vocabulary:
     def __init__(self):
         self.predefined = []
@@ -8,17 +6,15 @@ class Vocabulary:
         self.index2word = {}
         self.n_words = 0
 
-    def build(self, sentences, predefined = [], min_occurence = 1):
+    def build(self, words, predefined = [], min_occurence = 1):
         self.predefined = predefined
-        self._count_word_occurrences(sentences)
+        self._count_word_occurrences(words)
         self._build_indexes(min_occurence)
 
-    def _count_word_occurrences(self, sentences):
+    def _count_word_occurrences(self, words):
         self.word2count = {}
-        for sentence in sentences:
-            words = sentence2tokens(sentence)
-            for word in words:
-                self.word2count[word] = self.word2count.get(word, 0) + 1
+        for word in words:
+            self.word2count[word] = self.word2count.get(word, 0) + 1
     
     def _build_indexes(self, min_occurrence):
         self.word2index = {}

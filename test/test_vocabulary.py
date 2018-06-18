@@ -8,12 +8,12 @@ from ncg.vocabulary import Vocabulary
 class TestVocabulary(unittest.TestCase):
 
     def test_build(self):
-        sentences = ['hello good world', 'hello hello bad world']
+        words = ['hello', 'good', 'world', ',', 'hello', 'hello', 'bad', 'world']
         predefined = ['SOS', 'EOS', 'UNKNOWN']
         min_occurrence = 2
         
         vocab = Vocabulary()
-        vocab.build(sentences, predefined, min_occurrence)
+        vocab.build(words, predefined, min_occurrence)
 
         # one-to-one mapping between word tokens and indexes         
         self.assertEqual('hello', vocab.index2word[vocab.word2index['hello']])

@@ -1,5 +1,6 @@
 from ncg.text_processor import sentence2tokens, tokens2sentence
 from ncg.vocabulary import Vocabulary
+from itertools import chain
 
 class TextMapper:
 
@@ -10,7 +11,9 @@ class TextMapper:
         self.UNKNOWN = "UNKNOWN"
     
     def build(self, sentences, min_occurence = 1):
-        self.vocab.build(sentences, [self.SOS, self.EOS, self.UNKNOWN], min_occurence)
+        sentences_split = (iter(sentence2tokens(sentence)) for sentence in sentences)
+        words = chain.from_iterable(sentences_split)
+        self.vocab.build(words, [self.SOS, self.EOS, self.UNKNOWN], min_occurence)
 
     def EOS_index(self):
         return self.vocab.word2index[self.EOS]

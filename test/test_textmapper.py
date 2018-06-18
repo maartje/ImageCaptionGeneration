@@ -4,7 +4,6 @@ Tests for the text mapper that maps words to indices and indices to words
 
 import unittest
 from ncg.textmapper import TextMapper
-from ncg.vocabulary import Vocabulary
 
 class TestTextMapper(unittest.TestCase):
 
@@ -34,7 +33,4 @@ class TestTextMapper(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-#TODO
-# module text
-# files: preprocessor, converter, tokenizer, vocabulary
-# classes: Converter(vocab), Vocabulary
+
