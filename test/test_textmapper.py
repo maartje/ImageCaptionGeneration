@@ -1,0 +1,40 @@
+"""
+Here come the tests for the text mapper that maps words to indices and indices to words
+"""
+
+import unittest
+from ncg.textmapper import TextMapper
+from ncg.vocabulary import Vocabulary
+
+class TestTextMapper(unittest.TestCase):
+
+    def setUp(self):
+        sentences = ['Hello world!', 'Hello Foo.']
+        self.mapper = TextMapper()
+        self.mapper.build(sentences)
+        
+    def test_sentence2indices_inserts_special_tokens(self):
+        sentence = 'Hello foo bar'
+        indices = self.mapper.sentence2indices(sentence)
+        SOS_index = self.mapper.vocab.word2index[self.mapper.SOS]
+        EOS_index = self.mapper.EOS_index()
+        UNKNOWN_index = self.mapper.vocab.word2index[self.mapper.UNKNOWN]
+        
+        self.assertEqual(SOS_index, indices[0])
+        self.assertEqual(UNKNOWN_index, indices[-2])
+        self.assertEqual(EOS_index, indices[-1])
+
+    def test_indices2sentence_inverts_sentence2indices(self):
+        sentence = 'Hello foo bar!'
+        indices = self.mapper.sentence2indices(sentence)
+        sentence_out = self.mapper.indices2sentence(indices)
+        
+        self.assertEqual('hello foo UNKNOWN!', sentence_out)
+
+if __name__ == '__main__':
+    unittest.main()
+
+#TODO
+# module text
+# files: preprocessor, converter, tokenizer, vocabulary
+# classes: Converter(vocab), Vocabulary
