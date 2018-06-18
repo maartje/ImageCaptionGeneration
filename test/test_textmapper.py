@@ -1,5 +1,5 @@
 """
-Here come the tests for the text mapper that maps words to indices and indices to words
+Tests for the text mapper that maps words to indices and indices to words
 """
 
 import unittest

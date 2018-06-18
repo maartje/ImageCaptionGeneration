@@ -1,5 +1,5 @@
 """
-Here come the tests for the vocabulary containing the index and inverted index
+Tests for the vocabulary containing the index and inverted index
 """
 
 import unittest

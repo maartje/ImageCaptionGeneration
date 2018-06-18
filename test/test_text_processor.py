@@ -1,5 +1,5 @@
 """
-Here come the tests for the text processor that tokenizes and preprocesses the text
+Tests for the text processor that tokenizes and preprocesses the text
 """
 
 import unittest
