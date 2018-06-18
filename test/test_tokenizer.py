@@ -3,7 +3,7 @@ Tests for the text processor that tokenizes and preprocesses the text
 """
 
 import unittest
-from ncg.text_processor import preprocess, sentence2tokens, tokens2sentence
+from ncg.text_processing.tokenizer import preprocess, sentence2tokens, tokens2sentence
 
 class TestTextProcessor(unittest.TestCase):
 

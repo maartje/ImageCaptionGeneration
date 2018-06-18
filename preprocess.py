@@ -4,8 +4,10 @@
 import argparse
 import os
 import re
+import itertools
 
-from ncg.preprocessor import build_and_save_image_features, build_and_save_sentence_vectors_and_vocabulary
+from ncg.preprocessor preprocess_text_files
+#import build_and_save_image_features
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -61,8 +63,10 @@ def preprocess_images(opt):
     output_dir = f'output/{opt.dataset}/image_ecodings/{opt.encoder_model}_{opt.encoder_layer}'
 
     print(f"Encoding images as feature vectors ...")
-    build_and_save_image_features(input_dir, output_dir, opt.encoder_model, opt.encoder_layer)
+    build_and_save_image_features(input_dir, output_dir, opt.encoder_model, opt.encoder_layer, 
+                                  print_info_every = 1000)
     print(f"{len(os.listdir(output_dir))} images encoded and saved in {output_dir}")
+
     return output_dir
 
 def preprocess_image_descriptions(opt):
@@ -87,7 +91,14 @@ def preprocess_image_descriptions(opt):
 def filenames(dir_path, regex):
     pattern = re.compile(regex)
     lstdir = os.listdir(dir_path)
-    return [fname for fname in lstdir if pattern.match(fname)]
+    for fname in lstdir: 
+        if pattern.match(fname):
+            yield fname
+
+def filepaths(dir_path, fnames, new_extension = None):
+    for fname in fnames:
+        fname_new = f'{fname}.{new_extension}' if new_extension else fname
+        yield os.path.join(output_dir, fname_new)
 
 def main():
     opt = parse_args()

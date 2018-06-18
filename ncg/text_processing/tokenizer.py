@@ -12,6 +12,7 @@ def sentence2tokens(sentence):
 def tokens2sentence(tokens):
     with MosesDetokenizer('en') as detokenize:
         sentence = detokenize(tokens) 
+    # We do not restore capitalization, instead we lowercase reference sentences
     return sentence
 
 
