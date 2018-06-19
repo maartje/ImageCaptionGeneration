@@ -6,6 +6,8 @@ import unittest
 import mock # mock file access
 import ncg.preprocessor as pp
 import ncg.file_helpers
+import PIL.Image
+import ncg.image_processing.image_encoder as imenc
 
 def mock_read_lines(fpath):
     sentences_per_file = {
@@ -16,8 +18,56 @@ def mock_read_lines(fpath):
     }
     return (s for s in sentences_per_file[fpath])
 
+def mock_listdir(dir_path):
+    return ['im1.png', 'im2.png']
+    
+def mock_encode_image(img):
+    return f'Encode({img})'
+    
+def mock_open_image(path):
+    return f'Open({path})'
+    
 class TestPreprocessor(unittest.TestCase):
 
+    @mock.patch('builtins.print')
+    @mock.patch('torch.save')
+    @mock.patch('ncg.file_helpers.ensure_path_exists')
+    @mock.patch('ncg.preprocessor.ImageEncoder')    
+    @mock.patch('os.listdir', side_effect = mock_listdir)
+    @mock.patch('PIL.Image.open', side_effect = mock_open_image)
+    def test_preprocess_images(self, open_image, list_dir, image_encoder_class,
+                               ensure_path, torch_save, pprint = None):
+            
+        image_encoder = image_encoder_class.return_value
+        image_encoder.encode_image.side_effect = mock_encode_image
+        
+        input_dir = 'images' 
+        output_dir = 'images_out' 
+        encoder_model = 'resnet18'  
+        encoder_layer = 'avgpool' 
+        
+        pp.preprocess_images(input_dir, output_dir, 
+                          encoder_model, encoder_layer, print_info_every = 1)
+                          
+        # ensures that path exists for output dir
+        fpaths_ensured = [fp for (fp,), _ in ensure_path.call_args_list]
+        self.assertEqual([output_dir], fpaths_ensured)
+        
+        # verify that load model is called
+        image_encoder.load_model.assert_called_with()
+
+        # Create embeddings for all images by calling 'Image.open' and 'encode_image'
+        encodings_saved = [embedding for (embedding, fp), _ in torch_save.call_args_list]
+        encodings_expected = [ mock_encode_image(
+            mock_open_image(f'{input_dir}/{fname}')) for fname in mock_listdir(input_dir)]
+        self.assertEqual(encodings_expected, encodings_saved)
+
+        # Save embeddings at fpaths out
+        fpaths_saved = [fp for (embedding, fp), _ in torch_save.call_args_list]
+        fpaths_expected = [f'{output_dir}/{fname}.pt' for fname in mock_listdir(input_dir)]
+        self.assertEqual(fpaths_expected, fpaths_saved)
+        
+                      
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
     @mock.patch('ncg.file_helpers.ensure_path_exists')
