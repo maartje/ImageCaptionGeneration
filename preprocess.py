@@ -106,7 +106,7 @@ def preprocess_descriptions(opt):
     fpaths_train_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_train]
     fpaths_val_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_val]
     fpath_vocab_out = os.path.join(opt.output_dir, opt.fname_vocab_out)
-    min_occurrences = int(opt.min_occurrences)
+    min_occurrences = int(opt.min_occurences)
     
 #    print(fpaths_train)
 #    print(fpaths_val)
@@ -120,7 +120,7 @@ def preprocess_descriptions(opt):
         
     pp.preprocess_text_files(fpaths_train, fpaths_val, 
                           fpaths_train_out, fpaths_val_out, fpath_vocab_out,
-                          min_occurences)        
+                          min_occurrences)        
 
 def main():
     opt = parse_args()
