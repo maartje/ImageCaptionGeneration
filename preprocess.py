@@ -84,7 +84,7 @@ def preprocess_images(opt):
     output_dir_images = os.path.join(opt.output_dir, f"{encoder_model}_{encoder_layer}")
     fpaths_out = (
         pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.filepaths_images))
-    print_info_every = opt.print_info_every
+    print_info_every = int(opt.print_info_every)
 #    print(fpaths)
 #    print(fpaths_out)
 #    print(list(fpaths))
@@ -101,15 +101,15 @@ def preprocess_images(opt):
                       print_info_every)
 
 def preprocess_descriptions(opt):
-    filepaths_train = glob.glob(opt.filepaths_train)
-    filepaths_val = glob.glob(opt.filepaths_val)
-    fpaths_train_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in filepaths_train]
-    fpaths_val_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in filepaths_val]
+    fpaths_train = glob.glob(opt.filepaths_train)
+    fpaths_val = glob.glob(opt.filepaths_val)
+    fpaths_train_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_train]
+    fpaths_val_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_val]
     fpath_vocab_out = os.path.join(opt.output_dir, opt.fname_vocab_out)
-    min_occurrences = opt.min_occurrences
+    min_occurrences = int(opt.min_occurrences)
     
-#    print(filepaths_train)
-#    print(filepaths_val)
+#    print(fpaths_train)
+#    print(fpaths_val)
 #    print(fpaths_train_out)
 #    print(fpaths_val_out)
 #    print(fpath_vocab_out)
