@@ -85,14 +85,20 @@ def preprocess_images(opt):
     fpaths_out = (
         pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.filepaths_images))
     print_info_every = opt.print_info_every
-    print(fpaths)
-    print(fpaths_out)
-    print(list(fpaths))
-    print(list(fpaths_out))
-    print(encoder_model)
-    print(encoder_layer)
-    print(print_info_every)
+#    print(fpaths)
+#    print(fpaths_out)
+#    print(list(fpaths))
+#    print(list(fpaths_out))
+#    print(encoder_model)
+#    print(encoder_layer)
+#    print(print_info_every)
 
+    if not os.path.exists(output_dir_images):
+        os.makedirs(output_dir_images)
+
+    preprocess_images(fpaths, fpaths_out, 
+                      encoder_model, encoder_layer, 
+                      print_info_every)
 
 def preprocess_descriptions(opt):
     filepaths_train = glob.glob(opt.filepaths_train)
@@ -102,18 +108,22 @@ def preprocess_descriptions(opt):
     fpath_vocab_out = os.path.join(opt.output_dir, opt.fname_vocab_out)
     min_occurrences = opt.min_occurrences
     
-    print(filepaths_train)
-    print(filepaths_val)
-    print(fpaths_train_out)
-    print(fpaths_val_out)
-    print(fpath_vocab_out)
-    print(min_occurrences)
+#    print(filepaths_train)
+#    print(filepaths_val)
+#    print(fpaths_train_out)
+#    print(fpaths_val_out)
+#    print(fpath_vocab_out)
+#    print(min_occurrences)
 
+    if not os.path.exists(opt.output_dir):
+        os.makedirs(opt.output_dir)
+        
+    preprocess_text_files(fpaths_train, fpaths_val, 
+                          fpaths_train_out, fpaths_val_out, fpath_vocab_out,
+                          min_occurences)        
 
 def main():
     opt = parse_args()
-    print(opt)
-    print()
     if not opt.descriptions_only:
         preprocess_images(opt)
     if not opt.images_only:
