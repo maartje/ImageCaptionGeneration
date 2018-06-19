@@ -81,18 +81,14 @@ class TestPreprocessor(unittest.TestCase):
 
         # saves vector representations for all train and validation files
         # at fpath_train_out resp. fpath_val_out
-        vectors_fpath_list = [(vectors, fp) for (vectors, fp), _ in torch_save.call_args_list[1:]]
-        self.assertEqual(len(fpaths_train + fpaths_val), len(vectors_fpath_list)) # check length
-        
-        vectors_fpath_val1 = vectors_fpath_list[len(fpaths_train_out)]
-        fpath_val1_save = vectors_fpath_val1[1]
-        self.assertEqual(fpaths_val_out[0], fpath_val1_save) # check fpath out
+        fpaths_save = [fp for (vectors, fp), _ in torch_save.call_args_list[1:]]
+        self.assertEqual(fpaths_train_out + fpaths_val_out, fpaths_save) # check fpath out
 
-        vectors_val1 = vectors_fpath_val1[0]
+        vectors_save = [vectors for (vectors, fp), _ in torch_save.call_args_list[1:]]
         self.assertEqual([
             tm.sentence2indices(s) for s in mock_read_lines(fpaths_val[0])
-        ], vectors_val1) 
+        ], vectors_save[len(fpaths_train)]) 
         self.assertEqual([
-            tm.indices2sentence(v) for v in vectors_val1
+            tm.indices2sentence(v) for v in vectors_save[len(fpaths_train)]
         ], ['hello foo', 'hello UNKNOWN']) # check vector representation
 
