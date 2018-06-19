@@ -5,9 +5,9 @@ import argparse
 import os
 import re
 import itertools
+import glob
 
-from ncg.preprocessor preprocess_text_files
-#import build_and_save_image_features
+from ncg.preprocessor import preprocess_text_files, preprocess_images
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -22,19 +22,25 @@ def preprocess_opts(parser):
 
     # general
     group.add_argument(
-        '--dataset', 
-        help = "Name of the directory under 'data' containing the training and validation data",
-        default = "demo")
-    group.add_argument(
-        '--images_only', 
-        help = "Preprocess the images and not the image descriptions",
-        action='store_true')
+        '--output_dir', 
+        help = "Path to output dir for the index vectors representing image descriptions ",
+        default = os.path.join("output", "demo"))
     group.add_argument(
         '--descriptions_only', 
         help = "Preprocess the image descriptions and not the images",
         action='store_true')
+    group.add_argument(
+        '--images_only', 
+        help = "Preprocess the images and not the image descriptions",
+        action='store_true')
+        #TODO: --vocab, --overwrite
 
     # image processing
+    # TODO: image_selection: Pathname pattern to files containing the filenames of the images to be processed 
+    group.add_argument(
+        '--filepaths_images', 
+        help = "Pathname pattern to the image files ",
+        default = os.path.join("data", "demo", "images", "*.png"))
     group.add_argument(
         '--encoder_model', 
         help = "Name of the encoder model, should be in ['resnet18', 'resnet152', 'vgg16'] ",
@@ -43,70 +49,75 @@ def preprocess_opts(parser):
         '--encoder_layer', 
         help = "Name of the encoder layer used to extract features for the images",
         default = "avgpool")
+    group.add_argument(
+        '--print_info_every', 
+        help = "Print info when given number of images are processed ",
+        default = 1000)
 
     # text processing
     group.add_argument(
-        '--regex_train', 
-        help = "Regular expression to match caption files used for training",
-        default = 'train\.[0-9]+\.en')
+        '--filepaths_train', 
+        help = "Pathname pattern to the files containing descriptions used for training",
+        default = os.path.join("data", "demo", "train.[0-9].en"))
     group.add_argument(
-        '--regex_val', 
-        help = "Regular expression to match caption files used for validation",
-        default = 'val\.[0-9]+\.en')
+        '--filepaths_val', 
+        help = "Pathname pattern to the files containing descriptions used for validation",
+        default = os.path.join("data", "demo", "val.[0-9].en"))
+    # TODO: filepath_vocab?
+    group.add_argument(
+        '--fname_vocab_out', 
+        help = "Filename for vocabulary output file",
+        default = "vocab.pt")
     group.add_argument(
         '--min_occurrences', 
         help = "Minimal occurrence in training set to be included in vocabulary",
         default = 2)
 
+def pt_fpath_out(output_dir, fpath):
+    fname = os.path.basename(fpath)
+    return os.path.join(output_dir, f'{fname}.pt')
+
 def preprocess_images(opt):
-    input_dir = f'data/{opt.dataset}/images'
-    output_dir = f'output/{opt.dataset}/image_ecodings/{opt.encoder_model}_{opt.encoder_layer}'
-
-    print(f"Encoding images as feature vectors ...")
-    build_and_save_image_features(input_dir, output_dir, opt.encoder_model, opt.encoder_layer, 
-                                  print_info_every = 1000)
-    print(f"{len(os.listdir(output_dir))} images encoded and saved in {output_dir}")
-
-    return output_dir
-
-def preprocess_image_descriptions(opt):
-    data_dir = f"data/{opt.dataset}"
-    output_dir = f"output/{opt.dataset}"
-    fpath_vocab = f"output/{opt.dataset}/vocab.pt"
-
-    fnames_train = filenames(data_dir, opt.regex_train)
-    fnames_val = filenames(data_dir, opt.regex_val)
-    fpaths_train = [os.path.join(data_dir, fname) for fname in fnames_train]
-    fpaths_val = [os.path.join(data_dir, fname) for fname in fnames_val]
-    fpaths_train_out = [os.path.join(output_dir, f'{fname}.pt') for fname in fnames_train]
-    fpaths_val_out = [os.path.join(output_dir, f'{fname}.pt') for fname in fnames_val]
-
-    print(fpaths_train)
-    print(fpaths_val)
-    build_and_save_sentence_vectors_and_vocabulary(fpaths_train, fpaths_val, 
-                                                   fpaths_train_out, fpaths_val_out, 
-                                                   fpath_vocab, opt.min_occurrences)
+    encoder_model = opt.encoder_model
+    encoder_layer = opt.encoder_layer
+    fpaths = glob.iglob(opt.filepaths_images)
+    output_dir_images = os.path.join(opt.output_dir, f"{encoder_model}_{encoder_layer}")
+    fpaths_out = (
+        pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.filepaths_images))
+    print_info_every = opt.print_info_every
+    print(fpaths)
+    print(fpaths_out)
+    print(list(fpaths))
+    print(list(fpaths_out))
+    print(encoder_model)
+    print(encoder_layer)
+    print(print_info_every)
 
 
-def filenames(dir_path, regex):
-    pattern = re.compile(regex)
-    lstdir = os.listdir(dir_path)
-    for fname in lstdir: 
-        if pattern.match(fname):
-            yield fname
+def preprocess_descriptions(opt):
+    filepaths_train = glob.glob(opt.filepaths_train)
+    filepaths_val = glob.glob(opt.filepaths_val)
+    fpaths_train_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in filepaths_train]
+    fpaths_val_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in filepaths_val]
+    fpath_vocab_out = os.path.join(opt.output_dir, opt.fname_vocab_out)
+    min_occurrences = opt.min_occurrences
+    
+    print(filepaths_train)
+    print(filepaths_val)
+    print(fpaths_train_out)
+    print(fpaths_val_out)
+    print(fpath_vocab_out)
+    print(min_occurrences)
 
-def filepaths(dir_path, fnames, new_extension = None):
-    for fname in fnames:
-        fname_new = f'{fname}.{new_extension}' if new_extension else fname
-        yield os.path.join(output_dir, fname_new)
 
 def main():
     opt = parse_args()
     print(opt)
+    print()
     if not opt.descriptions_only:
         preprocess_images(opt)
     if not opt.images_only:
-        preprocess_image_descriptions(opt)
+        preprocess_descriptions(opt)
 
 
 if __name__ == "__main__":
