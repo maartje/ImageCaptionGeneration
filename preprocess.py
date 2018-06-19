@@ -7,7 +7,7 @@ import re
 import itertools
 import glob
 
-from ncg.preprocessor import preprocess_text_files, preprocess_images
+import ncg.preprocessor as pp
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -96,7 +96,7 @@ def preprocess_images(opt):
     if not os.path.exists(output_dir_images):
         os.makedirs(output_dir_images)
 
-    preprocess_images(fpaths, fpaths_out, 
+    pp.preprocess_images(fpaths, fpaths_out, 
                       encoder_model, encoder_layer, 
                       print_info_every)
 
@@ -118,7 +118,7 @@ def preprocess_descriptions(opt):
     if not os.path.exists(opt.output_dir):
         os.makedirs(opt.output_dir)
         
-    preprocess_text_files(fpaths_train, fpaths_val, 
+    pp.preprocess_text_files(fpaths_train, fpaths_val, 
                           fpaths_train_out, fpaths_val_out, fpath_vocab_out,
                           min_occurences)        
 
