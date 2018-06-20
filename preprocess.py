@@ -69,7 +69,7 @@ def preprocess_opts(parser):
         help = "Filename for vocabulary output file",
         default = "vocab.pt")
     group.add_argument(
-        '--min_occurrences', 
+        '--min_occurences', 
         help = "Minimal occurrence in training set to be included in vocabulary",
         default = 2)
 
