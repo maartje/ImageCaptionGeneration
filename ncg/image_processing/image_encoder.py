@@ -41,7 +41,8 @@ class ImageEncoder:
         def copy_data(m, i, o):
             embedding.append(o.clone())
         h = self.layer.register_forward_hook(copy_data)
-        self.model(t_img)
+        with torch.no_grad():
+            self.model(t_img)
         h.remove()    
         return embedding[0].squeeze()
 
