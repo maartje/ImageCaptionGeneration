@@ -40,7 +40,7 @@ def preprocess_opts(parser):
     group.add_argument(
         '--filepaths_images', 
         help = "Pathname pattern to the image files ",
-        default = os.path.join("data", "demo", "images", "*.png"))
+        default = os.path.join("data", "demo", "images", "*.jpg"))
     group.add_argument(
         '--encoder_model', 
         help = "Name of the encoder model, should be in ['resnet18', 'resnet152', 'vgg16'] ",
@@ -58,11 +58,11 @@ def preprocess_opts(parser):
     group.add_argument(
         '--filepaths_train', 
         help = "Pathname pattern to the files containing descriptions used for training",
-        default = os.path.join("data", "demo", "train.[0-9].en"))
+        default = os.path.join("data", "demo", "captions", "en", "train.[0-9].en"))
     group.add_argument(
         '--filepaths_val', 
         help = "Pathname pattern to the files containing descriptions used for validation",
-        default = os.path.join("data", "demo", "val.[0-9].en"))
+        default = os.path.join("data", "demo", "captions", "en", "val.[0-9].en"))
     # TODO: filepath_vocab?
     group.add_argument(
         '--fname_vocab_out', 

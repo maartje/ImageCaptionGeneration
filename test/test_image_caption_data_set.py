@@ -17,7 +17,7 @@ def mock_torch_load(fpath):
         return torch.FloatTensor([image_files.index(fpath)] * 5)
     if fpath in caption_files:
         i = caption_files.index(fpath)
-        return [[0,0,0, i], [1,1,1, i], [2,2,2,i]]
+        return [[0,0, i], [1,1,1,1,1, i], [2,2,2,i]]
 
 class TestImageCaptionDataloader(unittest.TestCase):
 
@@ -53,6 +53,18 @@ class TestImageCaptionDataloader(unittest.TestCase):
 #            print ('i', i)
 #            print ('c', c)
 
+#    @mock.patch('torch.load', side_effect = mock_torch_load)
+#    def test_data_loading(self, torch_load):
+#        dataLoader = data.DataLoader(self.ic_dataset, batch_size = 2)
+
+        # generates all (image, caption) combinations 
+        #self.assertEqual(len(list(dataLoader)), len(image_files)*len(caption_files))
+        #self.assertEqual(image_files * len(caption_files), 
+        #                 [fp for (fp,), _ in torch_load.call_args_list])
+#        for i, c in dataLoader:
+#            print()
+#            print ('i', i)
+#            print ('c', c)
 
 if __name__ == '__main__':
     unittest.main()
