@@ -4,7 +4,7 @@ Tests for preprocessing text and image files
 
 import unittest
 import mock # mock file access
-import ncg.preprocessor as pp
+import ncg.preprocess as pp
 import PIL.Image
 import ncg.data_processing.image_encoder as imenc
 import ncg.io.file_helpers as fh
@@ -28,7 +28,7 @@ class TestPreprocessor(unittest.TestCase):
 
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.preprocessor.ImageEncoder')    
+    @mock.patch('ncg.preprocess.ImageEncoder')    
     @mock.patch('PIL.Image.open', side_effect = mock_open_image)
     def test_preprocess_images(self, open_image, image_encoder_class,
                                torch_save, pprint = None):
