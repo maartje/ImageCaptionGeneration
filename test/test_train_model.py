@@ -16,17 +16,17 @@ class TestTrain(unittest.TestCase):
     def setUp(self):
         self.vocab_size = 100
         self.encoding_size = 256
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.loss_criterion = nn.NLLLoss()
        
     def test_train_iter_show_and_tell(self):
-        decoder = ShowAndTell(self.encoding_size, self.vocab_size, self.device)
+        decoder = ShowAndTell(self.encoding_size, self.vocab_size)
         optimizer = optim.SGD(decoder.decoder.parameters(), lr = 0.2)
 
 
         train_data = [self.generate_random_training_pair() for i in range(3)]
-        losses = train_iter(decoder, train_data, self.loss_criterion, 
-                                  optimizer, self.device, max_epochs = 10)        
+        losses = []
+        train_iter(decoder, train_data, self.loss_criterion, optimizer, max_epochs = 10, 
+                   fn_on_update = lambda e,i,l: losses.append(l))        
         losses_1 = losses[::3] # losses for pair 1
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
@@ -37,8 +37,8 @@ class TestTrain(unittest.TestCase):
         self.assertTrue(is_decreasing(losses_3))
 
     def generate_random_training_pair(self):
-        caption = torch.LongTensor(1, 10, device=self.device).random_(0, self.vocab_size)
-        encoding = 2*torch.rand(1, self.encoding_size, device=self.device)
+        caption = torch.LongTensor(1, 10).random_(0, self.vocab_size)
+        encoding = 2*torch.rand(1, self.encoding_size)
         return encoding, caption
  
 if __name__ == '__main__':

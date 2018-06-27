@@ -4,8 +4,9 @@ Tests for preprocessing text and image files
 
 import unittest
 import mock # mock file access
-import ncg.preprocess as pp
 import PIL.Image
+
+import ncg.preprocess as pp
 import ncg.data_processing.image_encoder as imenc
 import ncg.io.file_helpers as fh
 
