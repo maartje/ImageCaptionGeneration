@@ -9,6 +9,7 @@ from torch import optim
 
 from ncg.nn.train_model import train_iter
 from ncg.nn.show_and_tell import ShowAndTell
+from test.test_helpers import generate_random_training_pair
 
 
 class TestTrain(unittest.TestCase):
@@ -23,7 +24,11 @@ class TestTrain(unittest.TestCase):
         optimizer = optim.SGD(decoder.decoder.parameters(), lr = 0.2)
 
 
-        train_data = [self.generate_random_training_pair() for i in range(3)]
+        train_data = [
+            generate_random_training_pair(self.encoding_size, self.vocab_size, 10),
+            generate_random_training_pair(self.encoding_size, self.vocab_size, 6),
+            generate_random_training_pair(self.encoding_size, self.vocab_size, 9),
+        ]
         losses = []
         train_iter(decoder, train_data, self.loss_criterion, optimizer, max_epochs = 10, 
                    fn_on_update = lambda e,i,l: losses.append(l))        
@@ -35,11 +40,6 @@ class TestTrain(unittest.TestCase):
         self.assertTrue(is_decreasing(losses_1))
         self.assertTrue(is_decreasing(losses_2))
         self.assertTrue(is_decreasing(losses_3))
-
-    def generate_random_training_pair(self):
-        caption = torch.LongTensor(1, 10).random_(0, self.vocab_size)
-        encoding = 2*torch.rand(1, self.encoding_size)
-        return encoding, caption
  
 if __name__ == '__main__':
     unittest.main()
