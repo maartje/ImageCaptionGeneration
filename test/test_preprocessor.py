@@ -5,10 +5,9 @@ Tests for preprocessing text and image files
 import unittest
 import mock # mock file access
 import ncg.preprocessor as pp
-import ncg.file_helpers
 import PIL.Image
-import ncg.image_processing.image_encoder as imenc
-import ncg.file_helpers as fh
+import ncg.data_processing.image_encoder as imenc
+import ncg.io.file_helpers as fh
 
 def mock_read_lines(fpath):
     sentences_per_file = {
@@ -61,7 +60,7 @@ class TestPreprocessor(unittest.TestCase):
                       
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.file_helpers.read_lines', side_effect=mock_read_lines)
+    @mock.patch('ncg.io.file_helpers.read_lines', side_effect=mock_read_lines)
     def test_preprocess_text_files(self, read_lines, torch_save, pprint=None):
         fpaths_train = ["train.1.en", "train.2.en"] 
         fpaths_val = ["val.1.en", "val.2.en"]

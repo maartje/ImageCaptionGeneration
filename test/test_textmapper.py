@@ -3,7 +3,7 @@ Tests for the text mapper that maps words to indices and indices to words
 """
 
 import unittest
-from ncg.text_processing.textmapper import TextMapper
+from ncg.data_processing.textmapper import TextMapper
 
 class TestTextMapper(unittest.TestCase):
 

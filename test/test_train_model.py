@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 from torch import optim
 
-from ncg.models.train_model import train_iter
-from ncg.models.show_and_tell import ShowAndTell
+from ncg.nn.train_model import train_iter
+from ncg.nn.show_and_tell import ShowAndTell
 
 
 class TestTrain(unittest.TestCase):

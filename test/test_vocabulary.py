@@ -3,7 +3,7 @@ Tests for the vocabulary containing the index and inverted index
 """
 
 import unittest
-from ncg.text_processing.vocabulary import Vocabulary
+from ncg.data_processing.vocabulary import Vocabulary
 
 class TestVocabulary(unittest.TestCase):
 

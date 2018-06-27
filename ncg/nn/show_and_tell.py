@@ -1,6 +1,6 @@
 import torch
 
-from ncg.models.models import DecoderRNN
+from ncg.nn.models import DecoderRNN
 
 class ShowAndTell():
 

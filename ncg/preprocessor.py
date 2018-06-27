@@ -2,9 +2,9 @@ import torch
 from datetime import datetime
 from PIL import Image
 
-import ncg.file_helpers as fh
-from ncg.text_processing.textmapper import TextMapper
-from ncg.image_processing.image_encoder import ImageEncoder
+import ncg.io.file_helpers as fh
+from ncg.data_processing.textmapper import TextMapper
+from ncg.data_processing.image_encoder import ImageEncoder
 from ncg.debug_helpers import format_duration
 
 

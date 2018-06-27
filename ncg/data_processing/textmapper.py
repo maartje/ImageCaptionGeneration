@@ -1,5 +1,5 @@
-from ncg.text_processing.tokenizer import sentence2tokens, tokens2sentence
-from ncg.text_processing.vocabulary import Vocabulary
+from ncg.data_processing.tokenizer import sentence2tokens, tokens2sentence
+from ncg.data_processing.vocabulary import Vocabulary
 from itertools import chain
 
 class TextMapper:

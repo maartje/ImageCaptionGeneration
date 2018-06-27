@@ -3,7 +3,7 @@ Tests for the image encoder that maps images to ebedding vectors
 """
 
 import unittest
-from ncg.image_processing.image_encoder import ImageEncoder
+from ncg.data_processing.image_encoder import ImageEncoder
 import numpy
 from PIL import Image
 

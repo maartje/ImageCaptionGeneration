@@ -7,7 +7,7 @@ import mock
 from torch.utils import data
 import torch
 
-from ncg.image_caption_dataset import ImageCaptionDataset
+from ncg.io.image_caption_dataset import ImageCaptionDataset
 
 image_files = ['im1.pt', 'im2.pt', 'im3.pt']
 caption_files = ['c1.pt', 'c2.pt', 'c3.pt', 'c4.pt']
