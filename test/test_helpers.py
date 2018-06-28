@@ -28,12 +28,13 @@ class MockImageCaptionDataset(data.Dataset):
         def random_encoding_words_pair():
             return (
                 generate_random_encoding(type(self).encoding_size), 
-                generate_random_caption(type(self).vocab_size, 10, 15)
+                generate_random_caption(type(self).vocab_size, 10, 15)[1:-1]
             )
 
         def sample_train_pairs(encoding_words_pairs):
             return [
-                (e, torch.LongTensor(random.sample(w, len(w) - 5))) for e, w in encoding_words_pairs
+                (e, torch.LongTensor(
+                    [0] + random.sample(w, len(w) - 5) + [1] )) for e, w in encoding_words_pairs
             ]
         
         encoding_words_pairs = [random_encoding_words_pair() for _ in fpaths_image_encodings]

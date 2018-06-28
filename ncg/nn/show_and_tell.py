@@ -26,8 +26,9 @@ class ShowAndTell():
                 topv, topi = output.data.topk(1)
                 decoded_tokens.append(topi.item())
                 if topi.item() == EOS_token:
-                    break
+                    return decoded_tokens
                 input_token = topi.squeeze().detach()
+        decoded_tokens.append(EOS_token)
         return decoded_tokens
 
 
