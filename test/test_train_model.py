@@ -40,6 +40,13 @@ class TestTrain(unittest.TestCase):
         self.assertTrue(is_decreasing(losses_1))
         self.assertTrue(is_decreasing(losses_2))
         self.assertTrue(is_decreasing(losses_3))
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        predicted = decoder.predict(
+            train_data[1][0], 0, 1, 20, device)
+        
+        # TODO: assert that input and output look similar?!
  
 if __name__ == '__main__':
     unittest.main()

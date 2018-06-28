@@ -15,7 +15,7 @@ def generate_random_encoding(encoding_size):
 def generate_random_caption(vocab_size, min_length = 5, max_length = 10):
     # TODO: list of random ints, float tensor in MockDS
     caption_size = random.randint(min_length, max_length)
-    return [0] + random.sample(range(1, vocab_size), caption_size) + [1]
+    return [0] + random.sample(range(2, vocab_size), caption_size) + [1]
 
 class MockImageCaptionDataset(data.Dataset):
 
