@@ -12,8 +12,9 @@ from test.test_helpers import MockImageCaptionDataset
 
 class TestTrain(unittest.TestCase):
 
+    @mock.patch('builtins.print')
     @mock.patch('ncg.train.ImageCaptionDataset')    
-    def test_train(self, ds_class):
+    def test_train(self, ds_class, prnt):
         fpaths_image_encodings = ['im1.pt', 'im2.pt', 'im3.pt']
         fpaths_captions = ['c1.pt', 'c2.pt']
         ds_class.return_value = MockImageCaptionDataset(fpaths_image_encodings, fpaths_captions)
@@ -21,5 +22,5 @@ class TestTrain(unittest.TestCase):
         encoding_size = MockImageCaptionDataset.encoding_size
         
         train(fpaths_image_encodings, fpaths_captions, vocab_size, encoding_size, 
-              learning_rate = 0.8)
+              learning_rate = 0.8, max_epochs = 5, dl_params = {}, store_loss_every = 1)
 
