@@ -38,7 +38,7 @@ def preprocess_opts(parser):
     # image processing
     # TODO: image_selection: Pathname pattern to files containing the filenames of the images to be processed 
     group.add_argument(
-        '--filepaths_images', 
+        '--fpattern_images', 
         help = "Pathname pattern to the image files ",
         default = os.path.join("data", "demo", "images", "*.jpg"))
     group.add_argument(
@@ -56,11 +56,11 @@ def preprocess_opts(parser):
 
     # text processing
     group.add_argument(
-        '--filepaths_train', 
+        '--fpattern_captions_train', 
         help = "Pathname pattern to the files containing descriptions used for training",
         default = os.path.join("data", "demo", "captions", "en", "train.[0-9].en"))
     group.add_argument(
-        '--filepaths_val', 
+        '--fpattern_captions_val', 
         help = "Pathname pattern to the files containing descriptions used for validation",
         default = os.path.join("data", "demo", "captions", "en", "val.[0-9].en"))
     # TODO: filepath_vocab?
@@ -80,10 +80,10 @@ def pt_fpath_out(output_dir, fpath):
 def preprocess_images(opt):
     encoder_model = opt.encoder_model
     encoder_layer = opt.encoder_layer
-    fpaths = glob.iglob(opt.filepaths_images)
+    fpaths = glob.iglob(opt.fpattern_images)
     output_dir_images = os.path.join(opt.output_dir, f"{encoder_model}_{encoder_layer}")
     fpaths_out = (
-        pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.filepaths_images))
+        pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.fpattern_images))
     print_info_every = int(opt.print_info_every)
 #    print(fpaths)
 #    print(fpaths_out)
@@ -101,8 +101,8 @@ def preprocess_images(opt):
                       print_info_every)
 
 def preprocess_descriptions(opt):
-    fpaths_train = glob.glob(opt.filepaths_train)
-    fpaths_val = glob.glob(opt.filepaths_val)
+    fpaths_train = glob.glob(opt.fpattern_captions_train)
+    fpaths_val = glob.glob(opt.fpattern_captions_val)
     fpaths_train_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_train]
     fpaths_val_out = [pt_fpath_out(opt.output_dir, fpath) for fpath in fpaths_val]
     fpath_vocab_out = os.path.join(opt.output_dir, opt.fname_vocab_out)
