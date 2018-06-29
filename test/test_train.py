@@ -13,7 +13,7 @@ from test.test_helpers import MockImageCaptionDataset
 
 class TestTrain(unittest.TestCase):
 
-    #@mock.patch('builtins.print')
+    @mock.patch('builtins.print')
     @mock.patch('torch.save')
     @mock.patch('ncg.train.ImageCaptionDataset')    
     def test_train(self, ds_class, torch_save, prnt = None):

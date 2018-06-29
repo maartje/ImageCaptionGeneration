@@ -45,7 +45,8 @@ def train(fpaths_images_train, fpaths_captions_train,
     def print_loss_info(epoch, i, l, epoch_finished):
         if (i + 1) % print_loss_every == 0:
             print('epoch', epoch, 'i', i, 'instance_loss', f'{l:0.2}')
-        if e == 0 and i == 0:
+        if epoch == 0 and i == 0:
+            val_loss = epoch_val_losses[-1]
             str_duration = format_duration(start_time, datetime.now())
             print(f'({str_duration})\t{epoch + 1}\ttrain_loss: __ \t{val_loss:0.2} ')            
         if epoch_finished:
