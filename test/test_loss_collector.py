@@ -17,7 +17,7 @@ class TestLossCollector(unittest.TestCase):
         for e, losses_in_epoch in enumerate(self.epoch_losses):
             for i, loss in enumerate(losses_in_epoch):
                 epoch_finished = (i + 1 == len(losses_in_epoch))
-                loss_collector.process_train_loss(e, i, loss, epoch_finished)
+                loss_collector.update_train_loss(e, i, loss, epoch_finished)
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2.5, 6.5, 9], [25, 65, 90]]
         self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses)
@@ -30,7 +30,7 @@ class TestLossCollector(unittest.TestCase):
         for e, losses_in_epoch in enumerate(self.epoch_losses):
             for i, loss in enumerate(losses_in_epoch):
                 epoch_finished = (i + 1 == len(losses_in_epoch))
-                loss_collector.process_train_loss(e, i, loss, epoch_finished)
+                loss_collector.update_train_loss(e, i, loss, epoch_finished)
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2,5,8], [20,50,80]]
         self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses)

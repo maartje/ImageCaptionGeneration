@@ -57,7 +57,7 @@ def train(fpaths_images_train, fpaths_captions_train,
             print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss:0.2} ')
         
     fns_on_update = [
-        loss_collector.process_train_loss,
+        loss_collector.update_train_loss,
         collect_validation_loss,
         print_loss_info
     ]

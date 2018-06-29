@@ -8,7 +8,7 @@ class LossCollector():
         self.epoch_size = None # determined during processing
         self.batch_loss_size_last = 0 # determined during processing
         
-    def process_train_loss(self, epoch, batch_index, token_loss, epoch_finished):
+    def update_train_loss(self, epoch, batch_index, token_loss, epoch_finished):
         self.update_tmp_loss(epoch, batch_index, token_loss, epoch_finished)
         self.update_batch_loss(epoch, batch_index, token_loss, epoch_finished)
         self.update_epoch_loss(epoch, batch_index, token_loss, epoch_finished)
