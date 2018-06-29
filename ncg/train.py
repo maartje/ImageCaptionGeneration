@@ -56,7 +56,7 @@ def train(fpaths_images_train, fpaths_captions_train,
             str_duration = format_duration(start_time, datetime.now())
             print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss:0.2} ')
         
-    fns_on_update = [
+    fn_update_listeners = [
         loss_collector.update_train_loss,
         collect_validation_loss,
         print_loss_info
@@ -65,7 +65,7 @@ def train(fpaths_images_train, fpaths_captions_train,
     start_time = datetime.now()
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
-               optimizer, max_epochs, fns_on_update = fns_on_update)
+               optimizer, max_epochs, fn_update_listeners = fn_update_listeners)
     
     loss_data = {
         'epoch_val_losses' : epoch_val_losses,
