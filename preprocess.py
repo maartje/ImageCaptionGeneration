@@ -7,7 +7,7 @@ import re
 import itertools
 import glob
 
-import ncg.preprocessor as pp
+import ncg.preprocess as pp
 
 def parse_args():
     parser = argparse.ArgumentParser(

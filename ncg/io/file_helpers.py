@@ -7,7 +7,7 @@ def read_lines_multiple_files(fpaths):
         
     
 def read_lines(fpath):
-    with open(fpath, 'r') as sentences:
-        for sentence in sentences:
-            yield sentence
+    with open(fpath, 'r') as lines:
+        for line in lines:
+            yield line.strip()
  

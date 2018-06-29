@@ -13,9 +13,10 @@ from ncg.debug_helpers import format_duration
 def train(fpaths_images_train, fpaths_captions_train,
           fpaths_images_val, fpaths_captions_val, 
           vocab_size, encoding_size,
-          fpath_loss_data, fpath_decoder,
+          fpath_loss_data_out, fpath_decoder_out,
           max_train_instances = None, #TODO pass into dataset
-          learning_rate = 0.005, max_epochs = 50, dl_params = {}, store_loss_every = 100):
+          learning_rate = 0.005, max_epochs = 50, dl_params = {}, 
+          store_loss_every = 100, print_loss_every = 1000):
     # data loader
     dataset_train = ImageCaptionDataset(fpaths_images_train, fpaths_captions_train)
     dataloader_train = data.DataLoader(dataset_train, **dl_params)
@@ -37,11 +38,16 @@ def train(fpaths_images_train, fpaths_captions_train,
     
     epoch_val_losses = []
     def collect_validation_loss(e, i, l, epoch_finished):
-        if epoch_finished:
+        if epoch_finished or (e == 0 and i == 0):
             val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
             epoch_val_losses.append(val_loss)
     
     def print_loss_info(epoch, i, l, epoch_finished):
+        if (i + 1) % print_loss_every == 0:
+            print('epoch', epoch, 'i', i, 'instance_loss', f'{l:0.2}')
+        if e == 0 and i == 0:
+            str_duration = format_duration(start_time, datetime.now())
+            print(f'({str_duration})\t{epoch + 1}\ttrain_loss: __ \t{val_loss:0.2} ')            
         if epoch_finished:
             val_loss = epoch_val_losses[-1]
             train_loss = loss_collector.epoch_losses[-1]
@@ -67,8 +73,8 @@ def train(fpaths_images_train, fpaths_captions_train,
         'batch_loss_size' : loss_collector.batch_loss_size,
         'epoch_size' : len(dataloader_train) 
     }
-    torch.save(loss_data, fpath_loss_data)
-    torch.save(decoder, fpath_decoder)
+    torch.save(loss_data, fpath_loss_data_out)
+    torch.save(decoder, fpath_decoder_out)
     
     
     

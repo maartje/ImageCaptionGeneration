@@ -13,7 +13,7 @@ from test.test_helpers import MockImageCaptionDataset
 
 class TestTrain(unittest.TestCase):
 
-    @mock.patch('builtins.print')
+    #@mock.patch('builtins.print')
     @mock.patch('torch.save')
     @mock.patch('ncg.train.ImageCaptionDataset')    
     def test_train(self, ds_class, torch_save, prnt = None):
@@ -30,5 +30,6 @@ class TestTrain(unittest.TestCase):
               vocab_size, encoding_size, 
               fpath_loss_data, fpath_decoder,
               max_train_instances = None,
-              learning_rate = 0.8, max_epochs = 15, dl_params = {}, store_loss_every = 1)
+              learning_rate = 0.8, max_epochs = 15, dl_params = {}, store_loss_every = 1,
+              print_loss_every = 3)
 
