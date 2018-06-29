@@ -20,8 +20,8 @@ class TestLossCollector(unittest.TestCase):
                 loss_collector.update_train_loss(e, i, loss, epoch_finished)
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2.5, 6.5, 9], [25, 65, 90]]
-        self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses)
-        self.assertEqual(batch_losses_expected, loss_collector.batch_losses)
+        self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses_train)
+        self.assertEqual(batch_losses_expected, loss_collector.batch_losses_train)
         self.assertEqual(len(self.epoch_losses[0]), loss_collector.epoch_size)
         self.assertEqual(1, loss_collector.batch_loss_size_last)
 
@@ -33,8 +33,8 @@ class TestLossCollector(unittest.TestCase):
                 loss_collector.update_train_loss(e, i, loss, epoch_finished)
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2,5,8], [20,50,80]]
-        self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses)
-        self.assertEqual(batch_losses_expected, loss_collector.batch_losses)
+        self.assertEqual(epoch_losses_expected, loss_collector.epoch_losses_train)
+        self.assertEqual(batch_losses_expected, loss_collector.batch_losses_train)
         self.assertEqual(len(self.epoch_losses[0]), loss_collector.epoch_size)
         self.assertEqual(0, loss_collector.batch_loss_size_last)
 

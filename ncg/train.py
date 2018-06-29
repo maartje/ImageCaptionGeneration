@@ -51,7 +51,7 @@ def train(fpaths_images_train, fpaths_captions_train,
             print(f'({str_duration})\t{epoch + 1}\ttrain_loss: __ \t{val_loss:0.2} ')            
         if epoch_finished:
             val_loss = epoch_val_losses[-1]
-            train_loss = loss_collector.epoch_losses[-1]
+            train_loss = loss_collector.epoch_losses_train[-1]
             
             str_duration = format_duration(start_time, datetime.now())
             print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss:0.2} ')
@@ -69,8 +69,8 @@ def train(fpaths_images_train, fpaths_captions_train,
     
     loss_data = {
         'epoch_val_losses' : epoch_val_losses,
-        'epoch_train_losses' : loss_collector.epoch_losses,
-        'batch_losses' : loss_collector.batch_losses,
+        'epoch_train_losses' : loss_collector.epoch_losses_train,
+        'batch_losses' : loss_collector.batch_losses_train,
         'batch_loss_size' : loss_collector.batch_loss_size,
         'epoch_size' : len(dataloader_train) 
     }
