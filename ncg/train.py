@@ -33,46 +33,32 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_criterion = nn.NLLLoss()    
 
     # loss collection
-    loss_collector = LossCollector(store_loss_every)   
+    start_time = datetime.now()
     assert store_loss_every < len(dataset_train)     
+    loss_collector = LossCollector(store_loss_every, print_loss_every, start_time)   
     
-    epoch_val_losses = []
-    def collect_validation_loss(e, i, l, epoch_finished):
-        if epoch_finished or (e == 0 and i == 0):
-            val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
-            epoch_val_losses.append(val_loss)
-    
-    def print_loss_info(epoch, i, l, epoch_finished):
-        if (i + 1) % print_loss_every == 0:
-            print('epoch', epoch, 'i', i, 'instance_loss', f'{l:0.2}')
-        if epoch == 0 and i == 0:
-            val_loss = epoch_val_losses[-1]
-            str_duration = format_duration(start_time, datetime.now())
-            print(f'({str_duration})\t{epoch + 1}\ttrain_loss: __ \t{val_loss:0.2} ')            
+    def collect_validation_loss(epoch, batch_index, token_loss, epoch_finished):
         if epoch_finished:
-            val_loss = epoch_val_losses[-1]
-            train_loss = loss_collector.epoch_losses_train[-1]
+            val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
+            loss_collector.update_validation_loss(val_loss)
             
-            str_duration = format_duration(start_time, datetime.now())
-            print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss:0.2} ')
-        
     fn_update_listeners = [
         loss_collector.update_train_loss,
         collect_validation_loss,
-        print_loss_info
+        loss_collector.print_loss_info
     ]
     
-    start_time = datetime.now()
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
                optimizer, max_epochs, fn_update_listeners = fn_update_listeners)
     
     loss_data = {
-        'epoch_val_losses' : epoch_val_losses,
+        'epoch_val_losses' : loss_collector.epoch_losses_val,
         'epoch_train_losses' : loss_collector.epoch_losses_train,
         'batch_losses' : loss_collector.batch_losses_train,
+        'epoch_size' : loss_collector.epoch_size, 
         'batch_loss_size' : loss_collector.batch_loss_size,
-        'epoch_size' : len(dataloader_train) 
+        'batch_loss_size' : loss_collector.batch_loss_size_last
     }
     torch.save(loss_data, fpath_loss_data_out)
     torch.save(decoder, fpath_decoder_out)

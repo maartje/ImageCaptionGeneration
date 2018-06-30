@@ -4,6 +4,7 @@ Tests for the loss collector that stores epoch losses and batch losses
 
 import unittest
 from ncg.reporting.loss_collector import LossCollector
+from datetime import datetime
 
 class TestLossCollector(unittest.TestCase):
 
@@ -13,7 +14,7 @@ class TestLossCollector(unittest.TestCase):
             [10,20,30,40,50, 60, 70, 80, 90]]
 
     def test_process_loss_with_partial(self):
-        loss_collector = LossCollector(4)
+        loss_collector = LossCollector(4, 1, datetime.now())
         for e, losses_in_epoch in enumerate(self.epoch_losses):
             for i, loss in enumerate(losses_in_epoch):
                 epoch_finished = (i + 1 == len(losses_in_epoch))
@@ -26,7 +27,7 @@ class TestLossCollector(unittest.TestCase):
         self.assertEqual(1, loss_collector.batch_loss_size_last)
 
     def test_process_loss_without_partial(self):
-        loss_collector = LossCollector(3)
+        loss_collector = LossCollector(3, 1, datetime.now())
         for e, losses_in_epoch in enumerate(self.epoch_losses):
             for i, loss in enumerate(losses_in_epoch):
                 epoch_finished = (i + 1 == len(losses_in_epoch))

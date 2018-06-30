@@ -1,7 +1,14 @@
+from datetime import datetime
+
+from ncg.debug_helpers import format_duration
+
 class LossCollector():
 
-    def __init__(self, batch_loss_size):
+    def __init__(self, batch_loss_size, print_loss_every, start_time):
         self.batch_loss_size = batch_loss_size
+        self.print_loss_every = print_loss_every
+        self.start_time = start_time
+        self.epoch_losses_val = []
         self.epoch_losses_train = []
         self.batch_losses_train = []
         self._tmp_losses_train = []
@@ -44,4 +51,20 @@ class LossCollector():
             self.epoch_size = batch_index + 1
 #            print('store epoch', epoch, batch_index, losses[0])
             
+    def update_validation_loss(self, validation_loss):
+        self.epoch_losses_val.append(validation_loss)
+        
+    def print_loss_info(self, epoch, batch_index, token_loss, epoch_finished):
+        if (batch_index + 1) % self.print_loss_every == 0:
+            print('    epoch', epoch, 'batch_index', batch_index, 'instance_loss', f'{token_loss:0.2}')
+        if epoch == 0 and batch_index == 0 and len(self.epoch_losses_val):
+            val_loss = self.epoch_losses_val[-1]
+            str_duration = format_duration(self.start_time, datetime.now())
+            print(f'({str_duration})\t{epoch + 1}\ttrain_loss: __ \t{val_loss:0.2} ')            
+        if epoch_finished:
+            val_loss = self.epoch_losses_val[-1]
+            train_loss = self.epoch_losses_train[-1]
+            str_duration = format_duration(self.start_time, datetime.now())
+            print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss:0.2} ')
+
 
