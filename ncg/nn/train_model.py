@@ -3,7 +3,7 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_iter(decoder, train_data, loss_criterion, optimizer, 
-               max_epochs = 5, fn_epoch_listeners = [], fn_batch_listeners = []):
+               max_epochs = 5, fn_batch_listeners = [], fn_epoch_listeners = []):
     decoder.decoder.to(device)
 
     for epoch in range(max_epochs):

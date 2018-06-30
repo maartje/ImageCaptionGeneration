@@ -47,8 +47,8 @@ def train(fpaths_images_train, fpaths_captions_train,
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
                optimizer, max_epochs, 
-               fn_epoch_listeners = [loss_collector.on_epoch_completed],
-               fn_batch_listeners = [loss_collector.on_batch_completed]
+               fn_batch_listeners = [loss_collector.on_batch_completed],
+               fn_epoch_listeners = [loss_collector.on_epoch_completed]
                )
     
     loss_data = {
