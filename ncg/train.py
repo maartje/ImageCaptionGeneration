@@ -42,15 +42,14 @@ def train(fpaths_images_train, fpaths_captions_train,
             val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
             loss_collector.update_validation_loss(val_loss)
             
-    fn_update_listeners = [
-        loss_collector.update_train_loss,
-        collect_validation_loss,
-        loss_collector.print_loss_info
-    ]
+    #    loss_collector.print_loss_info
     
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
-               optimizer, max_epochs, fn_update_listeners = fn_update_listeners)
+               optimizer, max_epochs, 
+               fn_epoch_listeners = [loss_collector.on_epoch_completed],
+               fn_batch_listeners = [loss_collector.on_batch_completed]
+               )
     
     loss_data = {
         'epoch_val_losses' : loss_collector.epoch_losses_val,

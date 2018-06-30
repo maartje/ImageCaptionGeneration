@@ -31,7 +31,7 @@ class TestTrain(unittest.TestCase):
         ]
         losses = []
         train_iter(decoder, train_data, self.loss_criterion, optimizer, max_epochs = 10, 
-                   fn_update_listeners = [lambda e,i,l,f: losses.append(l)])        
+                   fn_batch_listeners = [lambda e,i,l: losses.append(l)])        
         losses_1 = losses[::3] # losses for pair 1
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
