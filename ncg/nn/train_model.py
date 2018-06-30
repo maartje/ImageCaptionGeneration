@@ -3,7 +3,8 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_iter(decoder, train_data, loss_criterion, optimizer, 
-               max_epochs = 5, fn_batch_listeners = [], fn_epoch_listeners = []):
+               max_epochs = 5, val_data = [],
+               fn_batch_listeners = [], fn_epoch_listeners = []):
     decoder.decoder.to(device)
 
     for epoch in range(max_epochs):
@@ -14,7 +15,9 @@ def train_iter(decoder, train_data, loss_criterion, optimizer,
             for fn_on_update in fn_batch_listeners:
                 fn_on_update(epoch, i, token_loss)
         for fn_on_epoch_completed in fn_epoch_listeners:
-            val_loss = -1 # TODO
+            val_loss = 0
+            if val_data:
+                val_loss = calculate_validation_loss(decoder, val_data, loss_criterion)
             fn_on_epoch_completed(epoch, i, val_loss)
     
 def train(decoder, source_encodings, targets, loss_criterion, optimizer):

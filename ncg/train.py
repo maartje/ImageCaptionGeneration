@@ -38,16 +38,16 @@ def train(fpaths_images_train, fpaths_captions_train,
     start_time = datetime.now()
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
     
-    def collect_validation_loss(epoch, batch_index, token_loss, epoch_finished):
-        if epoch_finished:
-            val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
-            loss_collector.update_validation_loss(val_loss)
-            
+    # TODO refactor
+    print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
+    initial_val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
+    loss_collector.initial_validation_loss = initial_val_loss
+    loss_reporter.report_initial_validation_loss()      
     #    loss_collector.print_loss_info
     
-    print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
                optimizer, max_epochs, 
+               val_data = dataloader_val,
                fn_batch_listeners = [
                    loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
                fn_epoch_listeners = [
