@@ -7,7 +7,7 @@ from datetime import datetime
 from ncg.io.image_caption_dataset import ImageCaptionDataset
 from ncg.nn.show_and_tell import ShowAndTell
 from ncg.nn.train_model import train_iter, calculate_validation_loss
-from ncg.reporting.loss_collector import LossCollector
+from ncg.reporting.loss_collector import LossCollector, LossReporter
 from ncg.debug_helpers import format_duration
 
 def train(fpaths_images_train, fpaths_captions_train,
@@ -33,9 +33,10 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_criterion = nn.NLLLoss()    
 
     # loss collection
-    start_time = datetime.now()
     assert store_loss_every < len(dataset_train)     
-    loss_collector = LossCollector(store_loss_every, print_loss_every, start_time)   
+    loss_collector = LossCollector(store_loss_every)  
+    start_time = datetime.now()
+    loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
     
     def collect_validation_loss(epoch, batch_index, token_loss, epoch_finished):
         if epoch_finished:
@@ -47,8 +48,10 @@ def train(fpaths_images_train, fpaths_captions_train,
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     train_iter(decoder, dataloader_train, loss_criterion, 
                optimizer, max_epochs, 
-               fn_batch_listeners = [loss_collector.on_batch_completed],
-               fn_epoch_listeners = [loss_collector.on_epoch_completed]
+               fn_batch_listeners = [
+                   loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
+               fn_epoch_listeners = [
+                   loss_collector.on_epoch_completed, loss_reporter.on_epoch_completed]
                )
     
     loss_data = {
