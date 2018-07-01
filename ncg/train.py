@@ -17,7 +17,8 @@ def train(fpaths_images_train, fpaths_captions_train,
           max_train_instances = None, #TODO pass into dataset
           learning_rate = 0.005, max_epochs = 50, dl_params = {}, 
           store_loss_every = 100, print_loss_every = 1000):
-    # data loader
+
+    # data loaders
     dataset_train = ImageCaptionDataset(fpaths_images_train, fpaths_captions_train)
     dataloader_train = data.DataLoader(dataset_train, **dl_params)
     dataset_val = ImageCaptionDataset(fpaths_images_val, fpaths_captions_val)
@@ -38,13 +39,15 @@ def train(fpaths_images_train, fpaths_captions_train,
     start_time = datetime.now()
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
     
-    # TODO refactor
+    # calculate and store initial validation loss 
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
     initial_val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
     loss_collector.initial_validation_loss = initial_val_loss
     loss_reporter.report_initial_validation_loss()      
-    #    loss_collector.print_loss_info
     
+    # train model and 
+    # collect validation loss data
+    # TODO: store model per X iterations?
     train_iter(decoder, dataloader_train, loss_criterion, 
                optimizer, max_epochs, 
                val_data = dataloader_val,
@@ -54,41 +57,11 @@ def train(fpaths_images_train, fpaths_captions_train,
                    loss_collector.on_epoch_completed, loss_reporter.on_epoch_completed]
                )
     
-    loss_data = {
-        'epoch_val_losses' : loss_collector.epoch_losses_val,
-        'epoch_train_losses' : loss_collector.epoch_losses_train,
-        'batch_losses' : loss_collector.batch_losses_train,
-        'epoch_size' : loss_collector.epoch_size, 
-        'batch_loss_size' : loss_collector.batch_loss_size,
-        'batch_loss_size' : loss_collector.batch_loss_size_last
-    }
-    torch.save(loss_data, fpath_loss_data_out)
+    # save model and loss data
+    torch.save(loss_collector.get_loss_data(), fpath_loss_data_out)
     torch.save(decoder, fpath_decoder_out)
     
     
-    
-#    for source_encodings, targets in dataloader_train:
-#        source_encodings, targets = source_encodings.to(device), targets.to(device)
-#        loss = calculate_loss(decoder, source_encodings, targets, loss_criterion)
-#        print('loss', loss)
- #       predicted = decoder.predict(train_input[0], 0, 1, 20, device)
- #       print('predicted       ', predicted)
- #       print('target', train_input[1])
- #       print()
-               
-               
-        
-    
-
-
-# store and print average epoch losses
-# store and print average losses per i examples
-# after epoch: calculate, store, print validation loss
-
-# save train_epoch_losses
-# save train_iter_losses
-# save val_epoch_losses
-# save model for each epoch
 
 
 

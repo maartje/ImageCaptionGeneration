@@ -44,7 +44,18 @@ class LossCollector():
         average_batch_loss = sum(batch_losses)/len(batch_losses)
         self.batch_losses_train[-1].append(average_batch_loss)
 #        print('store partial batch', epoch, batch_index, losses_partial_batch)
-                    
+    
+    def get_loss_data(self):
+        return {
+            'initial_validation_loss' : self.initial_validation_loss,
+            'epoch_val_losses' : self.epoch_losses_val,
+            'epoch_train_losses' : self.epoch_losses_train,
+            'batch_losses' : self.batch_losses_train,
+            'epoch_size' : self.epoch_size, 
+            'batch_loss_size' : self.batch_loss_size,
+            'batch_loss_size_last' : self.batch_loss_size_last
+        }
+
 
 class LossReporter:
 
