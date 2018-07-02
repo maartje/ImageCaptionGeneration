@@ -100,6 +100,10 @@ class LossReporter:
         str_duration = format_duration(self.start_time, datetime.now())
         print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss} ')
 
+
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
+
 class LossPlotter():
 
     def __init__(self, loss_collector):
@@ -113,9 +117,9 @@ class LossPlotter():
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
         ax.ticklabel_format(axis='x', scilimits=(0, 0))
         if losses_train:
-            plt.plot(intervals_train, losses_train, 'ro-', label='train loss')
+            plt.plot(intervals_train, losses_train, 'ro-', color='blue', label='train loss over epoch')
         if losses_val:
-            plt.plot(intervals_val, losses_val, 'ro-', label='validation loss')
+            plt.plot(intervals_val, losses_val, 'ro-', color='red', label='validation loss after epoch')
         plt.xlabel('#training pairs')
         plt.ylabel('average token loss')
         plt.legend()
@@ -130,7 +134,7 @@ class LossPlotter():
         fig, ax = plt.subplots()
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
         ax.ticklabel_format(axis='x', scilimits=(0, 0))
-        plt.plot(intervals, losses, 'ro-', label='train loss')
+        plt.plot(intervals, losses, 'ro-', color='blue', label='train loss over batch')
         plt.xlabel('#training pairs')
         plt.ylabel('average token loss')
         plt.legend()
