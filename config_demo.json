@@ -24,5 +24,11 @@
 		"fpath_save_decoder" : "output/demo/show_tell.pt",
 		"learning_rate" : 0.1,
 		"store_loss_every" : 100
-	}
+	},
+
+	"report" : {
+	    "fpath_losses" : "mj_loss.pt", 
+	    "fpath_plot_epoch_loss" : "mj_loss_epoch.png", 
+	    "fpath_plot_batch_loss" : "mj_loss_batch.png"
+    }
 }
