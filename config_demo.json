@@ -1,0 +1,28 @@
+{
+	"preprocess" : {
+		"output_dir": "output/demo",
+		"descriptions_only": false,
+		"images_only": false,
+		"fpattern_images": "data/demo/images/*.jpg",
+		"encoder_model": "resnet18",
+		"encoder_layer": "avgpool",
+		"print_info_every": 1000,
+		"fpattern_captions_train": "data/demo/captions/en/train.[0-9].en",
+		"fpattern_captions_val": "data/demo/captions/en/val.[0-9].en",
+		"fname_vocab_out": "vocab.pt",
+		"min_occurences": 5
+	},
+
+	"train" : {
+		"dir_image_encodings" : "output/demo/resnet18_avgpool",
+		"fpath_images_train" : "data/demo/image_splits/train_images.txt",
+		"fpath_images_val" : "data/demo/image_splits/val_images.txt",
+		"fpattern_captions_train" : "output/demo/train.[0-9].en.pt",
+		"fpattern_captions_val" : "output/demo/val.[0-9].en.pt",
+		"fpath_vocab": "output/demo/vocab.pt",
+		"fpath_save_losses" : "output/demo/loss.pt",
+		"fpath_save_decoder" : "output/demo/show_tell.pt",
+		"learning_rate" : 0.1,
+		"store_loss_every" : 100
+	}
+}
