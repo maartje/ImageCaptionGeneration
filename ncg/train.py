@@ -58,7 +58,7 @@ def train(fpaths_images_train, fpaths_captions_train,
                )
     
     # save model and loss data
-    torch.save(loss_collector.get_loss_data(), fpath_loss_data_out)
+    torch.save(loss_collector, fpath_loss_data_out)
     torch.save(decoder, fpath_decoder_out)
     
     
