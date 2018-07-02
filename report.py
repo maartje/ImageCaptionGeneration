@@ -1,6 +1,8 @@
 import json
 import argparse
 
+from helpers import check_infiles_exists, check_outfiles_exists, ensure_fpath_exists
+
 from ncg.report import plot_losses
 
 def parse_args():
@@ -24,11 +26,18 @@ def load_config(fpath_config):
     return config['report']
 
 def report(config):
+    fpath_epoch_loss = config['fpath_plot_epoch_loss']
+    fpath_batch_loss = config['fpath_plot_batch_loss']
+    if check_outfiles_exists([fpath_epoch_loss, fpath_batch_loss]):
+        return
+    ensure_fpath_exists(fpath_epoch_loss)
+    ensure_fpath_exists(fpath_batch_loss)
+
     if config['fpath_losses']:
         plot_losses(
             config['fpath_losses'], 
-            config['fpath_plot_epoch_loss'], 
-            config['fpath_plot_batch_loss'])
+            fpath_epoch_loss, 
+            fpath_batch_loss)
    
 def main():
     opt = parse_args()
