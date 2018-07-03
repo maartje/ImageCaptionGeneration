@@ -23,7 +23,9 @@
 		"fpath_save_losses" : "output/demo/loss.pt",
 		"fpath_save_decoder" : "output/demo/show_tell.pt",
 		"learning_rate" : 0.1,
-		"store_loss_every" : 100
+		"store_loss_every" : 100,
+		"max_epochs" : 100,
+		"max_hours" : 15
 	},
 
 	"report" : {

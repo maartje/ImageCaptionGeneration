@@ -115,6 +115,9 @@ def preprocess_descriptions(opt):
     pp.preprocess_text_files(fpaths_train, fpaths_val, 
                           fpaths_train_out, fpaths_val_out, fpath_vocab_out,
                           min_occurrences)        
+def pt_fpath_out(output_dir, fpath):
+    fname = os.path.basename(fpath)
+    return os.path.join(output_dir, f'{fname}.pt')
 
 def main():
     opt = parse_args()

@@ -45,11 +45,14 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_collector.initial_validation_loss = initial_val_loss
     loss_reporter.report_initial_validation_loss()      
     
+    def stop_criterion(epoch, val_loss):
+        return epoch > max_epochs
+        
     # train model and 
     # collect validation loss data
     # TODO: store model per X iterations?
     train_iter(decoder, dataloader_train, loss_criterion, 
-               optimizer, max_epochs, 
+               optimizer, stop_criterion, 
                val_data = dataloader_val,
                fn_batch_listeners = [
                    loss_collector.on_batch_completed, loss_reporter.on_batch_completed],

@@ -29,7 +29,12 @@ class TestTrain(unittest.TestCase):
             generate_random_training_pair(self.encoding_size, self.vocab_size, 9),
         ]
         losses = []
-        train_iter(decoder, train_data, self.loss_criterion, optimizer, max_epochs = 10, 
+        
+        max_epochs = 10
+        def stop_criterion(epoch, val_loss):
+            return epoch > max_epochs
+
+        train_iter(decoder, train_data, self.loss_criterion, optimizer, stop_criterion, 
                    fn_batch_listeners = [lambda e,i,l: losses.append(l)])        
         losses_1 = losses[::3] # losses for pair 1
         losses_2 = losses[1::3]

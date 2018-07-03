@@ -9,6 +9,7 @@ import PIL.Image
 import ncg.preprocess as pp
 import ncg.data_processing.image_encoder as imenc
 import ncg.io.file_helpers as fh
+from test.test_helpers import generate_random_image
 
 def mock_read_lines(fpath):
     sentences_per_file = {
@@ -19,42 +20,29 @@ def mock_read_lines(fpath):
     }
     return (s for s in sentences_per_file[fpath])
     
-def mock_encode_image(img):
-    return f'Encode({img})'
-    
-def mock_open_image(path):
-    return f'Open({path})'
     
 class TestPreprocessor(unittest.TestCase):
 
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.preprocess.ImageEncoder')    
-    @mock.patch('PIL.Image.open', side_effect = mock_open_image)
-    def test_preprocess_images(self, open_image, image_encoder_class,
-                               torch_save, pprint = None):
-            
-        image_encoder = image_encoder_class.return_value
-        image_encoder.encode_image.side_effect = mock_encode_image
-        
-        fpaths = ['im1.png', 'im2.png'] 
-        fpaths_out = ['im1_out.png', 'im2_out.png']  
+    @mock.patch('PIL.Image.open')
+    def test_preprocess_images(self, open_image, torch_save, pprint = None):
+        open_image.return_value = generate_random_image() 
+                    
+        fpaths = ['im1.png', 'im2.png']
+        out_dir = "out" 
         encoder_model = 'resnet18'  
         encoder_layer = 'avgpool' 
         
-        pp.preprocess_images(fpaths, fpaths_out, 
+        pp.preprocess_images(fpaths, out_dir, 
                           encoder_model, encoder_layer, print_info_every = 1)
-                                  
-        # verify that load model is called
-        image_encoder.load_model.assert_called_with()
+                                          
+        # check encoding size
+        encodings = [embedding for (embedding, fp), _ in torch_save.call_args_list]
+        self.assertTrue(all([e.size(0) == 512 for e in encodings]))
 
-        # Create embeddings for all images by calling 'Image.open' and 'encode_image'
-        encodings_saved = [embedding for (embedding, fp), _ in torch_save.call_args_list]
-        encodings_expected = [ mock_encode_image(
-            mock_open_image(fpath)) for fpath in fpaths]
-        self.assertEqual(encodings_expected, encodings_saved)
-
-        # Save embeddings at fpaths out
+        # check fpaths embeddings saved
+        fpaths_out = ['out/im1.png.pt', 'out/im2.png.pt']  
         fpaths_saved = [fp for (embedding, fp), _ in torch_save.call_args_list]
         self.assertEqual(fpaths_out, fpaths_saved)
         
