@@ -29,13 +29,13 @@ def train(decoder, source_encodings, targets, loss_criterion, optimizer):
 
 def calculate_loss(decoder, source_encodings, targets, loss_criterion):
     inputs = targets[:,:-1] # remove EOS token    
-    output_probs = calculate_output_probabilities(decoder, source_encodings, inputs, device)
+    output_probs = calculate_output_probabilities(decoder, source_encodings, inputs)
     target_outputs = targets.view(-1)[1:] # remove EOS token
 
     loss = loss_criterion(output_probs, target_outputs)
     return loss
 
-def calculate_output_probabilities(decoder, source_encoding, inputs, device):
+def calculate_output_probabilities(decoder, source_encoding, inputs):
     hidden = source_encoding.view(1,1,-1)
     output_probs = torch.zeros(inputs.size(1), decoder.output_size, device=device)
     for i, input_token in enumerate(inputs.view(-1, 1)):
@@ -57,7 +57,7 @@ def calculate_validation_loss(decoder, val_data, loss_criterion):
             total_tokens += token_length
     return total_loss / total_tokens
 
-def predict(decoder, source_encoding, SOS_token, EOS_token, max_length, device):
+def predict(decoder, source_encoding, SOS_token, EOS_token, max_length):
     with torch.no_grad():
         hidden = source_encoding.view(1,1,-1)
         decoded_tokens = [SOS_token]

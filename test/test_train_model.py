@@ -40,11 +40,12 @@ class TestTrain(unittest.TestCase):
         self.assertTrue(is_decreasing(losses_2))
         self.assertTrue(is_decreasing(losses_3))
         
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        predicted = predict(decoder, train_data[1][0], 0, 1, 20, device)
-        
-        # TODO: assert that input and output look similar?!
+        # Assert that predicted and target look similar for (overfitted) train data
+        for train_instance in train_data:
+            predicted = predict(decoder, train_instance[0], 0, 1, 20)
+            target = train_instance[1].squeeze().numpy()
+            intersection = set(predicted) & set(target)
+            self.assertTrue(len(intersection) > 0.5*len(target))
  
 if __name__ == '__main__':
     unittest.main()
