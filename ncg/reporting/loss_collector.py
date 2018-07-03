@@ -23,7 +23,8 @@ class LossCollector():
 
     #fn_epoch_listener
     def on_epoch_completed(self, epoch, batch_index, validation_loss):
-        self.epoch_losses_val.append(validation_loss)
+        if validation_loss:
+            self.epoch_losses_val.append(validation_loss)
 
         average_epoch_loss = sum(self._tmp_losses_train) / len(self._tmp_losses_train)
         self.epoch_losses_train.append(average_epoch_loss)

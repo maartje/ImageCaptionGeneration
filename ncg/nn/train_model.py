@@ -15,7 +15,7 @@ def train_iter(decoder, train_data, loss_criterion, optimizer,
             for fn_on_update in fn_batch_listeners:
                 fn_on_update(epoch, i, token_loss)
         for fn_on_epoch_completed in fn_epoch_listeners:
-            val_loss = 0
+            val_loss = None
             if val_data:
                 val_loss = calculate_validation_loss(decoder, val_data, loss_criterion)
             fn_on_epoch_completed(epoch, i, val_loss)
@@ -47,7 +47,7 @@ def calculate_validation_loss(decoder, val_data, loss_criterion):
     # TODO: use teacher forcing or not?
     # TODO: take token length into account?
     with torch.no_grad():
-        total_loss = 0
+        total_loss = 0.
         total_tokens = 0
         for source_encodings, targets in val_data:
             source_encodings, targets = source_encodings.to(device), targets.to(device)

@@ -36,7 +36,8 @@ class MockImageCaptionDataset(data.Dataset):
                 (e, torch.LongTensor(
                     [0] + random.sample(w, len(w) - 5) + [1] )) for e, w in encoding_words_pairs
             ]
-        
+        random.seed(9001)
+        torch.manual_seed(9001)
         encoding_words_pairs = [random_encoding_words_pair() for _ in fpaths_image_encodings]
         training_pairs = [sample_train_pairs(encoding_words_pairs) for _ in fpaths_captions]
         self.training_pairs = [item for sublist in training_pairs for item in sublist]
