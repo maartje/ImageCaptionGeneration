@@ -90,5 +90,5 @@ class TestPreprocessor(unittest.TestCase):
         ], vectors_save[len(fpaths_train)]) 
         self.assertEqual([
             tm.indices2sentence(v) for v in vectors_save[len(fpaths_train)]
-        ], ['hello foo', 'hello UNKNOWN']) # check vector representation
+        ], ['hello foo', 'hello']) # check vector representation
 

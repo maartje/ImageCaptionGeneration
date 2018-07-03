@@ -22,7 +22,7 @@ class TextMapper:
         return self.tokens2indices(sentence2tokens(sentence))
 
     def indices2sentence(self, indices):
-        return tokens2sentence(self.indices2tokens(indices))
+        return tokens2sentence(self.indices2tokens(indices, True))
 
     def tokens2indices(self, tokens):
         indices = [self.token2index(t) for t in tokens]
@@ -31,9 +31,16 @@ class TextMapper:
     def token2index(self, t):
         return self.vocab.word2index.get(t, self.vocab.word2index[self.UNKNOWN])
 
-    def indices2tokens(self, indices):
-        return [self.index2token(i) for i in indices[1:-1]] # remove SOS, EOS
+    def indices2tokens(self, indices, remove_predefined_tokens):
+        predefined = [
+           self.token2index(self.EOS), self.token2index(self.SOS), self.token2index(self.UNKNOWN)]
+        indices_used = [
+            i for i in indices if not i in predefined # remove SOS, EOS, UNKNOWN
+        ] if remove_predefined_tokens else indices
+        return [self.index2token(i) for i in indices_used] 
 
     def index2token(self, i):
         return self.vocab.index2word[i]
+        
+
 

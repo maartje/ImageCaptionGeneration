@@ -28,7 +28,7 @@ class TestTextMapper(unittest.TestCase):
         indices = self.mapper.sentence2indices(sentence)
         sentence_out = self.mapper.indices2sentence(indices)
         
-        self.assertEqual('hello foo UNKNOWN!', sentence_out)
+        self.assertEqual('hello foo!', sentence_out)
 
 if __name__ == '__main__':
     unittest.main()
