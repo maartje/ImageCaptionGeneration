@@ -9,7 +9,7 @@ from helpers import check_infiles_exists, check_outfiles_exists, ensure_fpath_ex
 from ncg.train import train
 from ncg.io.file_helpers import read_lines
 
-def train(config):
+def train_model(config):
     # file paths images 
     dir_image_encodings = config['dir_image_encodings']
     fpath_images_train = config['fpath_images_train']
@@ -102,7 +102,7 @@ def load_config(fpath_config):
 def main():
     opt = parse_args()
     config = load_config(opt.config)
-    train(config)
+    train_model(config)
 
 
 if __name__ == "__main__":

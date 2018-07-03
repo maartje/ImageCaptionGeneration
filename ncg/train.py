@@ -17,6 +17,8 @@ def train(fpaths_images_train, fpaths_captions_train,
           max_train_instances = None, #TODO pass into dataset
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
           store_loss_every = 100, print_loss_every = 1000):
+    
+    print('mj2')
 
     # data loaders
     dataset_train = ImageCaptionDataset(fpaths_images_train, fpaths_captions_train)
