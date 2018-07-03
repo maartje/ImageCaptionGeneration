@@ -73,17 +73,11 @@ def preprocess_opts(parser):
         help = "Minimal occurrence in training set to be included in vocabulary",
         default = 2)
 
-def pt_fpath_out(output_dir, fpath):
-    fname = os.path.basename(fpath)
-    return os.path.join(output_dir, f'{fname}.pt')
-
 def preprocess_images(opt):
     encoder_model = opt.encoder_model
     encoder_layer = opt.encoder_layer
-    fpaths = glob.iglob(opt.fpattern_images)
+    fpaths = glob.glob(opt.fpattern_images)
     output_dir_images = os.path.join(opt.output_dir, f"{encoder_model}_{encoder_layer}")
-    fpaths_out = (
-        pt_fpath_out(output_dir_images, fpath) for fpath in glob.iglob(opt.fpattern_images))
     print_info_every = int(opt.print_info_every)
 #    print(fpaths)
 #    print(fpaths_out)
@@ -96,7 +90,7 @@ def preprocess_images(opt):
     if not os.path.exists(output_dir_images):
         os.makedirs(output_dir_images)
 
-    pp.preprocess_images(fpaths, fpaths_out, 
+    pp.preprocess_images(fpaths, output_dir_images, 
                       encoder_model, encoder_layer, 
                       print_info_every)
 

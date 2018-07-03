@@ -1,27 +1,38 @@
 import torch
 from datetime import datetime
 from PIL import Image
+from torch.utils import data
+import os
 
 import ncg.io.file_helpers as fh
 from ncg.data_processing.textmapper import TextMapper
 from ncg.data_processing.image_encoder import ImageEncoder
 from ncg.debug_helpers import format_duration
+from ncg.io.image_dataset import ImageDataset
 
 
-def preprocess_images(fpaths, fpaths_out, 
+def preprocess_images(fpaths, output_dir, 
                       encoder_model, encoder_layer, 
                       print_info_every = 1000):
     image_encoder = ImageEncoder(encoder_model, encoder_layer)
     image_encoder.load_model()
     start_time = datetime.now()
+    
+    image_dataset = ImageDataset(fpaths)
+    image_dataloader = data.DataLoader(image_dataset)
+    
     print(f'\n({format_duration(start_time, datetime.now())}) Start encoding images ...')
-    for i, (fpath, fpath_out) in enumerate(zip(fpaths, fpaths_out)):
-        img = Image.open(fpath)
-        features = image_encoder.encode_image(img) # TODO: batch encoding?
+    for i, (img, fpath) in enumerate(image_dataloader):
+        fpath_out = pt_fpath_out(output_dir, fpath[0])
+        features = image_encoder.encode(img) # TODO: batch encoding?
         torch.save(features, fpath_out)
         if print_info_every and ((i+1) % print_info_every == 0):
             print (f'({format_duration(start_time, datetime.now())}) {i} images encoded')
     print(f'({format_duration(start_time, datetime.now())}) End encoding images ...')
+
+def pt_fpath_out(output_dir, fpath):
+    fname = os.path.basename(fpath)
+    return os.path.join(output_dir, f'{fname}.pt')
 
 def preprocess_text_files(fpaths_train, fpaths_val, 
                           fpaths_train_out, fpaths_val_out, fpath_vocab_out,
