@@ -44,6 +44,7 @@ def train(config):
     # others
     store_loss_every = config.get('store_loss_every', 1000)
     max_epochs = config.get('max_epochs', 30)
+    max_hours = config.get('max_hours', 72)
     dl_params = {} 
 
 #    print(fpaths_images_train[:2])
@@ -72,7 +73,8 @@ def train(config):
           vocab_size, encoding_size,
           fpath_save_losses, fpath_save_decoder,
           max_train_instances = None, #TODO pass into dataset
-          learning_rate = learning_rate, max_epochs = max_epochs, 
+          learning_rate = learning_rate, 
+          max_epochs = max_epochs, max_hours = max_hours, 
           dl_params = dl_params, store_loss_every = store_loss_every)
 
  

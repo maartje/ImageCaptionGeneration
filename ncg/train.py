@@ -2,7 +2,7 @@ from torch.utils import data
 import torch
 import torch.nn as nn
 from torch import optim
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from ncg.io.image_caption_dataset import ImageCaptionDataset
 from ncg.nn.models import DecoderRNN
@@ -15,7 +15,7 @@ def train(fpaths_images_train, fpaths_captions_train,
           vocab_size, encoding_size,
           fpath_loss_data_out, fpath_decoder_out,
           max_train_instances = None, #TODO pass into dataset
-          learning_rate = 0.005, max_epochs = 50, dl_params = {}, 
+          learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
           store_loss_every = 100, print_loss_every = 1000):
 
     # data loaders
@@ -37,6 +37,7 @@ def train(fpaths_images_train, fpaths_captions_train,
     assert store_loss_every < len(dataset_train)     
     loss_collector = LossCollector(store_loss_every)  
     start_time = datetime.now()
+    end_time = start_time + timedelta(hours = max_hours)
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
     
     # calculate and store initial validation loss 
@@ -46,6 +47,9 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_reporter.report_initial_validation_loss()      
     
     def stop_criterion(epoch, val_loss):
+        if datetime.now() > end_time:
+            print(f'exceeded max hours {max_hours}')
+            return True
         return epoch > max_epochs
         
     # train model and 
