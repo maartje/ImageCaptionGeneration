@@ -5,7 +5,7 @@ from torch import optim
 from datetime import datetime
 
 from ncg.io.image_caption_dataset import ImageCaptionDataset
-from ncg.nn.show_and_tell import ShowAndTell
+from ncg.nn.models import DecoderRNN
 from ncg.nn.train_model import train_iter, calculate_validation_loss
 from ncg.reporting.loss_collector import LossCollector, LossReporter
 from ncg.debug_helpers import format_duration
@@ -27,10 +27,10 @@ def train(fpaths_images_train, fpaths_captions_train,
     # model
 #    im1 = torch.load(fpaths_images_train[0])
 #    encoding_size = im1.size()[0]
-    decoder = ShowAndTell(encoding_size, vocab_size)
+    decoder = DecoderRNN(encoding_size, vocab_size)
     
     # optimization
-    optimizer = optim.SGD(decoder.decoder.parameters(), lr = learning_rate)
+    optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
     loss_criterion = nn.NLLLoss()    
 
     # loss collection

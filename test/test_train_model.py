@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 from torch import optim
 
-from ncg.nn.train_model import train_iter
-from ncg.nn.show_and_tell import ShowAndTell
+from ncg.nn.train_model import train_iter, predict
+from ncg.nn.models import DecoderRNN
 from test.test_helpers import generate_random_training_pair
 
 
@@ -19,10 +19,9 @@ class TestTrain(unittest.TestCase):
         self.encoding_size = 256
         self.loss_criterion = nn.NLLLoss()
        
-    def test_train_iter_show_and_tell(self):
-        decoder = ShowAndTell(self.encoding_size, self.vocab_size)
-        optimizer = optim.SGD(decoder.decoder.parameters(), lr = 0.2)
-
+    def test_train_iter_decoderRNN(self):
+        decoder = DecoderRNN(self.encoding_size, self.vocab_size)
+        optimizer = optim.SGD(decoder.parameters(), lr = 0.2)
 
         train_data = [
             generate_random_training_pair(self.encoding_size, self.vocab_size, 10),
@@ -43,8 +42,7 @@ class TestTrain(unittest.TestCase):
         
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        predicted = decoder.predict(
-            train_data[1][0], 0, 1, 20, device)
+        predicted = predict(decoder, train_data[1][0], 0, 1, 20, device)
         
         # TODO: assert that input and output look similar?!
  
