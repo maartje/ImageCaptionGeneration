@@ -20,10 +20,10 @@ class EmbeddingDescriptionDataset(data.Dataset):
         description_vector = self.description_lists[index_description_list][index_embedding]
         return embedding, torch.LongTensor(description_vector)
         
-class EmbeddingDescriptionDatasetGrouped(data.Dataset):
+class EmbeddingDescriptionGroupedDataset(data.Dataset):
 
     def __init__(self, fpaths_embeddings, fpaths_description_vectors):
-        super(EmbeddingDescriptionDatasetGrouped, self).__init__()
+        super(EmbeddingDescriptionGroupedDataset, self).__init__()
         self.description_lists = [torch.load(fpath) for fpath in fpaths_description_vectors]
         self.fpaths_embeddings = fpaths_embeddings
         self.cached_embedding = None

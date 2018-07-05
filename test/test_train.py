@@ -15,7 +15,7 @@ class TestTrain(unittest.TestCase):
 
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.train.EmbeddingDescriptionDatasetGrouped')    
+    @mock.patch('ncg.train.EmbeddingDescriptionGroupedDataset')    
     def test_train(self, ds_class, torch_save, prnt = None):
         fpaths_images_train = ['im1.pt', 'im2.pt', 'im3.pt']
         fpaths_captions_train = ['c1.pt', 'c2.pt']
