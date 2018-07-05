@@ -23,13 +23,13 @@ def generate_random_training_pair(encoding_size, vocab_size, min_length = 5, max
     encoding = generate_random_encoding(encoding_size).view(1,-1)
     return encoding, caption
 
-class MockImageCaptionDataset(data.Dataset):
+class MockEmbeddingDescriptionDataset(data.Dataset):
 
     encoding_size = 64 
     vocab_size = 100
     
     def __init__(self, fpaths_image_encodings, fpaths_captions):
-        super(MockImageCaptionDataset, self).__init__()
+        super(MockEmbeddingDescriptionDataset, self).__init__()
         
         def random_encoding_words_pair():
             return (

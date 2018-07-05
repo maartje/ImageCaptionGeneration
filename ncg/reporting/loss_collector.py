@@ -135,7 +135,7 @@ class LossPlotter():
         fig, ax = plt.subplots()
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
         ax.ticklabel_format(axis='x', scilimits=(0, 0))
-        plt.plot(intervals, losses, 'ro-', color='blue', label='train loss over batch')
+        plt.plot(intervals, losses, color='blue', label='train loss over batch')
         plt.xlabel('#training pairs')
         plt.ylabel('average token loss')
         plt.legend()

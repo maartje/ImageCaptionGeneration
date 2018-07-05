@@ -7,7 +7,7 @@ import mock
 from torch.utils import data
 import torch
 
-from ncg.io.image_caption_dataset import ImageCaptionDataset
+from ncg.io.embedding_description_dataset import EmbeddingDescriptionDataset
 
 image_files = ['im1.pt', 'im2.pt', 'im3.pt']
 caption_files = ['c1.pt', 'c2.pt', 'c3.pt', 'c4.pt']
@@ -19,11 +19,11 @@ def mock_torch_load(fpath):
         i = caption_files.index(fpath)
         return [[0,0, i], [1,1,1,1,1, i], [2,2,2,i]]
 
-class TestImageCaptionDataloader(unittest.TestCase):
+class TestEmbeddingDescriptionDataloader(unittest.TestCase):
 
     @mock.patch('torch.load', side_effect = mock_torch_load)
     def setUp(self, torch_load):
-        self.ic_dataset = ImageCaptionDataset(
+        self.ic_dataset = EmbeddingDescriptionDataset(
             image_files,
             caption_files
         )

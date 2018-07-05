@@ -8,20 +8,20 @@ import mock # mock file access
 
 from ncg.train import train
 
-from test.test_helpers import MockImageCaptionDataset
+from test.test_helpers import MockEmbeddingDescriptionDataset
 
 
 class TestTrain(unittest.TestCase):
 
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.train.ImageCaptionDataset')    
+    @mock.patch('ncg.train.EmbeddingDescriptionDatasetGrouped')    
     def test_train(self, ds_class, torch_save, prnt = None):
         fpaths_images_train = ['im1.pt', 'im2.pt', 'im3.pt']
         fpaths_captions_train = ['c1.pt', 'c2.pt']
-        ds_class.return_value = MockImageCaptionDataset(fpaths_images_train, fpaths_captions_train)
-        vocab_size = MockImageCaptionDataset.vocab_size
-        encoding_size = MockImageCaptionDataset.encoding_size
+        ds_class.return_value = MockEmbeddingDescriptionDataset(fpaths_images_train, fpaths_captions_train)
+        vocab_size = MockEmbeddingDescriptionDataset.vocab_size
+        encoding_size = MockEmbeddingDescriptionDataset.encoding_size
         
         fpath_loss_data = "losses.pt"
         fpath_decoder = "decoder.pt"

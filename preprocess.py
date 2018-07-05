@@ -24,7 +24,7 @@ def preprocess_opts(parser):
     group.add_argument(
         '--output_dir', 
         help = "Path to output dir for the index vectors representing image descriptions ",
-        default = os.path.join("output", "demo"))
+        default = os.path.join("output", "flickr30k"))
     group.add_argument(
         '--descriptions_only', 
         help = "Preprocess the image descriptions and not the images",
@@ -40,7 +40,7 @@ def preprocess_opts(parser):
     group.add_argument(
         '--fpattern_images', 
         help = "Pathname pattern to the image files ",
-        default = os.path.join("data", "demo", "images", "*.jpg"))
+        default = os.path.join("data", "flickr30k", "images", "*.jpg"))
     group.add_argument(
         '--encoder_model', 
         help = "Name of the encoder model, should be in ['resnet18', 'resnet152', 'vgg16'] ",
@@ -58,11 +58,11 @@ def preprocess_opts(parser):
     group.add_argument(
         '--fpattern_captions_train', 
         help = "Pathname pattern to the files containing descriptions used for training",
-        default = os.path.join("data", "demo", "captions", "en", "train.[0-9].en"))
+        default = os.path.join("data", "flickr30k", "captions", "en", "train.[0-9].en"))
     group.add_argument(
         '--fpattern_captions_val', 
         help = "Pathname pattern to the files containing descriptions used for validation",
-        default = os.path.join("data", "demo", "captions", "en", "val.[0-9].en"))
+        default = os.path.join("data", "flickr30k", "captions", "en", "val.[0-9].en"))
     # TODO: filepath_vocab?
     group.add_argument(
         '--fname_vocab_out', 

@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch import optim
 from datetime import datetime, timedelta
 
-from ncg.io.image_caption_dataset import ImageCaptionDataset
+from ncg.io.embedding_description_dataset import EmbeddingDescriptionDatasetGrouped
 from ncg.nn.models import DecoderRNN
 from ncg.nn.train_model import train_iter, calculate_validation_loss
 from ncg.reporting.loss_collector import LossCollector, LossReporter
@@ -17,13 +17,11 @@ def train(fpaths_images_train, fpaths_captions_train,
           max_train_instances = None, #TODO pass into dataset
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
           store_loss_every = 100, print_loss_every = 1000):
-    
-    print('mj2')
 
     # data loaders
-    dataset_train = ImageCaptionDataset(fpaths_images_train, fpaths_captions_train)
+    dataset_train = EmbeddingDescriptionDatasetGrouped(fpaths_images_train, fpaths_captions_train)
     dataloader_train = data.DataLoader(dataset_train, **dl_params)
-    dataset_val = ImageCaptionDataset(fpaths_images_val, fpaths_captions_val)
+    dataset_val = EmbeddingDescriptionDatasetGrouped(fpaths_images_val, fpaths_captions_val)
     dataloader_val = data.DataLoader(dataset_val, **dl_params)
     
     # model
