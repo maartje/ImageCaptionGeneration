@@ -1,5 +1,5 @@
 import torch
-from ncg.nn.train_model import predict
+from ncg.nn.train_model import predict as model_predict
 from torch.utils import data
 from ncg.data_processing.image_encoder import ImageEncoder
 from ncg.io.image_dataset import ImageDataset
@@ -18,11 +18,13 @@ def predict(fpaths_images, fpath_decoder, fpath_vocab,
 
     # predict captions
     predicted_sentences = []
+    SOS_index = text_mapper.token2index(text_mapper.SOS)
+    EOS_index = text_mapper.token2index(text_mapper.EOS)
     for img, _ in data_loader:
-        image_encoding = image_encoder.encode_image(img)
-        predicted_indices = predict(
-            decoder, image_encoding, text_mapper.SOS, text_mapper.EOS, max_length)
-        predicted_sentence = text_mapper.indices2sentence(prediction)
+        image_encoding = image_encoder.encode(img)
+        predicted_indices = model_predict(
+            decoder, image_encoding, SOS_index, EOS_index, max_length)
+        predicted_sentence = text_mapper.indices2sentence(predicted_indices)
         predicted_sentences.append(predicted_sentence)
 
     open(fpath_save_predictions, "w").write('\n'.join(predicted_sentences))

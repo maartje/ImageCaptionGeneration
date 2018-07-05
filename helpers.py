@@ -1,25 +1,29 @@
 import os
 
-def check_infiles_exists(fnames):
+def check_files_exist(fnames):
     file_exists = True
     for fname in fnames:
-        if fname and not os.path.isfile(fname):
+        if not os.path.isfile(fname):
             print(f"The file '{fname}' does not exists.")
             file_exists = False
-    return file_exists
+    if not file_exists:
+        raise FileNotFoundError('One or more input files do not exist.')
 
-def check_outfiles_exists(fnames):
+def check_files_not_exist(fnames):
     file_exists = False
     for fname in fnames:
-        if fname and os.path.isfile(fname):
+        if os.path.isfile(fname):
             print(f"A file with the name '{fname}' already exists.")
             file_exists = True
-    return file_exists
+    if file_exists:
+        raise FileExistsError('One or more output files already exist')
 
-def ensure_fpath_exists(fname):
-    if not fname:
-        return 
-    dirname = os.path.dirname(fname)
+def ensure_paths_exist(fnames):
+    dirnames = {os.path.dirname(fname) for fname in fnames}
+    for dirname in dirnames:
+        ensure_dir_exists(dirname)
+                
+def ensure_dir_exists(dirname):
     if dirname and not os.path.exists(dirname):
         os.makedirs(dirname)
 

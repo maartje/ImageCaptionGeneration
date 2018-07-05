@@ -1,6 +1,6 @@
 {
 	"preprocess" : {
-		"output_dir": "output/demo",
+		"output_dir": "output/demo/preprocess",
 		"descriptions_only": false,
 		"images_only": false,
 		"fpattern_images": "data/demo/images/*.jpg",
@@ -14,23 +14,40 @@
 	},
 
 	"train" : {
-		"dir_image_encodings" : "output/demo/resnet18_avgpool",
+		"dir_image_encodings" : "output/demo/preprocess/resnet18_avgpool",
 		"fpath_images_train" : "data/demo/image_splits/train_images.txt",
 		"fpath_images_val" : "data/demo/image_splits/val_images.txt",
-		"fpattern_captions_train" : "output/demo/train.[0-9].en.pt",
-		"fpattern_captions_val" : "output/demo/val.[0-9].en.pt",
-		"fpath_vocab": "output/demo/vocab.pt",
-		"fpath_save_losses" : "output/demo/loss.pt",
-		"fpath_save_decoder" : "output/demo/show_tell.pt",
+		"fpattern_captions_train" : "output/demo/preprocess/train.[0-9].en.pt",
+		"fpattern_captions_val" : "output/demo/preprocess/val.[0-9].en.pt",
+		"fpath_vocab": "output/demo/preprocess/vocab.pt",
+		"fpath_save_losses" : "output/demo/train/loss.pt",
+		"fpath_save_decoder" : "output/demo/train/show_tell.pt",
 		"learning_rate" : 0.1,
 		"store_loss_every" : 100,
-		"max_epochs" : 100,
-		"max_hours" : 15
+		"max_epochs" : 25,
+		"max_hours" : 7
 	},
+	
+	"predict" : {
+        "dir_images" : "data/demo/images",
+        "fpath_image_split" : "data/demo/image_splits/val_images.txt",
+        "fpath_decoder" : "output/demo/train/show_tell.pt",
+        "fpath_vocab": "output/demo/preprocess/vocab.pt",
+        "fpath_save_predictions" : "output/demo/predict/predictions_val.txt",
+        "encoder_model": "resnet18",
+        "encoder_layer": "avgpool",
+        "max_length" : 100,
+        "dl_params" : {} 
+    },
+
 
 	"report" : {
-	    "fpath_losses" : "mj_loss.pt", 
-	    "fpath_plot_epoch_loss" : "mj_loss_epoch.png", 
-	    "fpath_plot_batch_loss" : "mj_loss_batch.png"
+	    "fpath_losses" : "output/demo/train/loss.pt", 
+	    "fpath_plot_epoch_loss" : "output/demo/report/loss_epoch.png", 
+	    "fpath_plot_batch_loss" : "output/demo/report/loss_batch.png",
+	    "fpattern_captions_val" : "data/demo/captions/en/val.[0-9].en",
+	    "fpath_predictions_val" : "output/demo/predict/predictions_val.txt",
+	    "fpath_save_bleu_val"             : "output/demo/report/bleu_val.txt",
+	    "fpath_save_human_comparison_val" : "output/demo/report/bleu_human_comparison_val.txt"
     }
 }
