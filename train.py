@@ -4,7 +4,7 @@ import torch
 import json
 import argparse
 
-from helpers import check_infiles_exists, check_outfiles_exists, ensure_fpath_exists
+from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 
 from ncg.train import train
 from ncg.io.file_helpers import read_lines
@@ -60,13 +60,9 @@ def train_model(config):
 #    print(dl_params)
 #    print(store_loss_every)
 
-    if not check_infiles_exists(
-            fpaths_images_train + fpaths_captions_train + fpaths_images_val + fpaths_captions_val):
-        return
-    if check_outfiles_exists([fpath_save_losses, fpath_save_decoder]):
-        return
-    ensure_fpath_exists(fpath_save_losses)
-    ensure_fpath_exists(fpath_save_decoder)
+    check_files_exist(fpaths_images_train + fpaths_images_val)
+    check_files_not_exist([fpath_save_losses, fpath_save_decoder])
+    ensure_paths_exist([fpath_save_losses, fpath_save_decoder])
     
     train(fpaths_images_train, fpaths_captions_train,
           fpaths_images_val, fpaths_captions_val, 
