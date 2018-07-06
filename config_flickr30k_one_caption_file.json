@@ -1,39 +1,39 @@
 {
 	"preprocess" : {
-		"output_dir": "output/demo/preprocess",
+		"output_dir": "output/flickr30k/preprocess",
 		"descriptions_only": false,
 		"images_only": false,
-		"fpattern_images": "data/demo/images/*.jpg",
+		"fpattern_images": "data/flickr30k/images/*.jpg",
 		"encoder_model": "resnet18",
 		"encoder_layer": "avgpool",
 		"print_info_every": 1000,
-		"fpattern_captions_train": "data/demo/captions/en/train.[0-9].en",
-		"fpattern_captions_val": "data/demo/captions/en/val.[0-9].en",
+		"fpattern_captions_train": "data/flickr30k/captions/en/train.[0-9].en",
+		"fpattern_captions_val": "data/flickr30k/captions/en/val.[0-9].en",
 		"fname_vocab_out": "vocab.pt",
 		"min_occurences": 5
 	},
 
 	"train" : {
-		"dir_image_encodings" : "output/demo/preprocess/resnet18_avgpool",
-		"fpath_images_train" : "data/demo/image_splits/train_images.txt",
-		"fpath_images_val" : "data/demo/image_splits/val_images.txt",
-		"fpattern_captions_train" : "output/demo/preprocess/train.2.en.pt",
-		"fpattern_captions_val" : "output/demo/preprocess/val.[0-9].en.pt",
-		"fpath_vocab": "output/demo/preprocess/vocab.pt",
-		"fpath_save_losses" : "output/demo/train/loss.pt",
-		"fpath_save_decoder" : "output/demo/train/show_tell.pt",
+		"dir_image_encodings" : "output/flickr30k/preprocess/resnet18_avgpool",
+		"fpath_images_train" : "data/flickr30k/image_splits/train_images.txt",
+		"fpath_images_val" : "data/flickr30k/image_splits/val_images.txt",
+		"fpattern_captions_train" : "output/flickr30k/preprocess/train.2.en.pt",
+		"fpattern_captions_val" : "output/flickr30k/preprocess/val.[0-9].en.pt",
+		"fpath_vocab": "output/flickr30k/preprocess/vocab.pt",
+		"fpath_save_losses" : "output/flickr30k/train/loss.pt",
+		"fpath_save_decoder" : "output/flickr30k/train/show_tell.pt",
 		"learning_rate" : 0.1,
 		"store_loss_every" : 1000,
 		"max_epochs" : 25,
-		"max_hours" : 9
+		"max_hours" : 10
 	},
 	
 	"predict" : {
-        "dir_images" : "data/demo/images",
-        "fpath_image_split" : "data/demo/image_splits/val_images.txt",
-        "fpath_decoder" : "output/demo/train/show_tell.pt",
-        "fpath_vocab": "output/demo/preprocess/vocab.pt",
-        "fpath_save_predictions" : "output/demo/predict/predictions_val.txt",
+        "dir_images" : "data/flickr30k/images",
+        "fpath_image_split" : "data/flickr30k/image_splits/val_images.txt",
+        "fpath_decoder" : "output/flickr30k/train/show_tell.pt",
+        "fpath_vocab": "output/flickr30k/preprocess/vocab.pt",
+        "fpath_save_predictions" : "output/flickr30k/predict/predictions_val.txt",
         "encoder_model": "resnet18",
         "encoder_layer": "avgpool",
         "max_length" : 100,
@@ -42,12 +42,12 @@
 
 
 	"report" : {
-	    "fpath_losses" : "output/demo/train/loss.pt", 
-	    "fpath_plot_epoch_loss" : "output/demo/report/loss_epoch.png", 
-	    "fpath_plot_batch_loss" : "output/demo/report/loss_batch.png",
-	    "fpattern_captions_val" : "data/demo/captions/en/val.[0-9].en",
-	    "fpath_predictions_val" : "output/demo/predict/predictions_val.txt",
-	    "fpath_save_bleu_val"             : "output/demo/report/bleu_val.txt",
-	    "fpath_save_human_comparison_val" : "output/demo/report/bleu_human_comparison_val.txt"
+	    "fpath_losses" : "output/flickr30k/train/loss.pt", 
+	    "fpath_plot_epoch_loss" : "output/flickr30k/report/loss_epoch.png", 
+	    "fpath_plot_batch_loss" : "output/flickr30k/report/loss_batch.png",
+	    "fpattern_captions_val" : "data/flickr30k/captions/en/val.[0-9].en",
+	    "fpath_predictions_val" : "output/flickr30k/predict/predictions_val.txt",
+	    "fpath_save_bleu_val"             : "output/flickr30k/report/bleu_val.txt",
+	    "fpath_save_human_comparison_val" : "output/flickr30k/report/bleu_human_comparison_val.txt"
     }
 }

@@ -25,8 +25,6 @@ def train(fpaths_images_train, fpaths_captions_train,
     dataloader_val = data.DataLoader(dataset_val, **dl_params)
     
     # model
-#    im1 = torch.load(fpaths_images_train[0])
-#    encoding_size = im1.size()[0]
     decoder = DecoderRNN(encoding_size, vocab_size)
     
     # optimization
@@ -45,6 +43,11 @@ def train(fpaths_images_train, fpaths_captions_train,
     initial_val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
     loss_collector.initial_validation_loss = initial_val_loss
     loss_reporter.report_initial_validation_loss()      
+
+    def on_epoch_completed(epoch, batch_index, validation_loss):
+        # save model and loss data
+        torch.save(loss_collector, fpath_loss_data_out)
+        torch.save(decoder, fpath_decoder_out)
     
     def stop_criterion(epoch, val_loss):
         if datetime.now() > end_time:
@@ -61,14 +64,9 @@ def train(fpaths_images_train, fpaths_captions_train,
                fn_batch_listeners = [
                    loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
                fn_epoch_listeners = [
-                   loss_collector.on_epoch_completed, loss_reporter.on_epoch_completed]
+                   loss_collector.on_epoch_completed, loss_reporter.on_epoch_completed, 
+                   on_epoch_completed]
                )
+               
     
-    # save model and loss data
-    torch.save(loss_collector, fpath_loss_data_out)
-    torch.save(decoder, fpath_decoder_out)
-    
-    
-
-
 
