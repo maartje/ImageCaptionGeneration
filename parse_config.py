@@ -1,5 +1,6 @@
 import json
 import argparse
+from filepaths import get_file_paths
 
 def parse_args(description):
     parser = argparse.ArgumentParser(
@@ -24,5 +25,7 @@ def get_configuration(section, description = ''):
     opt = parse_args(description)
     config = load_config(opt.config)
     # TODO: allow overwriting config settings with commandline arguments
-    return config[section]
+    
+    filepaths = get_file_paths(config['general'])
+    return config[section], filepaths
 

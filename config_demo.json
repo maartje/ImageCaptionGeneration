@@ -1,18 +1,14 @@
 {
+    "general" : {
+        "dataset" : "demo",
+        "output_dir" : "output",
+		"fpattern_captions_train": "train.[0-9].en",
+		"fpattern_captions_val": "val.[0-9].en",
+		"fname_vocab": "vocab.pt"
+    },
 	"preprocess" : {
-		"output_dir": "output/demo/preprocess",
-		"descriptions_only": false,
-		"images_only": false,
-		"fpattern_images": "data/demo/images/*.jpg",
-		"encoder_model": "resnet18",
-		"encoder_layer": "avgpool",
-		"print_info_every": 1000,
-		"fpattern_captions_train": "data/demo/captions/en/train.[0-9].en",
-		"fpattern_captions_val": "data/demo/captions/en/val.[0-9].en",
-		"fname_vocab_out": "vocab.pt",
-		"min_occurences": 5
+		"min_occurences" : 5
 	},
-
 	"train" : {
 		"dir_image_encodings" : "output/demo/preprocess/resnet18_avgpool",
 		"fpath_images_train" : "data/demo/image_splits/train_images.txt",
