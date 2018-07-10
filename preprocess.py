@@ -1,34 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
-import argparse
 import os
-import re
-import itertools
 import glob
 
 import ncg.preprocess as pp
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description = 'Generate image encodings and indices vectors that represent image descriptions',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    preprocess_opts(parser)
-    opt = parser.parse_args()
-    return opt
-
-def preprocess_opts(parser):
-    parser.add_argument(
-        '--config', 
-        help = "Path to config file in JSON format",
-        default = 'config_demo.json')
-    # TODO: allow overwriting config with commandline arguments
-
-def load_config(fpath_config):
-    with open(fpath_config) as f:
-        config = json.load(f)
-    return config['preprocess']
 
 def preprocess_images(config):
     encoder_model = config['encoder_model']
@@ -78,8 +54,8 @@ def pt_fpath_out(output_dir, fpath):
     return os.path.join(output_dir, f'{fname}.pt')
 
 def main():
-    opt = parse_args()
-    config = load_config(opt.config)
+    description = 'Generate image encodings and indices vectors that represent image descriptions'
+    config = get_configuration('preprocess', description = description)
     if not config['descriptions_only']:
         preprocess_images(opt)
     if not config['images_only']:

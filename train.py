@@ -1,8 +1,8 @@
 import os
 import glob
 import torch
-import json
-import argparse
+
+from parse_config import get_configuration
 
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 
@@ -73,31 +73,10 @@ def train_model(config):
           max_epochs = max_epochs, max_hours = max_hours, 
           dl_params = dl_params, store_loss_every = store_loss_every)
 
- 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description = 'Train model for generating image descriptions',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    train_opts(parser)
-    opt = parser.parse_args()
-    return opt
-
-def train_opts(parser):
-    parser.add_argument(
-        '--config', 
-        help = "Path to config file in JSON format",
-        default = 'config_demo.json')
-    # TODO: allow overwriting config with commandline arguments
-
-def load_config(fpath_config):
-    with open(fpath_config) as f:
-        config = json.load(f)
-    return config['train']
-
      
 def main():
-    opt = parse_args()
-    config = load_config(opt.config)
+    config = get_configuration('train', 
+                               description = 'Train model for generating image descriptions.')
     train_model(config)
 
 

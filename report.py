@@ -1,30 +1,9 @@
-import json
-import argparse
 import glob
 
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
+from parse_config import get_configuration
 
 from ncg.report import plot_losses, calculate_metrics, compare_with_human_performance
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description = 'Generate plots and scores for evaluation',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    report_opts(parser)
-    opt = parser.parse_args()
-    return opt
-
-def report_opts(parser):
-    parser.add_argument(
-        '--config', 
-        help = "Path to config file in JSON format",
-        default = 'config_demo.json')
-    # TODO: allow overwriting config with commandline arguments
-    
-def load_config(fpath_config):
-    with open(fpath_config) as f:
-        config = json.load(f)
-    return config['report']
 
 def report(config):
     # losses
@@ -78,8 +57,8 @@ def report_metrics(fpattern_captions, fpath_predicted, fpath_save_bleu,
                                        fpath_save_human_comparison)   
 
 def main():
-    opt = parse_args()
-    config = load_config(opt.config)
+    config = get_configuration('report', 
+                               description = 'Plots of losses and evaluation metrics.')
     report(config)
 
 

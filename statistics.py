@@ -23,7 +23,7 @@ def show_info_and_statistics(config):
         
 def main():
     config = get_configuration('statistics', 
-                               description = 'Statistics and info about dataset and neural models')
+                               description = 'Statistics and info about dataset and neural models.')
     show_info_and_statistics(config)
 
 if __name__ == "__main__":

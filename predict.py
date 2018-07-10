@@ -1,31 +1,9 @@
-import json
-import argparse
+from parse_config import get_configuration
 
 from ncg.predict import predict
 
 from filepaths import fpaths_image_split
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
-
-	
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description = 'Predict image descriptions using the trained model',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    predict_opts(parser)
-    opt = parser.parse_args()
-    return opt
-
-def predict_opts(parser):
-    parser.add_argument(
-        '--config', 
-        help = "Path to config file in JSON format",
-        default = 'config_demo.json')
-    # TODO: allow overwriting config with commandline arguments
-    
-def load_config(fpath_config):
-    with open(fpath_config) as f:
-        config = json.load(f)
-    return config['predict']
 
 def predict_image_descriptions(config):
     fpaths_images = fpaths_image_split(
@@ -46,8 +24,8 @@ def predict_image_descriptions(config):
             max_length, dl_params)
         
 def main():
-    opt = parse_args()
-    config = load_config(opt.config)
+    config = get_configuration('predict', 
+                               description = 'Predict image descriptions for train or validation set.')
     predict_image_descriptions(config)
 
 
