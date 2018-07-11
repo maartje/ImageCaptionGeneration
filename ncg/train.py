@@ -14,7 +14,6 @@ def train(fpaths_images_train, fpaths_captions_train,
           fpaths_images_val, fpaths_captions_val, 
           vocab_size, encoding_size,
           fpath_loss_data_out, fpath_decoder_out,
-          max_train_instances = None, #TODO pass into dataset
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
           store_loss_every = 100, print_loss_every = 1000):
 

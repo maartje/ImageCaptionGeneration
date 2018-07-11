@@ -8,11 +8,10 @@ def get_file_paths(config):
     output_dir = config["output_dir"]
     data_dir = os.path.join("data", dataset)
     captions_dir = os.path.join(data_dir, "captions", "en")
-    images_dir = os.path.join(data_dir, "images")
-    image_splits_dir = os.path.join(data_dir, "image_splits")
     output_dir_preprocess = os.path.join(output_dir, dataset, "preprocess")
     fname_vocab = config['fname_vocab']
     
+    # preprocess
     fpattern_captions_train = os.path.join(captions_dir, config['fpattern_captions_train'])
     fpattern_captions_val = os.path.join(captions_dir, config['fpattern_captions_val'])
     fpaths_captions_train = glob.glob(fpattern_captions_train)
@@ -23,14 +22,28 @@ def get_file_paths(config):
         pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_val]
     fpath_vocab = os.path.join(output_dir_preprocess, fname_vocab)
 
+    # train
+    #### TODO use matrix files
+    fpath_image_split_train = os.path.join(data_dir, "image_splits", "train_images.txt")
+    fpath_image_split_val = os.path.join(data_dir, "image_splits", "val_images.txt")
+    dir_image_features = os.path.join(output_dir_preprocess, 'resnet18_avgpool')
+    fpaths_image_features_train = fpaths_image_split(dir_image_features, fpath_image_split_train, True)
+    fpaths_image_features_val = fpaths_image_split(dir_image_features, fpath_image_split_val, True)
+    
+    output_dir_train = os.path.join(output_dir, dataset, "train")
+    fpath_losses = os.path.join(output_dir_train, config['fname_losses'])
+    fpath_model = os.path.join(output_dir_train, f'{config["model"]}.pt')
     
     return {
-        'output' : output_dir,
         'captions_train' : fpaths_captions_train,
         'captions_val' : fpaths_captions_val,
         'caption_vectors_train' : fpaths_caption_vectors_train,
         'caption_vectors_val' : fpaths_caption_vectors_val,
-        'vocab' : fpath_vocab
+        'vocab' : fpath_vocab,
+        'image_features_train' : fpaths_image_features_train,
+        'image_features_val': fpaths_image_features_val,
+        'losses' : fpath_losses,
+        'model' : fpath_model        
     }
 
 def fpaths_image_split(dir_images, fpath_image_split, is_encoded = False): 
