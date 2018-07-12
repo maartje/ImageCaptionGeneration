@@ -26,13 +26,20 @@ def get_file_paths(config):
     #### TODO use matrix files
     fpath_image_split_train = os.path.join(data_dir, "image_splits", "train_images.txt")
     fpath_image_split_val = os.path.join(data_dir, "image_splits", "val_images.txt")
+    fpath_image_split_test = os.path.join(data_dir, "image_splits", "val_images.txt")
     dir_image_features = os.path.join(output_dir_preprocess, 'resnet18_avgpool')
     fpaths_image_features_train = fpaths_image_split(dir_image_features, fpath_image_split_train, True)
     fpaths_image_features_val = fpaths_image_split(dir_image_features, fpath_image_split_val, True)
+    fpaths_image_features_test = fpaths_image_split(dir_image_features, fpath_image_split_test, True)
     
     output_dir_train = os.path.join(output_dir, dataset, "train")
     fpath_losses = os.path.join(output_dir_train, config['fname_losses'])
     fpath_model = os.path.join(output_dir_train, f'{config["model"]}.pt')
+
+    # predict
+    output_dir_predict = os.path.join(output_dir, dataset, "predict")
+    fpath_predictions_val = os.path.join(output_dir_predict, 'predictions_val.txt')
+    fpath_predictions_test = os.path.join(output_dir_predict, 'predictions_test.txt')
     
     return {
         'captions_train' : fpaths_captions_train,
@@ -42,8 +49,11 @@ def get_file_paths(config):
         'vocab' : fpath_vocab,
         'image_features_train' : fpaths_image_features_train,
         'image_features_val': fpaths_image_features_val,
+        'image_features_test': fpaths_image_features_test,
         'losses' : fpath_losses,
-        'model' : fpath_model        
+        'model' : fpath_model,
+        'predictions_test' : fpath_predictions_test,
+        'predictions_val' : fpath_predictions_val
     }
 
 def fpaths_image_split(dir_images, fpath_image_split, is_encoded = False): 

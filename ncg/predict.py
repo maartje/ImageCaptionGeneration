@@ -1,27 +1,22 @@
 import torch
 from ncg.nn.train_model import predict as model_predict
 from torch.utils import data
-from ncg.data_processing.image_encoder import ImageEncoder
-from ncg.io.image_dataset import ImageDataset
+from ncg.io.image_features_dataset import ImageFeaturesDataset
 
-def predict(fpaths_images, fpath_decoder, fpath_vocab,
-            fpath_save_predictions, encoder_model, encoder_layer,
-            max_length = 100, dl_params = {}):
+def predict(fpaths_image_features, fpath_decoder, fpath_vocab,
+            fpath_save_predictions, max_length = 100, dl_params = {}):
 
     # create models and data
-    image_encoder = ImageEncoder(encoder_model, encoder_layer)
-    image_encoder.load_model()
     decoder = torch.load(fpath_decoder)
     text_mapper = torch.load(fpath_vocab)
-    data_set = ImageDataset(fpaths_images)
+    data_set = ImageFeaturesDataset(fpaths_image_features)
     data_loader = data.DataLoader(data_set)
 
     # predict captions
     predicted_sentences = []
     SOS_index = text_mapper.token2index(text_mapper.SOS)
     EOS_index = text_mapper.token2index(text_mapper.EOS)
-    for img, _ in data_loader:
-        image_encoding = image_encoder.encode(img)
+    for image_encoding in data_loader:
         predicted_indices = model_predict(
             decoder, image_encoding, SOS_index, EOS_index, max_length)
         predicted_sentence = text_mapper.indices2sentence(predicted_indices)

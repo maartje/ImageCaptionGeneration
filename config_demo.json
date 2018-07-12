@@ -20,13 +20,6 @@
 	},
 	
 	"predict" : {
-        "dir_images" : "data/demo/images",
-        "fpath_image_split" : "data/demo/image_splits/val_images.txt",
-        "fpath_decoder" : "output/demo/train/show_tell.pt",
-        "fpath_vocab": "output/demo/preprocess/vocab.pt",
-        "fpath_save_predictions" : "output/demo/predict/predictions_val.txt",
-        "encoder_model": "resnet18",
-        "encoder_layer": "avgpool",
         "max_length" : 100,
         "dl_params" : {} 
     },
