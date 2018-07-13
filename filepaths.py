@@ -40,6 +40,11 @@ def get_file_paths(config):
     output_dir_predict = os.path.join(output_dir, dataset, "predict")
     fpath_predictions_val = os.path.join(output_dir_predict, 'predictions_val.txt')
     fpath_predictions_test = os.path.join(output_dir_predict, 'predictions_test.txt')
+
+    # statistics
+    output_dir_statistics = os.path.join(output_dir, dataset, "statistics")
+    fpath_word_frequencies = os.path.join(output_dir_statistics, 'word_frequencies.png')
+    fpath_sentence_lengths = os.path.join(output_dir_statistics, 'sentence_lengths.png')
     
     return {
         'captions_train' : fpaths_captions_train,
@@ -53,7 +58,9 @@ def get_file_paths(config):
         'losses' : fpath_losses,
         'model' : fpath_model,
         'predictions_test' : fpath_predictions_test,
-        'predictions_val' : fpath_predictions_val
+        'predictions_val' : fpath_predictions_val,
+        'word_frequencies' : fpath_word_frequencies,
+        'sentence_lengths' : fpath_sentence_lengths
     }
 
 def fpaths_image_split(dir_images, fpath_image_split, is_encoded = False): 
