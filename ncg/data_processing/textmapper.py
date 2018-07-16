@@ -9,14 +9,18 @@ class TextMapper:
         self.EOS = "EOS"
         self.SOS = "SOS"
         self.UNKNOWN = "UNKNOWN"
+        self.PAD = "PAD"
     
     def build(self, sentences, min_occurence = 1):
         sentences_split = (sentence2tokens(sentence) for sentence in sentences)
         words = chain.from_iterable(sentences_split)
-        self.vocab.build(words, [self.SOS, self.EOS, self.UNKNOWN], min_occurence)
+        self.vocab.build(words, [self.SOS, self.EOS, self.PAD, self.UNKNOWN], min_occurence)
 
     def EOS_index(self):
         return self.vocab.word2index[self.EOS]
+
+    def SOS_index(self):
+        return self.vocab.word2index[self.SOS]
     
     def sentence2indices(self, sentence):
         return self.tokens2indices(sentence2tokens(sentence))

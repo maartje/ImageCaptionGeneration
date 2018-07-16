@@ -29,6 +29,6 @@ class TestTrain(unittest.TestCase):
               [], [], # TODO: mock train and val using side effect, and related data
               vocab_size, encoding_size, 
               fpath_loss_data, fpath_decoder,
-              learning_rate = 0.8, max_epochs = 15, dl_params = {}, store_loss_every = 1,
+              learning_rate = 0.8, max_epochs = 15, dl_params = {'batch_size' : 2}, 
               print_loss_every = 3)
 

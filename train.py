@@ -20,7 +20,7 @@ def train_model(config, filepaths):
     encoding_size = im1.size()[0]
 
     
-    dl_params = {} # TODO: batch size, num_workers
+    dl_params = config['dl_params'] # TODO: batch size, num_workers
 
 #    print(filepaths['image_features_train'][:2])
 #    print(filepaths['caption_vectors_train'][:2])
@@ -45,7 +45,7 @@ def train_model(config, filepaths):
           filepaths['losses'], filepaths['model'],
           learning_rate = config['learning_rate'], 
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 
-          dl_params = dl_params, store_loss_every = config['store_loss_every'])
+          dl_params = dl_params)
 
      
 def main():

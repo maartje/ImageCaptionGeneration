@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch import optim
 from datetime import datetime, timedelta
 
+from ncg.io.image_features_description_dataset import collate_image_features_descriptions
 from ncg.io.embedding_description_dataset import EmbeddingDescriptionGroupedDataset
 from ncg.nn.models import DecoderRNN
 from ncg.nn.train_model import train_iter, calculate_validation_loss
@@ -15,9 +16,11 @@ def train(fpaths_images_train, fpaths_captions_train,
           vocab_size, encoding_size,
           fpath_loss_data_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
-          store_loss_every = 100, print_loss_every = 1000):
+          print_loss_every = 1000):
+
 
     # data loaders
+    dl_params['collate_fn'] = collate_image_features_descriptions
     dataset_train = EmbeddingDescriptionGroupedDataset(fpaths_images_train, fpaths_captions_train)
     dataloader_train = data.DataLoader(dataset_train, **dl_params)
     dataset_val = EmbeddingDescriptionGroupedDataset(fpaths_images_val, fpaths_captions_val)
@@ -31,8 +34,7 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_criterion = nn.NLLLoss()    
 
     # loss collection
-    assert store_loss_every < len(dataset_train)     
-    loss_collector = LossCollector(store_loss_every)  
+    loss_collector = LossCollector(len(dataset_train), dl_params['batch_size'])  
     start_time = datetime.now()
     end_time = start_time + timedelta(hours = max_hours)
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 

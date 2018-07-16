@@ -1,51 +1,35 @@
 from datetime import datetime
-
+import math
 from ncg.debug_helpers import format_duration
 
 class LossCollector():
 
-    def __init__(self, batch_loss_size, initial_validation_loss = None):
+    def __init__(self, epoch_size, batch_size, initial_validation_loss = None):
         self.initial_validation_loss = initial_validation_loss
-        self.batch_loss_size = batch_loss_size
+        self.batch_size = batch_size
         self.epoch_losses_val = []
         self.epoch_losses_train = []
         self.batch_losses_train = []
-        self._tmp_losses_train = []
-        self.epoch_size = None # determined during processing
-        self.batch_loss_size_last = 0 # determined during processing
+        self.epoch_size = epoch_size
+        self.batch_size_last = epoch_size % batch_size
+        if not self.batch_size_last: # no partial batch
+            self.batch_size_last = self.batch_size  
     
     #fn_batch_listener
-    def on_batch_completed(self, epoch, batch_index, token_loss):
-        self._tmp_losses_train.append(token_loss)
-        batch_mod = len(self._tmp_losses_train) % self.batch_loss_size
-        if batch_mod == 0:
-            self.store_batch_loss(self.batch_loss_size, epoch)
+    def on_batch_completed(self, epoch, batch_index, batch_size, loss):
+        if epoch > (len(self.batch_losses_train) - 1):
+            self.batch_losses_train.append([])
+        self.batch_losses_train[-1].append(loss)
 
     #fn_epoch_listener
     def on_epoch_completed(self, epoch, batch_index, validation_loss):
         if validation_loss:
             self.epoch_losses_val.append(validation_loss)
-
-        average_epoch_loss = sum(self._tmp_losses_train) / len(self._tmp_losses_train)
+        batch_losses = self.batch_losses_train[-1]
+        num = self.batch_size * (sum(batch_losses) - batch_losses[-1]) + self.batch_size_last * batch_losses[-1]
+        den = self.batch_size * (len(batch_losses) - 1) + self.batch_size_last
+        average_epoch_loss = num / den
         self.epoch_losses_train.append(average_epoch_loss)
-        self.epoch_size = batch_index + 1
-#       print('store epoch', epoch, batch_index, losses[0])
-
-        batch_mod = len(self._tmp_losses_train) % self.batch_loss_size
-        self.batch_loss_size_last = self.batch_loss_size
-        if batch_mod > 0:
-            self.batch_loss_size_last = batch_mod
-            self.store_batch_loss(batch_mod, epoch)
-        self._tmp_losses_train = []
-
-            
-    def store_batch_loss(self, batch_size, epoch):
-        if epoch > (len(self.batch_losses_train) - 1):
-            self.batch_losses_train.append([])
-        batch_losses = self._tmp_losses_train[-batch_size : ]
-        average_batch_loss = sum(batch_losses)/len(batch_losses)
-        self.batch_losses_train[-1].append(average_batch_loss)
-#        print('store partial batch', epoch, batch_index, losses_partial_batch)
     
     def get_epoch_intervals(self, epoch_losses):
         return [(i + 1)*self.epoch_size for i in range(len(epoch_losses))] 
@@ -67,8 +51,8 @@ class LossCollector():
         for epoch_index, bl in enumerate(self.batch_losses_train):
             for batch_index, _ in enumerate(bl):
                 last_batch = batch_index < (len(bl) - 1)
-                current_batch_size = self.batch_loss_size if last_batch else self.batch_loss_size_last
-                total_prev = epoch_index * self.epoch_size + batch_index * self.batch_loss_size
+                current_batch_size = self.batch_size if last_batch else self.batch_size_last
+                total_prev = epoch_index * self.epoch_size + batch_index * self.batch_size
                 total = total_prev + current_batch_size
                 batch_intervals.append(total)
         batch_losses_flat = [l for bl in self.batch_losses_train for l in bl]
@@ -78,7 +62,7 @@ class LossReporter:
 
     def __init__(self, loss_collector, print_loss_every, start_time):
         self.loss_collector = loss_collector
-        self.print_loss_every = print_loss_every
+        self.print_loss_every = math.ceil(print_loss_every / loss_collector.batch_size)
         self.start_time = start_time
     
     def report_initial_validation_loss(self):
@@ -89,9 +73,10 @@ class LossReporter:
         print(f'({str_duration})\t{0}\tUNKNOWN\t{val_loss} ')
     
     
-    def on_batch_completed(self, epoch, batch_index, token_loss):
+    def on_batch_completed(self, epoch, batch_index, batch_size, loss):
         if (batch_index + 1) % self.print_loss_every == 0:
-            print('    epoch', epoch, 'batch_index', batch_index, 'instance_loss', f'{token_loss:0.2}')
+            print('    epoch', epoch, 'batch_index', batch_index, 'batch_size', batch_size,
+            '#examples', (batch_index + 1) * batch_size, 'batch_loss', f'{loss:0.2}')
 
     def on_epoch_completed(self, epoch, batch_index, val_loss):
         val_loss = 'UNKNOWN'

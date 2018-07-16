@@ -14,8 +14,8 @@ def predict(fpaths_image_features, fpath_decoder, fpath_vocab,
 
     # predict captions
     predicted_sentences = []
-    SOS_index = text_mapper.token2index(text_mapper.SOS)
-    EOS_index = text_mapper.token2index(text_mapper.EOS)
+    SOS_index = text_mapper.SOS_index()
+    EOS_index = text_mapper.EOS_index()
     for image_encoding in data_loader:
         predicted_indices = model_predict(
             decoder, image_encoding, SOS_index, EOS_index, max_length)
