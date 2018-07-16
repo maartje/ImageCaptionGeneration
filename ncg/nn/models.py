@@ -19,10 +19,10 @@ class DecoderRNN(nn.Module):
         output = F.relu(output)
         packed = pack_padded_sequence (
             output, seq_lengths, batch_first=True)
-        output, hidden = self.gru(packed, hidden.unsqueeze(0))
+        output, hidden = self.gru(packed, hidden)
         unpacked = pad_packed_sequence(output, batch_first=True, padding_value=-1, total_length=None)
         output = self.out(unpacked[0])
         output = self.logsoftmax(output)
-        return output
+        return output, hidden
         
 

@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from torch import optim
 
-from ncg.nn.train_model import train_iter #, predict
+from ncg.nn.train_model import train_iter, predict
 from ncg.nn.models import DecoderRNN
 from test.test_helpers import generate_random_training_pair
 from torch.utils import data
@@ -47,12 +47,20 @@ class TestTrain(unittest.TestCase):
         self.assertTrue(is_decreasing(losses_3))
                 
         # Assert that predicted and target look similar for (overfitted) train data
-        #for train_instance in train_data:
-        #    predicted = predict(decoder, train_instance[0], 0, 1, 20)
-        #    target = train_instance[1].squeeze().numpy()
-        #    intersection = set(predicted) & set(target)
-        #    self.assertTrue(len(intersection) > 0.5*len(target))
- 
+        dl_predict_params = {
+            'batch_size' : 2
+        }
+        ds_images = [e for e, t in ds]
+        targets = [t.numpy() for e, t in ds]
+        
+        predict_data = data.DataLoader(ds_images, **dl_predict_params)
+        predicted_indices = predict(decoder, predict_data, 0, 20)
+        for i in range(len(targets)):
+            predicted = predicted_indices[i]
+            target = targets[i]
+            intersection = set(predicted) & set(target)
+            self.assertTrue(len(intersection) > 0.5*len(target))
+             
 if __name__ == '__main__':
     unittest.main()
 
