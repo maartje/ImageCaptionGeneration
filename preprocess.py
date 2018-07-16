@@ -28,7 +28,7 @@ from parse_config import get_configuration
 
 def preprocess_descriptions(config, filepaths):
 
-    ensure_paths_exist[filepaths['vocab']]
+    ensure_paths_exist([filepaths['vocab']])
         
     pp.preprocess_text_files(
         filepaths['captions_train'], filepaths['captions_val'], #in

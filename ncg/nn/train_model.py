@@ -76,5 +76,5 @@ def predict(decoder, predict_data, SOS_index, max_length):
                 inputs = topi.squeeze(1)
             result = torch.cat(predicted_tokens, 1)
             results.append(result)
-        return torch.cat(results).numpy()
+        return torch.cat(results).tolist()
 

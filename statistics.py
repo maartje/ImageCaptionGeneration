@@ -1,5 +1,3 @@
-import glob
-
 from parse_config import get_configuration
 
 from helpers import ensure_paths_exist

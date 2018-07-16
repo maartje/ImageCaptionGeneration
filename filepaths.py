@@ -40,6 +40,17 @@ def get_file_paths(config):
     output_dir_predict = os.path.join(output_dir, dataset, "predict")
     fpath_predictions_val = os.path.join(output_dir_predict, 'predictions_val.txt')
     fpath_predictions_test = os.path.join(output_dir_predict, 'predictions_test.txt')
+    fpath_predictions_train = os.path.join(output_dir_predict, 'predictions_train.txt')
+    
+    # report
+    output_dir_report = os.path.join(output_dir, dataset, "report")
+    fpath_plot_epoch_loss = os.path.join(output_dir_report, 'epoch_losses.png')
+    fpath_plot_batch_loss = os.path.join(output_dir_report, 'batch_losses.png')
+    fpath_bleu_val = os.path.join(output_dir_report, 'BLEU_val.txt')
+    fpath_bleu_test = os.path.join(output_dir_report, 'BLEU_test.txt')
+    fpath_bleu_train = os.path.join(output_dir_report, 'BLEU_train.txt')
+    fpath_bleu_human_test = os.path.join(output_dir_report, 'human_BLEU_test.txt')
+    
 
     # statistics
     output_dir_statistics = os.path.join(output_dir, dataset, "statistics")
@@ -59,6 +70,15 @@ def get_file_paths(config):
         'model' : fpath_model,
         'predictions_test' : fpath_predictions_test,
         'predictions_val' : fpath_predictions_val,
+        'predictions_train' : fpath_predictions_train,
+        
+        'plot_epoch_loss' : fpath_plot_epoch_loss,
+        'plot_batch_loss' : fpath_plot_batch_loss,
+        'bleu_val' : fpath_bleu_val,
+        'bleu_test' : fpath_bleu_test,
+        'bleu_train' : fpath_bleu_train,
+        'bleu_human_test' : fpath_bleu_human_test,
+        
         'word_frequencies' : fpath_word_frequencies,
         'sentence_lengths' : fpath_sentence_lengths
     }
