@@ -15,7 +15,7 @@ class TestTrain(unittest.TestCase):
 
     @mock.patch('builtins.print')
     @mock.patch('torch.save')
-    @mock.patch('ncg.train.EmbeddingDescriptionGroupedDataset')    
+    @mock.patch('ncg.train.ImageFeaturesDescriptionsDataset')    
     def test_train(self, ds_class, torch_save, prnt = None):
         fpaths_images_train = ['im1.pt', 'im2.pt', 'im3.pt']
         fpaths_captions_train = ['c1.pt', 'c2.pt']
@@ -29,6 +29,6 @@ class TestTrain(unittest.TestCase):
               [], [], # TODO: mock train and val using side effect, and related data
               vocab_size, encoding_size, 
               fpath_loss_data, fpath_decoder,
-              learning_rate = 0.8, max_epochs = 15, dl_params = {'batch_size' : 2}, 
+              learning_rate = 0.8, max_epochs = 15, dl_params_train = {'batch_size' : 2}, 
               print_loss_every = 3)
 

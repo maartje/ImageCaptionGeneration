@@ -4,27 +4,29 @@ import torch.nn as nn
 from torch import optim
 from datetime import datetime, timedelta
 
-from ncg.io.image_features_description_dataset import collate_image_features_descriptions
-from ncg.io.embedding_description_dataset import EmbeddingDescriptionGroupedDataset
+from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
+
 from ncg.nn.models import DecoderRNN
 from ncg.nn.train_model import train_iter, calculate_validation_loss
 from ncg.reporting.loss_collector import LossCollector, LossReporter
 from ncg.debug_helpers import format_duration
 
-def train(fpaths_images_train, fpaths_captions_train,
-          fpaths_images_val, fpaths_captions_val, 
+def train(fpath_imfeats_train, fpaths_captions_train,
+          fpath_imfeats_val, fpaths_captions_val, 
           vocab_size, encoding_size,
           fpath_loss_data_out, fpath_decoder_out,
-          learning_rate = 0.005, max_epochs = 50, max_hours = 72, dl_params = {}, 
+          learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
+          dl_params_train = {}, dl_params_val = {}, 
           print_loss_every = 1000):
 
 
     # data loaders
-    dl_params['collate_fn'] = collate_image_features_descriptions
-    dataset_train = EmbeddingDescriptionGroupedDataset(fpaths_images_train, fpaths_captions_train)
-    dataloader_train = data.DataLoader(dataset_train, **dl_params)
-    dataset_val = EmbeddingDescriptionGroupedDataset(fpaths_images_val, fpaths_captions_val)
-    dataloader_val = data.DataLoader(dataset_val, **dl_params)
+    dl_params_train['collate_fn'] = collate_image_features_descriptions
+    dl_params_val['collate_fn'] = collate_image_features_descriptions
+    dataset_train = ImageFeaturesDescriptionsDataset(fpath_imfeats_train, fpaths_captions_train)
+    dataloader_train = data.DataLoader(dataset_train, **dl_params_train)
+    dataset_val = ImageFeaturesDescriptionsDataset(fpath_imfeats_val, fpaths_captions_val)
+    dataloader_val = data.DataLoader(dataset_val, **dl_params_val)
     
     # model
     decoder = DecoderRNN(encoding_size, vocab_size)
@@ -34,7 +36,7 @@ def train(fpaths_images_train, fpaths_captions_train,
     loss_criterion = nn.NLLLoss()    
 
     # loss collection
-    loss_collector = LossCollector(len(dataset_train), dl_params['batch_size'])  
+    loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'])  
     start_time = datetime.now()
     end_time = start_time + timedelta(hours = max_hours)
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 

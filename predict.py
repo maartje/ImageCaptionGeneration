@@ -6,19 +6,17 @@ from filepaths import fpaths_image_split
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 
 def predict_image_descriptions(config, filepaths):
-    dl_params = config['dl_params'] # TODO batchsize, num_workers
 
-
-    check_files_not_exist([filepaths['predictions_val']]) 
+    check_files_exist([filepaths['image_features_val'], filepaths['image_features_test']])
     ensure_paths_exist([filepaths['predictions_val']])
     
     # validation
     predict(filepaths['image_features_val'], filepaths['model'], filepaths['vocab'],
-            filepaths['predictions_val'], config['max_length'], dl_params)
+            filepaths['predictions_val'], config['max_length'], config['dl_params'])
 
     # test
     predict(filepaths['image_features_test'], filepaths['model'], filepaths['vocab'],
-            filepaths['predictions_test'], config['max_length'], dl_params)
+            filepaths['predictions_test'], config['max_length'], config['dl_params'])
 
     # train
     predict(filepaths['image_features_train'], filepaths['model'], filepaths['vocab'],

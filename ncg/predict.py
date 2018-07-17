@@ -3,13 +3,13 @@ from ncg.nn.train_model import predict as model_predict
 from torch.utils import data
 from ncg.io.image_features_dataset import ImageFeaturesDataset
 
-def predict(fpaths_image_features, fpath_decoder, fpath_vocab,
+def predict(fpath_imfeats, fpath_decoder, fpath_vocab,
             fpath_save_predictions, max_length = 50, dl_params = {'batch_size' : 256}):
 
     # create models and data
     decoder = torch.load(fpath_decoder)
     text_mapper = torch.load(fpath_vocab)
-    data_set = ImageFeaturesDataset(fpaths_image_features)
+    data_set = ImageFeaturesDataset(fpath_imfeats)
     data_loader = data.DataLoader(data_set, **dl_params)
 
     # predict captions

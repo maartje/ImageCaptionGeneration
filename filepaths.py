@@ -14,24 +14,32 @@ def get_file_paths(config):
     # preprocess
     fpattern_captions_train = os.path.join(captions_dir, config['fpattern_captions_train'])
     fpattern_captions_val = os.path.join(captions_dir, config['fpattern_captions_val'])
+    fpattern_captions_test = os.path.join(captions_dir, config['fpattern_captions_test'])
     fpaths_captions_train = glob.glob(fpattern_captions_train)
     fpaths_captions_val = glob.glob(fpattern_captions_val)
+    fpaths_captions_test = glob.glob(fpattern_captions_test)
     fpaths_caption_vectors_train = [
         pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_train]
     fpaths_caption_vectors_val = [
         pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_val]
+    fpaths_caption_vectors_test = [
+        pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_test]
     fpath_vocab = os.path.join(output_dir_preprocess, fname_vocab)
 
     # train
-    #### TODO use matrix files
-    fpath_image_split_train = os.path.join(data_dir, "image_splits", "train_images.txt")
-    fpath_image_split_val = os.path.join(data_dir, "image_splits", "val_images.txt")
-    fpath_image_split_test = os.path.join(data_dir, "image_splits", "val_images.txt")
-    dir_image_features = os.path.join(output_dir_preprocess, 'resnet18_avgpool')
-    fpaths_image_features_train = fpaths_image_split(dir_image_features, fpath_image_split_train, True)
-    fpaths_image_features_val = fpaths_image_split(dir_image_features, fpath_image_split_val, True)
-    fpaths_image_features_test = fpaths_image_split(dir_image_features, fpath_image_split_test, True)
+    #### OLD
+#    fpath_image_split_train = os.path.join(data_dir, "image_splits", "train_images.txt")
+#    fpath_image_split_val = os.path.join(data_dir, "image_splits", "val_images.txt")
+#    fpath_image_split_test = os.path.join(data_dir, "image_splits", "val_images.txt")
+#    dir_image_features = os.path.join(output_dir_preprocess, 'resnet18_avgpool')
+#    fpaths_image_features_train = fpaths_image_split(dir_image_features, fpath_image_split_train, True)
+#    fpaths_image_features_val = fpaths_image_split(dir_image_features, fpath_image_split_val, True)
+#    fpaths_image_features_test = fpaths_image_split(dir_image_features, fpath_image_split_test, True)
     
+    image_features_dir = os.path.join(data_dir, 'image_features')
+    fpath_im_features_train = os.path.join(image_features_dir, config['fname_image_features_train'])
+    fpath_im_features_val = os.path.join(image_features_dir, config['fname_image_features_val'])
+    fpath_im_features_test = os.path.join(image_features_dir, config['fname_image_features_test'])
     output_dir_train = os.path.join(output_dir, dataset, "train")
     fpath_losses = os.path.join(output_dir_train, config['fname_losses'])
     fpath_model = os.path.join(output_dir_train, f'{config["model"]}.pt')
@@ -60,12 +68,14 @@ def get_file_paths(config):
     return {
         'captions_train' : fpaths_captions_train,
         'captions_val' : fpaths_captions_val,
+        'captions_test' : fpaths_captions_test,
         'caption_vectors_train' : fpaths_caption_vectors_train,
         'caption_vectors_val' : fpaths_caption_vectors_val,
+        'caption_vectors_test' : fpaths_caption_vectors_test,
         'vocab' : fpath_vocab,
-        'image_features_train' : fpaths_image_features_train,
-        'image_features_val': fpaths_image_features_val,
-        'image_features_test': fpaths_image_features_test,
+        'image_features_train' : fpath_im_features_train,
+        'image_features_val': fpath_im_features_val,
+        'image_features_test': fpath_im_features_test,
         'losses' : fpath_losses,
         'model' : fpath_model,
         'predictions_test' : fpath_predictions_test,

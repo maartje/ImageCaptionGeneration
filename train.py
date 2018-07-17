@@ -20,7 +20,6 @@ def train_model(config, filepaths):
     encoding_size = im1.size()[0]
 
     
-    dl_params = config['dl_params'] # TODO: batch size, num_workers
 
 #    print(filepaths['image_features_train'][:2])
 #    print(filepaths['caption_vectors_train'][:2])
@@ -35,7 +34,7 @@ def train_model(config, filepaths):
 #    print(dl_params)
 #    print(config['store_loss_every'])
 
-    check_files_exist(filepaths['image_features_train'] + filepaths['image_features_val'])
+    check_files_exist([filepaths['image_features_train'], filepaths['image_features_val']])
     check_files_not_exist([filepaths['losses'], filepaths['model']])
     ensure_paths_exist([filepaths['losses'], filepaths['model']])
     
@@ -45,7 +44,7 @@ def train_model(config, filepaths):
           filepaths['losses'], filepaths['model'],
           learning_rate = config['learning_rate'], 
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 
-          dl_params = dl_params)
+          dl_params_train = config['dl_params_train'], dl_params_val = config['dl_params_val'])
 
      
 def main():
