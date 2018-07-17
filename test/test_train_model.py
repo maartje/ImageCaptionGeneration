@@ -21,7 +21,9 @@ class TestTrain(unittest.TestCase):
        
     def test_train_iter_decoderRNN(self):
         decoder = DecoderRNN(
-            MockEmbeddingDescriptionDataset.encoding_size, MockEmbeddingDescriptionDataset.vocab_size)
+            MockEmbeddingDescriptionDataset.encoding_size, 
+            MockEmbeddingDescriptionDataset.vocab_size,
+            -1)
         self.check_train_iter(decoder, 0.3, do_predict = False)
 
     def test_train_iter_ShowTell(self):
@@ -29,15 +31,16 @@ class TestTrain(unittest.TestCase):
         show_tell = ShowTell(
             MockEmbeddingDescriptionDataset.encoding_size, 
             hidden_size, 
-            MockEmbeddingDescriptionDataset.vocab_size)
+            MockEmbeddingDescriptionDataset.vocab_size, -1)
         self.check_train_iter(show_tell, 0.2)
         
     def check_train_iter(self, decoder, lr = 0.25, do_predict = True):
         optimizer = optim.SGD(decoder.parameters(), lr = lr)
         ds = MockEmbeddingDescriptionDataset(range(3), range(1))
+        collate = lambda b: collate_image_features_descriptions(b, 1000)
         dl_params = {
             'batch_size' : 1, 
-            'collate_fn' : collate_image_features_descriptions
+            'collate_fn' : collate
         }
         train_data = data.DataLoader(ds, **dl_params)
         losses = []

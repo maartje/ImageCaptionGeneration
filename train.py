@@ -14,6 +14,7 @@ def train_model(config, filepaths):
     # vocab size
     vocab = torch.load(filepaths['vocab'])
     vocab_size = vocab.vocab.n_words
+    pad_index = vocab.PAD_index()
     
     # encoding size
     im1 = torch.load(filepaths['image_features_train'][0])
@@ -40,7 +41,7 @@ def train_model(config, filepaths):
     
     train(filepaths['image_features_train'], filepaths['caption_vectors_train'],
           filepaths['image_features_val'], filepaths['caption_vectors_val'], 
-          vocab_size, encoding_size,
+          encoding_size, config['hidden_size'], vocab_size, pad_index,
           filepaths['losses'], filepaths['model'],
           learning_rate = config['learning_rate'], 
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 

@@ -16,6 +16,9 @@ class TextMapper:
         words = chain.from_iterable(sentences_split)
         self.vocab.build(words, [self.SOS, self.EOS, self.PAD, self.UNKNOWN], min_occurence)
 
+    def PAD_index(self):
+        return self.vocab.word2index[self.PAD]
+
     def EOS_index(self):
         return self.vocab.word2index[self.EOS]
 

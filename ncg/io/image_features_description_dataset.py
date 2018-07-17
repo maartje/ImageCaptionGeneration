@@ -31,9 +31,7 @@ class ImageFeaturesDescriptionsDataset(data.Dataset):
         return torch.FloatTensor(embedding), torch.LongTensor(description_vector)
 
 
-def collate_image_features_descriptions(batch):
-    PAD_index = 0 # TODO: Read from config
-    
+def collate_image_features_descriptions(batch, PAD_index):    
     transposed = list(zip(*batch))
 
     # pad, sort and stack captions

@@ -6,14 +6,14 @@ from datetime import datetime, timedelta
 
 from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
 
-from ncg.nn.models import DecoderRNN
+from ncg.nn.models import ShowTell
 from ncg.nn.train_model import train_iter, calculate_validation_loss
 from ncg.reporting.loss_collector import LossCollector, LossReporter
 from ncg.debug_helpers import format_duration
 
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
-          vocab_size, encoding_size,
+          encoding_size, hidden_size, vocab_size, PAD_index,
           fpath_loss_data_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, 
@@ -21,15 +21,16 @@ def train(fpath_imfeats_train, fpaths_captions_train,
 
 
     # data loaders
-    dl_params_train['collate_fn'] = collate_image_features_descriptions
-    dl_params_val['collate_fn'] = collate_image_features_descriptions
+    collate_fn = lambda b: collate_image_features_descriptions(b, PAD_index)
+    dl_params_train['collate_fn'] = collate_fn
+    dl_params_val['collate_fn'] = collate_fn
     dataset_train = ImageFeaturesDescriptionsDataset(fpath_imfeats_train, fpaths_captions_train)
     dataloader_train = data.DataLoader(dataset_train, **dl_params_train)
     dataset_val = ImageFeaturesDescriptionsDataset(fpath_imfeats_val, fpaths_captions_val)
     dataloader_val = data.DataLoader(dataset_val, **dl_params_val)
     
     # model
-    decoder = DecoderRNN(encoding_size, vocab_size)
+    decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
     
     # optimization
     optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
