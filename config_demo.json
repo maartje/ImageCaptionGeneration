@@ -20,8 +20,8 @@
 		"max_epochs" : 25,
 		"max_hours" : 7,
 		"hidden_size" : 512,
-		"dl_params_train" : {"batch_size" : 64, "num_workers" : 4, "shuffle" : true},
-		"dl_params_val" : {"batch_size" : 1024, "num_workers" : 4}
+		"dl_params_train" : {"batch_size" : 64, "shuffle" : true},
+		"dl_params_val" : {"batch_size" : 1024}
 	},
 	
 	"predict" : {

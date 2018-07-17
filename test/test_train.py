@@ -27,7 +27,7 @@ class TestTrain(unittest.TestCase):
         fpath_decoder = "decoder.pt"
         train(fpaths_images_train, fpaths_captions_train,
               [], [], # TODO: mock train and val using side effect, and related data
-              encoding_size, 512, vocab_size, 1, 
+              512, vocab_size, 1, 
               fpath_loss_data, fpath_decoder,
               learning_rate = 0.8, max_epochs = 15, dl_params_train = {'batch_size' : 2}, 
               print_loss_every = 3)

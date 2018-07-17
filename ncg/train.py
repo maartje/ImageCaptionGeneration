@@ -13,7 +13,7 @@ from ncg.debug_helpers import format_duration
 
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
-          encoding_size, hidden_size, vocab_size, PAD_index,
+          hidden_size, vocab_size, PAD_index,
           fpath_loss_data_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, 
@@ -30,6 +30,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     dataloader_val = data.DataLoader(dataset_val, **dl_params_val)
     
     # model
+    encoding_size = dataset_val[0][0].size()[0]
     decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
     
     # optimization
