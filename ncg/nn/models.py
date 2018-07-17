@@ -25,4 +25,15 @@ class DecoderRNN(nn.Module):
         output = self.logsoftmax(output)
         return output, hidden
         
+class ShowTell(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(ShowTell, self).__init__()
+        self.encoder = nn.Linear(input_size, hidden_size)
+        self.decoder = DecoderRNN(hidden_size, output_size)
+    
+    def forward(self, features, input_data, seq_lengths, hidden = None):
+        if hidden is None:
+            hidden = F.relu(self.encoder(features))
+        output, hidden = self.decoder(hidden, input_data, seq_lengths)
+        return output, hidden
 
