@@ -13,7 +13,7 @@
 		"min_occurences" : 5
 	},
 	"train" : {
-		"learning_rate" : 0.02,
+		"learning_rate" : 0.5,
 		"max_epochs" : 25,
 		"max_hours" : 7,
 		"dl_params" : {"batch_size" : 64}
