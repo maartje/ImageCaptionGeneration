@@ -13,7 +13,7 @@ class Trainer:
         self.optimizer = optimizer
 
     def train_iter(self, train_data, 
-                   fn_stop_criterion, val_data = [],
+                   fn_stop_criterion,
                    fn_batch_listeners = [], fn_epoch_listeners = []):
         self.decoder.to(device)
         self.loss_criterion.to(device)
@@ -23,13 +23,11 @@ class Trainer:
         while not fn_stop_criterion(epoch, val_loss):
             for batch_index, batch in enumerate(train_data):
                 token_loss = self.train(batch)
-                for fn_on_update in fn_batch_listeners:
+                for fn_on_batch_completed in fn_batch_listeners:
                     batch_size = batch[0].size()[0] # may differ for last batch
-                    fn_on_update(epoch, batch_index, batch_size, token_loss)
-            if val_data:
-                val_loss = self.calculate_validation_loss(val_data)
+                    fn_on_batch_completed(epoch, batch_index, batch_size, token_loss)
             for fn_on_epoch_completed in fn_epoch_listeners:
-                fn_on_epoch_completed(epoch, batch_index, val_loss)
+                fn_on_epoch_completed(epoch, self)
             epoch += 1
         
     def train(self, batch):

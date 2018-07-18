@@ -39,7 +39,7 @@ class TestLossCollector(unittest.TestCase):
     
     @mock.patch('matplotlib.pyplot.savefig')
     def test_plot_losses(self, save_fig):
-        loss_collector = LossCollector(self.epoch_size, 4)
+        loss_collector = LossCollector(self.epoch_size, 4, [-1])
         self.process_losses(loss_collector)
 
         self.assertEqual(
@@ -72,9 +72,14 @@ class TestLossCollector(unittest.TestCase):
                     batch_losses = losses_in_epoch[i : i + loss_collector.batch_size]
                     avg_loss = sum(batch_losses)/len(batch_losses)
                     loss_collector.on_batch_completed(e, i, None, avg_loss)
-            loss_collector.on_epoch_completed(e, i, self.epoch_losses_val[e])
+            loss_collector.on_epoch_completed(e, MockTrainer(self.epoch_losses_val[e]))
             
-     
+class MockTrainer:
+    def __init__(self, val_loss):
+        self.val_loss = val_loss
+    
+    def calculate_validation_loss(self, val_data):
+        return self.val_loss
 
 if __name__ == '__main__':
     unittest.main()

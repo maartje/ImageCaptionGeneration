@@ -41,7 +41,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     trainer = Trainer(decoder, loss_criterion, optimizer)
 
     # loss collection
-    loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'])  
+    loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'], dataloader_val)  
     start_time = datetime.now()
     end_time = start_time + timedelta(hours = max_hours)
     loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
@@ -52,9 +52,9 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     loss_collector.initial_validation_loss = initial_val_loss
     loss_reporter.report_initial_validation_loss()      
 
-    def on_epoch_completed(epoch, batch_index, validation_loss):
+    def on_epoch_completed(epoch, trainer):
         # save model and loss data
-        torch.save(loss_collector, fpath_loss_data_out)
+        torch.save(loss_collector.to_dict(), fpath_loss_data_out)
         torch.save(decoder, fpath_decoder_out)
     
     def stop_criterion(epoch, val_loss):
@@ -66,7 +66,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # train model and 
     # collect validation loss data
     # TODO: store model per X iterations?
-    trainer.train_iter(dataloader_train, stop_criterion, val_data = dataloader_val,
+    trainer.train_iter(dataloader_train, stop_criterion,
                fn_batch_listeners = [
                    loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
                fn_epoch_listeners = [
