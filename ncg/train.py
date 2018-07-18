@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
 
 from ncg.nn.models import ShowTell
-from ncg.nn.train_model import train_iter, calculate_validation_loss
+from ncg.nn.trainer import Trainer
 from ncg.reporting.loss_collector import LossCollector, LossReporter
 from ncg.debug_helpers import format_duration
 
@@ -35,7 +35,10 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     
     # optimization
     optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
-    loss_criterion = nn.NLLLoss()    
+    loss_criterion = nn.NLLLoss()
+    
+    # trainer    
+    trainer = Trainer(decoder, loss_criterion, optimizer)
 
     # loss collection
     loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'])  
@@ -45,7 +48,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     
     # calculate and store initial validation loss 
     print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
-    initial_val_loss = calculate_validation_loss(decoder, dataloader_val, loss_criterion)
+    initial_val_loss = trainer.calculate_validation_loss(dataloader_val)
     loss_collector.initial_validation_loss = initial_val_loss
     loss_reporter.report_initial_validation_loss()      
 
@@ -63,9 +66,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # train model and 
     # collect validation loss data
     # TODO: store model per X iterations?
-    train_iter(decoder, dataloader_train, loss_criterion, 
-               optimizer, stop_criterion, 
-               val_data = dataloader_val,
+    trainer.train_iter(dataloader_train, stop_criterion, val_data = dataloader_val,
                fn_batch_listeners = [
                    loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
                fn_epoch_listeners = [

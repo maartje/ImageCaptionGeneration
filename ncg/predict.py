@@ -1,5 +1,5 @@
 import torch
-from ncg.nn.train_model import predict as model_predict
+from ncg.nn.predict import predict as model_predict
 from torch.utils import data
 from ncg.io.image_features_dataset import ImageFeaturesDataset
 

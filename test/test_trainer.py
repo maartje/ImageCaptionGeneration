@@ -7,17 +7,16 @@ import torch
 import torch.nn as nn
 from torch import optim
 
-from ncg.nn.train_model import train_iter, predict
 from ncg.nn.models import DecoderRNN, ShowTell
 from test.test_helpers import generate_random_training_pair
 from torch.utils import data
 from ncg.io.image_features_description_dataset import collate_image_features_descriptions
 from test.test_helpers import MockEmbeddingDescriptionDataset
 
-class TestTrain(unittest.TestCase):
+from ncg.nn.trainer import Trainer
+from ncg.nn.predict import predict
 
-    def setUp(self):
-        self.loss_criterion = nn.NLLLoss()
+class TestTrain(unittest.TestCase):
        
     def test_train_iter_decoderRNN(self):
         decoder = DecoderRNN(
@@ -35,6 +34,7 @@ class TestTrain(unittest.TestCase):
         self.check_train_iter(show_tell, 0.2)
         
     def check_train_iter(self, decoder, lr = 0.25, do_predict = True):
+        loss_criterion = nn.NLLLoss()
         optimizer = optim.SGD(decoder.parameters(), lr = lr)
         ds = MockEmbeddingDescriptionDataset(range(3), range(1))
         collate = lambda b: collate_image_features_descriptions(b, 1000)
@@ -48,8 +48,10 @@ class TestTrain(unittest.TestCase):
         max_epochs = 10
         def stop_criterion(epoch, val_loss):
             return epoch > max_epochs
+        
+        trainer = Trainer(decoder, loss_criterion, optimizer)
 
-        train_iter(decoder, train_data, self.loss_criterion, optimizer, stop_criterion, 
+        trainer.train_iter(train_data, stop_criterion, 
                    fn_batch_listeners = [lambda e,i,s,l: losses.append(l)])        
         losses_1 = losses[::3] # losses for pair 1
         losses_2 = losses[1::3]
@@ -68,7 +70,7 @@ class TestTrain(unittest.TestCase):
         if do_predict:
             # Make sure to overfit by doing another training cycle
             max_epochs = 15
-            train_iter(decoder, train_data, self.loss_criterion, optimizer, stop_criterion, 
+            trainer.train_iter(train_data, stop_criterion, 
                        fn_batch_listeners = [lambda e,i,s,l: losses.append(l)])        
 
 

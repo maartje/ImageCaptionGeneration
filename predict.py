@@ -20,7 +20,7 @@ def predict_image_descriptions(config, filepaths):
 
     # train
     predict(filepaths['image_features_train'], filepaths['model'], filepaths['vocab'],
-            filepaths['predictions_train'], config['max_length'], dl_params)
+            filepaths['predictions_train'], config['max_length'], config['dl_params'])
         
 def main():
     config, filepaths = get_configuration('predict', 
