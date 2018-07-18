@@ -6,11 +6,12 @@ import torch
 
 class Trainer:
 
-    def __init__(self, decoder, loss_criterion, optimizer):
+    def __init__(self, decoder, loss_criterion, optimizer, lr_scheduler = None):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.decoder = decoder
         self.loss_criterion = loss_criterion 
         self.optimizer = optimizer
+        self.lr_scheduler = lr_scheduler
 
     def train_iter(self, train_data, 
                    fn_stop_criterion,
@@ -19,16 +20,19 @@ class Trainer:
         self.loss_criterion.to(device)
         
         epoch = 0
-        val_loss = None
-        while not fn_stop_criterion(epoch, val_loss):
+        while not fn_stop_criterion(epoch):
+            total_train_loss = 0
             for batch_index, batch in enumerate(train_data):
                 token_loss = self.train(batch)
+                total_train_loss += token_loss
                 for fn_on_batch_completed in fn_batch_listeners:
                     batch_size = batch[0].size()[0] # may differ for last batch
                     fn_on_batch_completed(epoch, batch_index, batch_size, token_loss)
             for fn_on_epoch_completed in fn_epoch_listeners:
                 fn_on_epoch_completed(epoch, self)
             epoch += 1
+            if not self.lr_scheduler is None: 
+                self.lr_scheduler.step(total_train_loss)
         
     def train(self, batch):
         self.optimizer.zero_grad()

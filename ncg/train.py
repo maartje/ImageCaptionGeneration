@@ -1,3 +1,4 @@
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils import data
 import torch
 import torch.nn as nn
@@ -36,9 +37,15 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # optimization
     optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
     loss_criterion = nn.NLLLoss()
-    
+    scheduler = ReduceLROnPlateau(
+        optimizer, 
+        mode = 'min', 
+        factor = 0.5, 
+        patience = 2, 
+        verbose=True
+    )
     # trainer    
-    trainer = Trainer(decoder, loss_criterion, optimizer)
+    trainer = Trainer(decoder, loss_criterion, optimizer, scheduler)
 
     # loss collection
     loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'], dataloader_val)  
@@ -57,7 +64,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         torch.save(loss_collector.to_dict(), fpath_loss_data_out)
         torch.save(decoder, fpath_decoder_out)
     
-    def stop_criterion(epoch, val_loss):
+    def stop_criterion(epoch):
         if datetime.now() > end_time:
             print(f'exceeded max hours {max_hours}')
             return True

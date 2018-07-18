@@ -46,7 +46,7 @@ class TestTrain(unittest.TestCase):
         losses = []
         
         max_epochs = 10
-        def stop_criterion(epoch, val_loss):
+        def stop_criterion(epoch):
             return epoch > max_epochs
         
         trainer = Trainer(decoder, loss_criterion, optimizer)
@@ -70,6 +70,8 @@ class TestTrain(unittest.TestCase):
         if do_predict:
             # Make sure to overfit by doing another training cycle
             max_epochs = 15
+            def stop_criterion(epoch):
+                return epoch > max_epochs
             trainer.train_iter(train_data, stop_criterion, 
                        fn_batch_listeners = [lambda e,i,s,l: losses.append(l)])        
 
