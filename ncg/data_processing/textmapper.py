@@ -39,7 +39,7 @@ class TextMapper:
         return self.vocab.word2index.get(t, self.vocab.word2index[self.UNKNOWN])
 
     def indices2tokens(self, indices, remove_predefined_tokens):
-        if self.EOS_index() in indices: 
+        if remove_predefined_tokens and (self.EOS_index() in indices): 
             EOS_sentence_index = indices.index(self.EOS_index())
             indices_cut = indices[:EOS_sentence_index + 1] 
         else:

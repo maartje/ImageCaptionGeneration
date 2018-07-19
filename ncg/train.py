@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch import optim
 from datetime import datetime, timedelta
+from torch.nn.utils import clip_grad_norm_
 
 from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
 
@@ -17,7 +18,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
           hidden_size, vocab_size, PAD_index,
           fpath_loss_data_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
-          dl_params_train = {}, dl_params_val = {}, 
+          dl_params_train = {}, dl_params_val = {}, clip = 5,
           print_loss_every = 1000):
 
 
@@ -36,14 +37,19 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     
     # optimization
     optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
-    loss_criterion = nn.NLLLoss()
+    loss_criterion = nn.NLLLoss(ignore_index = PAD_index)
     scheduler = ReduceLROnPlateau(
         optimizer, 
         mode = 'min', 
         factor = 0.5, 
-        patience = 2, 
-        verbose=True
+        patience = 3, 
+        verbose=True,
+        cooldown = 5,
+        min_lr = 0.001
     )
+    if clip:
+        clip_grad_norm_(decoder.parameters(), clip)
+    
     # trainer    
     trainer = Trainer(decoder, loss_criterion, optimizer, scheduler)
 

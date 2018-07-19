@@ -17,6 +17,8 @@ def predict(fpath_imfeats, fpath_decoder, fpath_vocab,
     EOS_index = text_mapper.EOS_index()
     predicted_indices = model_predict(decoder, data_loader, SOS_index, max_length)
     predicted_sentences = [text_mapper.indices2sentence(s) for s in predicted_indices]
+    #predicted_sentences_debug = [text_mapper.indices2sentence(s, False) for s in predicted_indices]
     
     # save to disk
     open(fpath_save_predictions, "w").write('\n'.join(predicted_sentences))
+    #open(f'{fpath_save_predictions}.debug', "w").write('\n'.join(predicted_sentences_debug))

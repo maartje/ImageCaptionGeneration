@@ -40,7 +40,8 @@ def train_model(config, filepaths):
           filepaths['losses'], filepaths['model'],
           learning_rate = config['learning_rate'], 
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 
-          dl_params_train = config['dl_params_train'], dl_params_val = config['dl_params_val'])
+          dl_params_train = config['dl_params_train'], dl_params_val = config['dl_params_val'],
+          clip = config['clip'])
 
      
 def main():
