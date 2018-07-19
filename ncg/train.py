@@ -7,22 +7,31 @@ from datetime import datetime, timedelta
 from torch.nn.utils import clip_grad_norm_
 
 from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
+from ncg.io.image_features_dataset import ImageFeaturesDataset
 
 from ncg.nn.models import ShowTell
 from ncg.nn.trainer import Trainer
-from ncg.reporting.loss_collector import LossCollector, LossReporter
+from ncg.reporting.loss_collector import LossCollector
+from ncg.reporting.bleu_collector import BleuCollector
+from ncg.reporting.train_output_writer import TrainOutputWriter
 from ncg.debug_helpers import format_duration
 
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
-          hidden_size, vocab_size, PAD_index,
+          hidden_size, fpath_vocab, max_length,
           fpath_loss_data_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
           print_loss_every = 1000):
 
-
+    # text info
+    text_mapper = torch.load(fpath_vocab)
+    vocab_size = text_mapper.vocab.n_words
+    PAD_index = text_mapper.PAD_index()
+    
     # data loaders
+    dataset_imfeats_val = ImageFeaturesDataset(fpath_imfeats_val)
+    dl_image_features_val = data.DataLoader(dataset_imfeats_val, **dl_params_val)
     collate_fn = lambda b: collate_image_features_descriptions(b, PAD_index)
     dl_params_train['collate_fn'] = collate_fn
     dl_params_val['collate_fn'] = collate_fn
@@ -57,13 +66,20 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'], dataloader_val)  
     start_time = datetime.now()
     end_time = start_time + timedelta(hours = max_hours)
-    loss_reporter = LossReporter(loss_collector, print_loss_every, start_time) 
+    
+    # bleu collection
+    references = [torch.load(fpath) for fpath in fpaths_captions_val]
+    bleu_collector = BleuCollector(
+        dl_image_features_val, references, text_mapper, max_length)
+
+    # reporting
+    output_writer = TrainOutputWriter(loss_collector, bleu_collector, print_loss_every, start_time) 
     
     # calculate and store initial validation loss 
-    print('\ntime passed', '  epoch', 'train_loss', 'val_loss')
+    print('\ntime passed', '  epoch', 'train_loss', 'val_loss', 'val_bleu')
     initial_val_loss = trainer.calculate_validation_loss(dataloader_val)
     loss_collector.initial_validation_loss = initial_val_loss
-    loss_reporter.report_initial_validation_loss()      
+    output_writer.report_initial_validation_loss()      
 
     def on_epoch_completed(epoch, trainer):
         # save model and loss data
@@ -81,10 +97,10 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # TODO: store model per X iterations?
     trainer.train_iter(dataloader_train, stop_criterion,
                fn_batch_listeners = [
-                   loss_collector.on_batch_completed, loss_reporter.on_batch_completed],
+                   loss_collector.on_batch_completed, output_writer.on_batch_completed],
                fn_epoch_listeners = [
-                   loss_collector.on_epoch_completed, loss_reporter.on_epoch_completed, 
-                   on_epoch_completed]
+                   loss_collector.on_epoch_completed, bleu_collector.on_epoch_completed, 
+                   output_writer.on_epoch_completed, on_epoch_completed]
                )
                
     

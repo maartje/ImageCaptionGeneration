@@ -11,11 +11,11 @@ def report(config, filepaths):
         filepaths['captions_val'], filepaths['predictions_val'], filepaths['bleu_val'])
     calculate_metrics(
         filepaths['captions_train'], filepaths['predictions_train'], filepaths['bleu_train'])
-#    calculate_metrics(
-#        filepaths['captions_test'], filepaths['predictions_test'], filepaths['bleu_test'])
+    calculate_metrics(
+        filepaths['captions_test'], filepaths['predictions_test'], filepaths['bleu_test'])
 
-#    compare_with_human_performance(
-#        filepaths['captions_test'], filepaths['predictions_test'], filepaths['bleu_human_test'])
+    compare_with_human_performance(
+        filepaths['captions_test'], filepaths['predictions_test'], filepaths['bleu_human_test'])
 
 
 def main():

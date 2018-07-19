@@ -1,7 +1,3 @@
-from datetime import datetime
-import math
-from ncg.debug_helpers import format_duration
-
 def createLossCollectorFromDict(state_dict):
     lossCollector = LossCollector(state_dict['epoch_size'], state_dict['batch_size'])
     lossCollector.initial_validation_loss = state_dict['initial_validation_loss']
@@ -81,35 +77,6 @@ class LossCollector():
                 batch_intervals.append(total)
         batch_losses_flat = [l for bl in self.batch_losses_train for l in bl]
         return batch_intervals, batch_losses_flat
-
-class LossReporter:
-
-    def __init__(self, loss_collector, print_loss_every, start_time):
-        self.loss_collector = loss_collector
-        self.print_loss_every = math.ceil(print_loss_every / loss_collector.batch_size)
-        self.start_time = start_time
-    
-    def report_initial_validation_loss(self):
-        val_loss = 'UNKNOWN'
-        if self.loss_collector.initial_validation_loss:
-            val_loss = f'{self.loss_collector.initial_validation_loss:0.2}'  
-        str_duration = format_duration(self.start_time, datetime.now())
-        print(f'({str_duration})\t{0}\tUNKNOWN\t{val_loss} ')
-    
-    
-    def on_batch_completed(self, epoch, batch_index, batch_size, loss):
-        if (batch_index + 1) % self.print_loss_every == 0:
-            print('    epoch', epoch, 'batch_index', batch_index, 'batch_size', batch_size,
-            '#examples', (batch_index + 1) * batch_size, 'batch_loss', f'{loss:0.2}')
-
-    def on_epoch_completed(self, epoch, trainer):
-        val_loss = 'UNKNOWN'
-        if self.loss_collector.epoch_losses_val:
-            val_loss = f'{self.loss_collector.epoch_losses_val[-1]:0.2}'  
-        train_loss = self.loss_collector.epoch_losses_train[-1]
-        str_duration = format_duration(self.start_time, datetime.now())
-        print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss} ')
-
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter

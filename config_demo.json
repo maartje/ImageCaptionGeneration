@@ -18,11 +18,12 @@
 	"train" : {
 		"learning_rate" : 0.5,
 		"max_epochs" : 10000,
-		"max_hours" : 5,
+		"max_hours" : 4,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 64, "shuffle" : false},
 		"dl_params_val" : {"batch_size" : 1024},
-		"clip" : 10
+		"clip" : 10,
+        "max_length" : 25
 	},
 	
 	"predict" : {

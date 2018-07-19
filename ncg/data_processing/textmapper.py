@@ -38,18 +38,26 @@ class TextMapper:
     def token2index(self, t):
         return self.vocab.word2index.get(t, self.vocab.word2index[self.UNKNOWN])
 
-    def indices2tokens(self, indices, remove_predefined_tokens):
-        if remove_predefined_tokens and (self.EOS_index() in indices): 
+    def remove_predefined_indices(self, indices):
+        if self.EOS_index() in indices: # take prefix up to EOS
             EOS_sentence_index = indices.index(self.EOS_index())
             indices_cut = indices[:EOS_sentence_index + 1] 
         else:
             indices_cut = indices
         predefined = [
-           self.token2index(self.EOS), self.token2index(self.SOS), self.token2index(self.UNKNOWN)]
-        indices_used = [
-            i for i in indices_cut if not i in predefined # remove SOS, EOS, UNKNOWN
-        ] if remove_predefined_tokens else indices_cut
-        return [self.index2token(i) for i in indices_used] 
+           self.token2index(self.EOS), 
+           self.token2index(self.SOS), 
+           self.token2index(self.UNKNOWN),
+           self.token2index(self.PAD),
+        ]
+        return [
+            i for i in indices_cut if not i in predefined # remove SOS, EOS, UNKNOWN, PAD
+        ] 
+    
+    def indices2tokens(self, indices, remove_predefined_tokens):
+        if remove_predefined_tokens:
+            indices = self.remove_predefined_indices(indices)
+        return [self.index2token(i) for i in indices] 
 
     def index2token(self, i):
         return self.vocab.index2word[i]
