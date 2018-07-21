@@ -19,6 +19,8 @@ class Trainer:
         self.decoder.to(device)
         self.loss_criterion.to(device)
         
+        for fn_on_epoch_completed in fn_epoch_listeners:
+            fn_on_epoch_completed(-1, self)
         epoch = 0
         while not fn_stop_criterion(epoch):
             total_train_loss = 0
@@ -30,9 +32,9 @@ class Trainer:
                     fn_on_batch_completed(epoch, batch_index, batch_size, token_loss)
             for fn_on_epoch_completed in fn_epoch_listeners:
                 fn_on_epoch_completed(epoch, self)
-            epoch += 1
             if not self.lr_scheduler is None: 
                 self.lr_scheduler.step(total_train_loss)
+            epoch += 1
         
     def train(self, batch):
         self.optimizer.zero_grad()

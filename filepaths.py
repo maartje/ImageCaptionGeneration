@@ -41,7 +41,8 @@ def get_file_paths(config):
     fpath_im_features_val = os.path.join(image_features_dir, config['fname_image_features_val'])
     fpath_im_features_test = os.path.join(image_features_dir, config['fname_image_features_test'])
     output_dir_train = os.path.join(output_dir, dataset, "train")
-    fpath_losses = os.path.join(output_dir_train, config['fname_losses'])
+    fpath_losses = os.path.join(output_dir_train, 'losses.pt')
+    fpath_bleu_scores = os.path.join(output_dir_train, 'bleu_scores.pt')
     fpath_model = os.path.join(output_dir_train, f'{config["model"]}.pt')
 
     # predict
@@ -54,6 +55,7 @@ def get_file_paths(config):
     output_dir_report = os.path.join(output_dir, dataset, "report")
     fpath_plot_epoch_loss = os.path.join(output_dir_report, 'epoch_losses.png')
     fpath_plot_batch_loss = os.path.join(output_dir_report, 'batch_losses.png')
+    fpath_plot_bleu = os.path.join(output_dir_report, 'bleu.png')
     fpath_bleu_val = os.path.join(output_dir_report, 'BLEU_val.txt')
     fpath_bleu_test = os.path.join(output_dir_report, 'BLEU_test.txt')
     fpath_bleu_train = os.path.join(output_dir_report, 'BLEU_train.txt')
@@ -77,6 +79,7 @@ def get_file_paths(config):
         'image_features_val': fpath_im_features_val,
         'image_features_test': fpath_im_features_test,
         'losses' : fpath_losses,
+        'bleu_scores' : fpath_bleu_scores,
         'model' : fpath_model,
         'predictions_test' : fpath_predictions_test,
         'predictions_val' : fpath_predictions_val,
@@ -84,6 +87,7 @@ def get_file_paths(config):
         
         'plot_epoch_loss' : fpath_plot_epoch_loss,
         'plot_batch_loss' : fpath_plot_batch_loss,
+        'plot_bleu' : fpath_plot_bleu,
         'bleu_val' : fpath_bleu_val,
         'bleu_test' : fpath_bleu_test,
         'bleu_train' : fpath_bleu_train,

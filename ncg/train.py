@@ -19,7 +19,7 @@ from ncg.debug_helpers import format_duration
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
           hidden_size, fpath_vocab, max_length,
-          fpath_loss_data_out, fpath_decoder_out,
+          fpath_loss_data_out, fpath_bleu_scores_out, fpath_decoder_out,
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
           print_loss_every = 1000):
@@ -70,22 +70,19 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # bleu collection
     references = [torch.load(fpath) for fpath in fpaths_captions_val]
     bleu_collector = BleuCollector(
-        dl_image_features_val, references, text_mapper, max_length)
+        dl_image_features_val, references, text_mapper, max_length, len(dataset_train))
 
     # reporting
     output_writer = TrainOutputWriter(loss_collector, bleu_collector, print_loss_every, start_time) 
     
-    # calculate and store initial validation loss 
-    print('\ntime passed', '  epoch', 'train_loss', 'val_loss', 'val_bleu')
-    initial_val_loss = trainer.calculate_validation_loss(dataloader_val)
-    loss_collector.initial_validation_loss = initial_val_loss
-    output_writer.report_initial_validation_loss()      
-
+    # save intermediate results
     def on_epoch_completed(epoch, trainer):
         # save model and loss data
-        torch.save(loss_collector.to_dict(), fpath_loss_data_out)
+        torch.save(bleu_collector.plot_values(), fpath_bleu_scores_out)
+        torch.save(loss_collector.plot_values(), fpath_loss_data_out)
         torch.save(decoder, fpath_decoder_out)
     
+    # stopper
     def stop_criterion(epoch):
         if datetime.now() > end_time:
             print(f'exceeded max hours {max_hours}')

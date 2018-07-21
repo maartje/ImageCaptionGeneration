@@ -6,6 +6,7 @@ from ncg.report import plot_losses, calculate_metrics, compare_with_human_perfor
 def report(config, filepaths):
     ensure_paths_exist([filepaths['plot_epoch_loss']])
     plot_losses(filepaths['losses'], filepaths['plot_epoch_loss'], filepaths['plot_batch_loss'])
+    plot_bleu_scores(filepaths['bleu_scores'], filepaths['plot_bleu'])
 
     calculate_metrics(
         filepaths['captions_val'], filepaths['predictions_val'], filepaths['bleu_val'])
