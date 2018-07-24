@@ -17,8 +17,9 @@ class TestLossCollector(unittest.TestCase):
         self.epoch_losses_val = [11, 22, 33]
         self.epoch_size = len(self.epoch_losses[0])
         
-    def test_process_loss_with_partial(self):
-        loss_collector = LossCollector(self.epoch_size, 4)
+    @mock.patch('torch.save')
+    def test_process_loss_with_partial(self, torch_save):
+        loss_collector = LossCollector(self.epoch_size, 4, 'xxx/losses.pt')
         self.process_losses(loss_collector)        
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2.5, 6.5, 9], [25, 65, 90]]        
@@ -28,8 +29,9 @@ class TestLossCollector(unittest.TestCase):
         self.assertEqual(1, loss_collector.batch_size_last)
 
 
-    def test_process_loss_without_partial(self):
-        loss_collector = LossCollector(self.epoch_size, 3)
+    @mock.patch('torch.save')
+    def test_process_loss_without_partial(self, torch_save):
+        loss_collector = LossCollector(self.epoch_size, 3, 'xxx/losses.pt')
         self.process_losses(loss_collector)
         epoch_losses_expected = [5, 50]
         batch_losses_expected = [[2,5,8], [20,50,80]]
@@ -37,14 +39,12 @@ class TestLossCollector(unittest.TestCase):
         self.assertEqual(3, loss_collector.batch_size_last)
 
     
+    @mock.patch('torch.save')
     @mock.patch('matplotlib.pyplot.savefig')
-    def test_plot_losses(self, save_fig):
-        loss_collector = LossCollector(self.epoch_size, 4, [-1])
+    def test_plot_losses(self, save_fig, torch_save):
+        loss_collector = LossCollector(self.epoch_size, 4, 'xxx/losses.pt', [-1])
         self.process_losses(loss_collector)
         
-        print()
-        print(loss_collector.epoch_losses_val)
-
         self.assertEqual(
             ([0, 9, 18], [11, 22, 33]), 
             loss_collector.plot_values_epoch_losses_val())
@@ -55,7 +55,7 @@ class TestLossCollector(unittest.TestCase):
             ([4, 8, 9, 13, 17, 18], [2.5, 6.5, 9.0, 25.0, 65.0, 90.0]),
             loss_collector.plot_values_batch_losses_train())
 
-        loss_collector_no_partial = LossCollector(self.epoch_size, 3)
+        loss_collector_no_partial = LossCollector(self.epoch_size, 3, 'xxx/losses.pt')
         self.process_losses(loss_collector_no_partial)
         self.assertEqual(
             ([3, 6, 9, 12, 15, 18], [2, 5, 8, 20, 50, 80]),

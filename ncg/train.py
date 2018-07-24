@@ -19,7 +19,7 @@ from ncg.debug_helpers import format_duration
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
           hidden_size, fpath_vocab, max_length,
-          fpath_loss_data_out, fpath_bleu_scores_out, fpath_decoder_out,
+          fpath_loss_data_out, fpath_bleu_scores_out, fpath_model, fpath_model_best, 
           learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
           print_loss_every = 1000):
@@ -63,25 +63,23 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     trainer = Trainer(decoder, loss_criterion, optimizer, scheduler)
 
     # loss collection
-    loss_collector = LossCollector(len(dataset_train), dl_params_train['batch_size'], dataloader_val)  
+    loss_collector = LossCollector(
+        len(dataset_train), dl_params_train['batch_size'], fpath_loss_data_out, dataloader_val)  
     start_time = datetime.now()
     end_time = start_time + timedelta(hours = max_hours)
     
     # bleu collection
     references = [torch.load(fpath) for fpath in fpaths_captions_val]
     bleu_collector = BleuCollector(
-        dl_image_features_val, references, text_mapper, max_length, len(dataset_train))
+        dl_image_features_val, references, text_mapper, max_length, 
+        len(dataset_train), fpath_bleu_scores_out)
 
     # reporting
     output_writer = TrainOutputWriter(loss_collector, bleu_collector, print_loss_every, start_time) 
     
     # save intermediate results
-    def on_epoch_completed(epoch, trainer):
-        # save model and loss data
-        torch.save(bleu_collector.plot_values(), fpath_bleu_scores_out)
-        torch.save(loss_collector.plot_values(), fpath_loss_data_out)
-        torch.save(decoder, fpath_decoder_out)
-    
+    model_saver = ModelSaver(fpath_model, fpath_model_best)
+        
     # stopper
     def stop_criterion(epoch):
         if datetime.now() > end_time:
@@ -97,7 +95,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
                    loss_collector.on_batch_completed, output_writer.on_batch_completed],
                fn_epoch_listeners = [
                    loss_collector.on_epoch_completed, bleu_collector.on_epoch_completed, 
-                   output_writer.on_epoch_completed, on_epoch_completed]
+                   output_writer.on_epoch_completed, model_saver.on_epoch_completed]
                )
                
     

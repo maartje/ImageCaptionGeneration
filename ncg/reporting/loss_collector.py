@@ -1,6 +1,8 @@
+import torch
+
 class LossCollector():
 
-    def __init__(self, epoch_size, batch_size, val_data = None):
+    def __init__(self, epoch_size, batch_size, fpath_loss_data, val_data = None):
         self.batch_size = batch_size
         self.epoch_losses_val = []
         self.epoch_losses_train = []
@@ -10,6 +12,7 @@ class LossCollector():
         if not self.batch_size_last: # no partial batch
             self.batch_size_last = self.batch_size  
         self.val_data = val_data
+        self.fpath_loss_data = fpath_loss_data
         
     #fn_batch_listener
     def on_batch_completed(self, epoch, batch_index, batch_size, loss):
@@ -28,6 +31,7 @@ class LossCollector():
             den = self.batch_size * (len(batch_losses) - 1) + self.batch_size_last
             average_epoch_loss = num / den
             self.epoch_losses_train.append(average_epoch_loss)
+        torch.save(self.plot_values(), self.fpath_loss_data)
     
     def plot_values_epoch_losses_val(self):
         epoch_intervals = [i*self.epoch_size for i in range(len(self.epoch_losses_val))]
