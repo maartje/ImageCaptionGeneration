@@ -43,7 +43,7 @@ def get_file_paths(config):
     output_dir_train = os.path.join(output_dir, dataset, "train")
     fpath_losses = os.path.join(output_dir_train, 'losses.pt')
     fpath_bleu_scores = os.path.join(output_dir_train, 'bleu_scores.pt')
-    fpath_model = os.path.join(output_dir_train, f'{config["model"]}.pt')
+    fpath_model = os.path.join(output_dir_train, f'{config["model"]}.%d.pt')
     fpath_best_model = os.path.join(output_dir_train, f'{config["model"]}_best.pt')
 
     # predict

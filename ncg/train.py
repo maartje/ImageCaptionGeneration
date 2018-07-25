@@ -15,6 +15,7 @@ from ncg.reporting.loss_collector import LossCollector
 from ncg.reporting.bleu_collector import BleuCollector
 from ncg.reporting.train_output_writer import TrainOutputWriter
 from ncg.debug_helpers import format_duration
+from ncg.model_saver import ModelSaver
 
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
@@ -78,7 +79,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     output_writer = TrainOutputWriter(loss_collector, bleu_collector, print_loss_every, start_time) 
     
     # save intermediate results
-    model_saver = ModelSaver(fpath_model, fpath_model_best)
+    model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best)
         
     # stopper
     def stop_criterion(epoch):

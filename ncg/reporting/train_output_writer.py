@@ -24,8 +24,10 @@ class TrainOutputWriter:
         bleu = 'UNKNOWN'
         if self.bleu_collector.bleu_val: 
             val_bleu = f'{self.bleu_collector.bleu_val[-1]:0.2}' 
+        train_loss_str = 'UNKNOWN'
         if epoch > -1:            
             train_loss = self.loss_collector.epoch_losses_train[-1]
+            train_loss_str = f'{train_loss:0.2}'
         str_duration = format_duration(self.start_time, datetime.now())
-        print(f'({str_duration})\t{epoch + 1}\t{train_loss:0.2}\t{val_loss}\t{val_bleu}')
+        print(f'({str_duration})\t{epoch + 1}\t{train_loss_str}\t{val_loss}\t{val_bleu}')
 

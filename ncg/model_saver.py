@@ -8,11 +8,11 @@ class ModelSaver():
         self.fpath_model = fpath_model
         self.fpath_model_best = fpath_model_best
         
-    def on_epoch_completed(epoch, trainer):
-        torch.save(self.model, self.fpath_model)
-        if bleu_collector.bleu_val:
-            max_bleu = max(bleu_collector.bleu_val)
-            last_bleu = bleu_collector.bleu_val[-1]
+    def on_epoch_completed(self, epoch, trainer):
+        torch.save(self.model, self.fpath_model % epoch)
+        if self.bleu_collector.bleu_val:
+            max_bleu = max(self.bleu_collector.bleu_val)
+            last_bleu = self.bleu_collector.bleu_val[-1]
             if last_bleu == max_bleu:
                 torch.save(self.model, self.fpath_model_best)
                 print (f"Best model so far saved on epoch '{epoch}' with BLEU score '{last_bleu}'")
