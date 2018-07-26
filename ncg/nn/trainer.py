@@ -1,9 +1,5 @@
 import torch
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-import torch
-
 class Trainer:
 
     def __init__(self, decoder, loss_criterion, optimizer, lr_scheduler = None):
@@ -16,8 +12,8 @@ class Trainer:
     def train_iter(self, train_data, 
                    fn_stop_criterion,
                    fn_batch_listeners = [], fn_epoch_listeners = []):
-        self.decoder.to(device)
-        self.loss_criterion.to(device)
+        self.decoder.to(self.device)
+        self.loss_criterion.to(self.device)
         
         for fn_on_epoch_completed in fn_epoch_listeners:
             fn_on_epoch_completed(-1, self)
@@ -45,10 +41,10 @@ class Trainer:
 
     def calculate_loss(self, batch):
         (image_features, caption_inputs, caption_targets, caption_lengths) = batch
-        image_features = image_features.to(device) 
-        caption_inputs = caption_inputs.to(device)
-        caption_targets = caption_targets.to(device)
-        caption_lengths = caption_lengths.to(device)
+        image_features = image_features.to(self.device) 
+        caption_inputs = caption_inputs.to(self.device)
+        caption_targets = caption_targets.to(self.device)
+        caption_lengths = caption_lengths.to(self.device)
 
         output_probs, _ = self.decoder(
             image_features.unsqueeze(0), caption_inputs, caption_lengths
