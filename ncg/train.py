@@ -52,10 +52,9 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         optimizer, 
         mode = 'min', 
         factor = 0.5, 
-        patience = 3, 
+        patience = 5, 
         verbose=True,
-        cooldown = 5,
-        min_lr = 0.001
+        min_lr = 0.001 * learning_rate
     )
     if clip:
         clip_grad_norm_(decoder.parameters(), clip)

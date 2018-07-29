@@ -20,14 +20,14 @@ class TrainOutputWriter:
             print('\ntime passed', '  epoch', 'train_loss', 'val_loss', 'val_bleu')
         val_loss = 'UNKNOWN'
         if self.loss_collector.epoch_losses_val:
-            val_loss = f'{self.loss_collector.epoch_losses_val[-1]:0.2}' 
+            val_loss = f'{self.loss_collector.epoch_losses_val[-1]:0.4}' 
         bleu = 'UNKNOWN'
         if self.bleu_collector.bleu_val: 
-            val_bleu = f'{self.bleu_collector.bleu_val[-1]:0.2}' 
+            val_bleu = f'{self.bleu_collector.bleu_val[-1]:0.4}' 
         train_loss_str = 'UNKNOWN'
         if epoch > -1:            
             train_loss = self.loss_collector.epoch_losses_train[-1]
-            train_loss_str = f'{train_loss:0.2}'
+            train_loss_str = f'{train_loss:0.4}'
         str_duration = format_duration(self.start_time, datetime.now())
         print(f'({str_duration})\t{epoch + 1}\t{train_loss_str}\t{val_loss}\t{val_bleu}')
 
