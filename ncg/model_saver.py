@@ -10,6 +10,9 @@ class ModelSaver():
         
     def on_epoch_completed(self, epoch, trainer):
         torch.save(self.model, self.fpath_model % epoch)
+        fname_prev_model = self.fpath_model % (epoch - 1)
+        if os.path.exists(fname_prev_model):
+            os.remove(fname_prev_model)
         if self.bleu_collector.bleu_val:
             max_bleu = max(self.bleu_collector.bleu_val)
             last_bleu = self.bleu_collector.bleu_val[-1]
