@@ -1,7 +1,7 @@
 import torch
 from os import system
 
-import ncg.reporting.plots
+import ncg.reporting.plots as p
 from ncg.reporting.bleu import calculate_bleu
 
 def plot_losses(fpath_losses, fpath_plot_epoch_loss = '', fpath_plot_batch_loss = ''):
@@ -13,13 +13,13 @@ def plot_losses(fpath_losses, fpath_plot_epoch_loss = '', fpath_plot_batch_loss 
         intervals_val, 
         losses_val
     ) = torch.load(fpath_losses)
-    plots.plotBatchLosses(batch_intervals, batch_losses, fpath_plot_batch_loss)
-    plots.plotEpochLosses(
+    p.plotBatchLosses(batch_intervals, batch_losses, fpath_plot_batch_loss)
+    p.plotEpochLosses(
         intervals_train, losses_train, intervals_val, losses_val, fpath_plot_epoch_loss)
 
 def plot_bleu_scores(fpath_bleu_scores, fpath_plot_bleu_scores):
     (intervals, bleu_scores) = torch.load(fpath_bleu_scores)
-    plots.plotBleuScores(intervals, bleu_scores, fpath_plot_bleu_scores)
+    p.plotBleuScores(intervals, bleu_scores, fpath_plot_bleu_scores)
         
 def calculate_metrics(fpaths_references, fpath_predicted, fpath_save_bleu):
     calculate_bleu(fpaths_references, fpath_predicted, fpath_save_bleu)

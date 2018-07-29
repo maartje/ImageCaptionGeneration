@@ -11,15 +11,15 @@ def predict_image_descriptions(config, filepaths):
     ensure_paths_exist([filepaths['predictions_val']])
     
     # validation
-    predict(filepaths['image_features_val'], filepaths['model'], filepaths['vocab'],
+    predict(filepaths['image_features_val'], filepaths['best_model'], filepaths['vocab'],
             filepaths['predictions_val'], config['max_length'], config['dl_params'])
 
     # test
-    predict(filepaths['image_features_test'], filepaths['model'], filepaths['vocab'],
+    predict(filepaths['image_features_test'], filepaths['best_model'], filepaths['vocab'],
             filepaths['predictions_test'], config['max_length'], config['dl_params'])
 
     # train
-    predict(filepaths['image_features_train'], filepaths['model'], filepaths['vocab'],
+    predict(filepaths['image_features_train'], filepaths['best_model'], filepaths['vocab'],
             filepaths['predictions_train'], config['max_length'], config['dl_params'])
         
 def main():

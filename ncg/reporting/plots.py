@@ -3,7 +3,7 @@ from matplotlib.ticker import FormatStrFormatter
 
 def plotBleuScores(epoch_intervals, bleu_scores, fname = None):    
     fig, ax = plt.subplots()
-    ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    #ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax.ticklabel_format(axis='x', scilimits=(0, 0))
     plt.plot(epoch_intervals, bleu_scores, 'ro-', color='blue', label='BLEU on validation set after epoch')
     plt.xlabel('#training pairs')

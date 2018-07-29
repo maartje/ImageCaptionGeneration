@@ -1,7 +1,7 @@
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 from parse_config import get_configuration
 
-from ncg.report import plot_losses, calculate_metrics, compare_with_human_performance
+from ncg.report import plot_losses, plot_bleu_scores, calculate_metrics, compare_with_human_performance
 
 def report(config, filepaths):
     ensure_paths_exist([filepaths['plot_epoch_loss']])
