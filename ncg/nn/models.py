@@ -11,16 +11,15 @@ class DecoderRNN(nn.Module):
         self.pad_index = pad_index
 
         self.embedding = nn.Embedding(output_size, hidden_size)
-        self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
+        self.lstm = nn.LSTM(hidden_size, hidden_size, batch_first=True)
         self.out = nn.Linear(hidden_size, output_size)
         self.logsoftmax = nn.LogSoftmax(dim=2)
 
     def forward(self, hidden, input_data, seq_lengths):
         output = self.embedding(input_data)
-        output = F.relu(output)
         packed = pack_padded_sequence (
             output, seq_lengths, batch_first=True)
-        output, hidden = self.gru(packed, hidden)
+        output, hidden = self.lstm(packed, hidden)
         unpacked = pad_packed_sequence(
             output, batch_first=True, padding_value=self.pad_index, total_length=None)
         output = self.out(unpacked[0])
@@ -33,9 +32,10 @@ class ShowTell(nn.Module):
         self.encoder = nn.Linear(input_size, hidden_size)
         self.decoder = DecoderRNN(hidden_size, output_size, pad_index)
     
-    def forward(self, features, input_data, seq_lengths, hidden = None):
-        if hidden is None:
-            hidden = F.relu(self.encoder(features))
-        output, hidden = self.decoder(hidden, input_data, seq_lengths)
-        return output, hidden
+    def forward(self, features, input_data, seq_lengths, state = None):
+        if state is None:
+            h_0 = F.relu(self.encoder(features))
+            c_0 = torch.zeros(h_0.size()) # TODO GPU
+            state = (h_0, c_0)
+        return self.decoder(state, input_data, seq_lengths) # output, (h_n, c_n)
 

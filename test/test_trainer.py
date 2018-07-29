@@ -18,22 +18,15 @@ from ncg.nn.predict import predict
 
 class TestTrain(unittest.TestCase):
        
-    def test_train_iter_decoderRNN(self):
-        decoder = DecoderRNN(
-            MockEmbeddingDescriptionDataset.encoding_size, 
-            MockEmbeddingDescriptionDataset.vocab_size,
-            -1)
-        self.check_train_iter(decoder, 0.3, do_predict = False)
-
     def test_train_iter_ShowTell(self):
         hidden_size = 60
         show_tell = ShowTell(
             MockEmbeddingDescriptionDataset.encoding_size, 
             hidden_size, 
             MockEmbeddingDescriptionDataset.vocab_size, -1)
-        self.check_train_iter(show_tell, 0.2)
+        self.check_train_iter(show_tell, 1.5)
         
-    def check_train_iter(self, decoder, lr = 0.25, do_predict = True):
+    def check_train_iter(self, decoder, lr, do_predict = True):
         loss_criterion = nn.NLLLoss()
         optimizer = optim.SGD(decoder.parameters(), lr = lr)
         ds = MockEmbeddingDescriptionDataset(range(3), range(1))
@@ -57,10 +50,10 @@ class TestTrain(unittest.TestCase):
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
         
-        #print()
-        #print(losses_1)
-        #print(losses_2)
-        #print(losses_3)
+#        print()
+#        print(losses_1)
+#        print(losses_2)
+#        print(losses_3)
         
         is_decreasing = lambda l: all(l[i] > l[i+1] for i in range(len(l)-1))
         self.assertTrue(is_decreasing(losses_1))
