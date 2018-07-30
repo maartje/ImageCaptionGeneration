@@ -32,10 +32,12 @@ class ShowTell(nn.Module):
         self.encoder = nn.Linear(input_size, hidden_size)
         self.decoder = DecoderRNN(hidden_size, output_size, pad_index)
     
-    def forward(self, features, input_data, seq_lengths, state = None):
+    def forward(self, features, input_data, seq_lengths, state = None, device=None):
         if state is None:
             h_0 = F.relu(self.encoder(features))
             c_0 = torch.zeros(h_0.size()) # TODO GPU
+            if not (device is None):
+                c_0 = c_0.to(device)
             state = (h_0, c_0)
         return self.decoder(state, input_data, seq_lengths) # output, (h_n, c_n)
 

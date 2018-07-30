@@ -15,7 +15,7 @@ def predict(decoder, predict_data, SOS_index, max_length):
             lengths = torch.ones([batch_size], dtype=torch.long, device = device)
             hidden = None
             for i in range(max_length):
-                output, hidden = decoder(image_features, inputs, lengths, hidden)
+                output, hidden = decoder(image_features, inputs, lengths, hidden, device)
                 _, topi = output.topk(1)
                 predicted_tokens.append(topi.squeeze(1))
                 inputs = topi.squeeze(1)

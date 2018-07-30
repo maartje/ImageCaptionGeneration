@@ -47,7 +47,7 @@ class Trainer:
         caption_lengths = caption_lengths.to(self.device)
 
         output_probs, _ = self.decoder(
-            image_features.unsqueeze(0), caption_inputs, caption_lengths
+            image_features.unsqueeze(0), caption_inputs, caption_lengths, device = self.device
         )    
         loss = self.loss_criterion(output_probs.permute(0, 2, 1), caption_targets)
         return loss
