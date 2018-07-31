@@ -1,10 +1,10 @@
 {
     "general" : {
-        "image_features_dir" : "$TMPDIR/flickr30k",
-        "output_dir_preprocess" : "$TMPDIR/flickr30k",
-        "output_dir_train" : "$TMPDIR/output",
+        "image_features_dir" : "TMPDIR/flickr30k",
+        "output_dir_preprocess" : "TMPDIR/flickr30k",
+        "output_dir_train" : "TMPDIR/output",
         "dataset" : "flickr30k",
-        "output_dir" : "$TMPDIR/output",
+        "output_dir" : "TMPDIR/output",
 		"fpattern_captions_train": "test_2016.[0-9].en",
 		"fpattern_captions_val": "val.[0-9].en",
 		"fpattern_captions_test": "test_2016.[0-9].en",
@@ -16,7 +16,7 @@
     },
 	"train" : {
 		"learning_rate" : 1.0,
-		"max_epochs" : 5,
+		"max_epochs" : 10,
 		"max_hours" : 1,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 64, "shuffle" : true},

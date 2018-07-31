@@ -18,6 +18,9 @@ def options(parser, section):
     parser.add_argument(
         '--output_dir', 
         help = "Overwrites the output dir set in the config file")
+    parser.add_argument(
+        '--output_dir_train', 
+        help = "Overwrites the output dir train set in the config file")
     if section == 'train':
         parser.add_argument(
             '--learning_rate', 
@@ -37,7 +40,6 @@ def get_configuration(section, description = ''):
     opt_dict = {k : v for k, v in opt_dict.items() if not (v is None)}
     config['general'].update(opt_dict)
     config[section].update(opt_dict)
-    print(config[section], config['general'])
     
     filepaths = get_file_paths(config['general'])
     return config[section], filepaths

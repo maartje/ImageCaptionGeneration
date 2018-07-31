@@ -86,7 +86,10 @@ def train(fpath_imfeats_train, fpaths_captions_train,
             print(f'exceeded max hours {max_hours}')
             return True
         return epoch > max_epochs
-        
+    
+    # print cuda available
+    print('CUDA available: ', torch.cuda.is_available())
+    
     # train model and 
     # collect validation loss data
     # TODO: store model per X iterations?
