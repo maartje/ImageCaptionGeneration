@@ -7,10 +7,12 @@ Use python 3
 
 Install the following packages:
 - pytorch
+- torchvision
 - pytables
 - nltk
 - pillow
 - mosestokenizer
+- matplotlib
 - mock
 
 # Run tests

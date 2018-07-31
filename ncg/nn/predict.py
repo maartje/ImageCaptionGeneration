@@ -7,7 +7,7 @@ def predict(decoder, predict_data, SOS_index, max_length):
     decoder.to(device)
     with torch.no_grad():
         for batch in predict_data:
-            image_features = batch
+            image_features = batch.to(device)
             predicted_tokens = []
             image_features = image_features.unsqueeze(0)
             batch_size = batch.size()[0]
