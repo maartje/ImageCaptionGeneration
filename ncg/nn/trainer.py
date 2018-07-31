@@ -8,6 +8,8 @@ class Trainer:
         self.loss_criterion = loss_criterion 
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
+        print()
+        print('    cuda available', torch.cuda.is_available())
 
     def train_iter(self, train_data, 
                    fn_stop_criterion,
