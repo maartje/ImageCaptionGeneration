@@ -1,3 +1,5 @@
+import sys
+
 def main():
     print('hello from python!')
 
