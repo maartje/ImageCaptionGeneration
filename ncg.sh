@@ -1,10 +1,11 @@
 #Set job requirements
 #PBS -S /bin/bash
 #PBS -lnodes=1
-#PBS -lwalltime=1:30:00
+#PBS -lwalltime=0:30:00
 
 #Loading modules
-#module load python/3.5.0
+# TODO
+source activate summer_project
 
 #Copy input data to scratch and create output directory
 mkdir "$TMPDIR"/flickr30k
