@@ -11,8 +11,6 @@ from ncg.io.file_helpers import read_lines
 
 def train_model(config, filepaths):
 
-    
-
 #    print(filepaths['image_features_train'][:2])
 #    print(filepaths['caption_vectors_train'][:2])
 #    print(filepaths['image_features_val'][:2])

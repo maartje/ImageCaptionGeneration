@@ -8,7 +8,8 @@ def get_file_paths(config):
     output_dir = config["output_dir"]
     data_dir = os.path.join("data", dataset)
     captions_dir = os.path.join(data_dir, "captions", "en")
-    output_dir_preprocess = os.path.join(output_dir, dataset, "preprocess")
+    output_dir_preprocess_default = os.path.join(output_dir, dataset, "preprocess")
+    output_dir_preprocess = config.get("output_dir_preprocess", output_dir_preprocess_default)
     fname_vocab = config['fname_vocab']
     
     # preprocess
@@ -36,11 +37,13 @@ def get_file_paths(config):
 #    fpaths_image_features_val = fpaths_image_split(dir_image_features, fpath_image_split_val, True)
 #    fpaths_image_features_test = fpaths_image_split(dir_image_features, fpath_image_split_test, True)
     
-    image_features_dir = os.path.join(data_dir, 'image_features')
+    image_features_dir_default = os.path.join(data_dir, 'image_features')
+    image_features_dir = config.get('image_features_dir', image_features_dir_default)
     fpath_im_features_train = os.path.join(image_features_dir, config['fname_image_features_train'])
     fpath_im_features_val = os.path.join(image_features_dir, config['fname_image_features_val'])
     fpath_im_features_test = os.path.join(image_features_dir, config['fname_image_features_test'])
-    output_dir_train = os.path.join(output_dir, dataset, "train")
+    output_dir_train_default = os.path.join(output_dir, dataset, "train")
+    output_dir_train = config.get('output_dir_train', output_dir_train_default)
     fpath_losses = os.path.join(output_dir_train, 'losses.pt')
     fpath_bleu_scores = os.path.join(output_dir_train, 'bleu_scores.pt')
     fpath_model = os.path.join(output_dir_train, f'{config["model"]}.%d.pt')
