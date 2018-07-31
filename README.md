@@ -9,6 +9,9 @@ Install the following packages:
 - pytorch
 - pytables
 - nltk
+- pillow
+- mosestokenizer
+- mock
 
 # Run tests
 $ python -W ignore -m unittest discover -v
