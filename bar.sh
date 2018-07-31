@@ -1,8 +1,8 @@
 #Set job requirements
 #PBS -S /bin/bash
 #PBS -lnodes=1
-#PBS -lwalltime=0:00:30
-# -qexpress_gpu
+#PBS -lwalltime=0:00:20
+#PBS -qexpress_gpu
 # -qgpu
 
 #Loading modules
@@ -12,7 +12,7 @@ source activate summer_project
 #module load python/3.7.0
 module load eb
 module load CUDA
-#module load cudnn
+module load cuDNN
 
 #Copy input data to scratch and create output directory
 #mkdir "$TMPDIR"/flickr30k
