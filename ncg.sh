@@ -1,7 +1,7 @@
 #Set job requirements
 #PBS -S /bin/bash
 #PBS -lnodes=1
-#PBS -lwalltime=0:00:40
+#PBS -lwalltime=0:59:00
 #PBS -qexpress_gpu
 # -qgpu
 
