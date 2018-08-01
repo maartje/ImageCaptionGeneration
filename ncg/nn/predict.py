@@ -9,11 +9,13 @@ def predict(decoder, predict_data, SOS_index, max_length):
         for batch in predict_data:
             image_features = batch.to(device)
             predicted_tokens = []
+            batch_size = image_features.size()[0]
             image_features = image_features.unsqueeze(0)
-            batch_size = batch.size()[0]
-            inputs = torch.LongTensor([[SOS_index]]*batch_size, device = device)
-            lengths = torch.ones([batch_size], dtype=torch.long, device = device)
+            inputs = torch.LongTensor([[SOS_index]]*batch_size)
+            lengths = torch.ones([batch_size], dtype=torch.long)
             hidden = None
+            inputs = inputs.to(device)
+            lengths = lengths.to(device)
             for i in range(max_length):
                 output, hidden = decoder(image_features, inputs, lengths, hidden, device)
                 _, topi = output.topk(1)
