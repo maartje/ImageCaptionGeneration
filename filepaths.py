@@ -4,6 +4,7 @@ import glob
 from ncg.io.file_helpers import read_lines
 
 def get_file_paths(config, preprocess_mode):
+    config = replace_env_vars(config)
     dataset = config["dataset"]
     output_dir = config["output_dir"]
     data_dir = os.path.join("data", dataset)
@@ -84,7 +85,7 @@ def get_file_paths(config, preprocess_mode):
     fpath_word_frequencies = os.path.join(output_dir_statistics, 'word_frequencies.png')
     fpath_sentence_lengths = os.path.join(output_dir_statistics, 'sentence_lengths.png')
     
-    result = {
+    return {
         'captions_train' : fpaths_captions_train,
         'captions_val' : fpaths_captions_val,
         'captions_test' : fpaths_captions_test,
@@ -114,8 +115,6 @@ def get_file_paths(config, preprocess_mode):
         'word_frequencies' : fpath_word_frequencies,
         'sentence_lengths' : fpath_sentence_lengths
     }
-    result = replace_env_vars(result)
-    return result
 
 def replace_env_vars(d):
     tmpdir = os.environ['TMPDIR'] #HACK
