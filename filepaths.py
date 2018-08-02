@@ -84,7 +84,7 @@ def get_file_paths(config, preprocess_mode):
     fpath_word_frequencies = os.path.join(output_dir_statistics, 'word_frequencies.png')
     fpath_sentence_lengths = os.path.join(output_dir_statistics, 'sentence_lengths.png')
     
-    return {
+    result = {
         'captions_train' : fpaths_captions_train,
         'captions_val' : fpaths_captions_val,
         'captions_test' : fpaths_captions_test,
@@ -114,6 +114,12 @@ def get_file_paths(config, preprocess_mode):
         'word_frequencies' : fpath_word_frequencies,
         'sentence_lengths' : fpath_sentence_lengths
     }
+    result = replace_env_vars(result)
+    return result
+
+def replace_env_vars(d):
+    tmpdir = os.environ['TMPDIR'] #HACK
+    return {k : v.replace('$TMPDIR', tmpdir) for k, v in d.items()}
 
 def fpaths_image_split(dir_images, fpath_image_split, is_encoded = False): 
     fnames_image_split = read_lines(fpath_image_split)
