@@ -3,7 +3,7 @@ import glob
 
 from ncg.io.file_helpers import read_lines
 
-def get_file_paths(config):
+def get_file_paths(config, preprocess_mode):
     dataset = config["dataset"]
     output_dir = config["output_dir"]
     data_dir = os.path.join("data", dataset)
@@ -12,20 +12,33 @@ def get_file_paths(config):
     output_dir_preprocess = config.get("output_dir_preprocess", output_dir_preprocess_default)
     fname_vocab = config['fname_vocab']
     
-    # preprocess
     fpattern_captions_train = os.path.join(captions_dir, config['fpattern_captions_train'])
     fpattern_captions_val = os.path.join(captions_dir, config['fpattern_captions_val'])
     fpattern_captions_test = os.path.join(captions_dir, config['fpattern_captions_test'])
     fpaths_captions_train = glob.glob(fpattern_captions_train)
     fpaths_captions_val = glob.glob(fpattern_captions_val)
     fpaths_captions_test = glob.glob(fpattern_captions_test)
-    fpaths_caption_vectors_train = [
-        pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_train]
-    fpaths_caption_vectors_val = [
-        pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_val]
-    fpaths_caption_vectors_test = [
-        pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_test]
+
+    # preprocess
+    if preprocess_mode: # HACK
+        fpaths_caption_vectors_train = [
+            pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_train]
+        fpaths_caption_vectors_val = [
+            pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_val]
+        fpaths_caption_vectors_test = [
+            pt_fpath_out(output_dir_preprocess, fpath) for fpath in fpaths_captions_test]
+    else:
+        fpattern_captions_train = os.path.join(
+            output_dir_preprocess, config['fpattern_captions_train'] + ".pt")
+        fpattern_captions_val = os.path.join(
+            output_dir_preprocess, config['fpattern_captions_val'] + ".pt")
+        fpattern_captions_test = os.path.join(
+            output_dir_preprocess, config['fpattern_captions_test'] + ".pt")
+        fpaths_caption_vectors_train = glob.glob(fpattern_captions_train)
+        fpaths_caption_vectors_val = glob.glob(fpattern_captions_val)
+        fpaths_caption_vectors_test = glob.glob(fpattern_captions_test)
     fpath_vocab = os.path.join(output_dir_preprocess, fname_vocab)
+    
 
     # train
     #### OLD
