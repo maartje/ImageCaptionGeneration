@@ -117,7 +117,7 @@ def get_file_paths(config, preprocess_mode):
     }
 
 def replace_env_vars(d):
-    tmpdir = os.environ['TMPDIR'] #HACK
+    tmpdir = os.environ.get('TMPDIR', '$TMPDIR') #HACK
     return {k : v.replace('$TMPDIR', tmpdir) for k, v in d.items()}
 
 def fpaths_image_split(dir_images, fpath_image_split, is_encoded = False): 
