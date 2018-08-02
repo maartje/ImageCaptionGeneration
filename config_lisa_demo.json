@@ -16,7 +16,7 @@
     },
 	"train" : {
 		"learning_rate" : 1.0,
-		"max_epochs" : 1,
+		"max_epochs" : 200,
 		"max_hours" : 0.5,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 64, "shuffle" : true},
