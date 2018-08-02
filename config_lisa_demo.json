@@ -15,7 +15,7 @@
 		"model" : "show_tell"
     },
 	"train" : {
-		"learning_rate" : 1.0,
+		"learning_rate" : 5.0,
 		"max_epochs" : 200,
 		"max_hours" : 0.5,
 		"hidden_size" : 512,
