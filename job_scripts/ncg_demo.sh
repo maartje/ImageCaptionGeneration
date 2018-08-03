@@ -12,8 +12,8 @@ module load CUDA
 module load cuDNN
 
 #Copy input data to scratch and create output directory
-mkdir "$TMPDIR"/output
-cp -r "$HOME"/ImageCaptionGeneration/flickr_demo "$TMPDIR"
+mkdir "$TMPDIR"
+cp "$HOME"/ImageCaptionGeneration/flickr_demo/preprocess/* "$TMPDIR"
 
 #Run program
 cd ImageCaptionGeneration

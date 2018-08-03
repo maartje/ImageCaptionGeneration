@@ -41,7 +41,6 @@ def get_configuration(section, description = ''):
     config['general'].update(opt_dict)
     config[section].update(opt_dict)
     
-    preprocess_mode = (section == 'preprocess')
-    filepaths = get_file_paths(config['general'], preprocess_mode)
+    filepaths = get_file_paths(config['general'])
     return config[section], filepaths
 
