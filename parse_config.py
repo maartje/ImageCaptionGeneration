@@ -16,15 +16,16 @@ def options(parser, section):
         help = "Path to config file in JSON format",
         default = 'config_demo.json')
     parser.add_argument(
-        '--output_dir', 
-        help = "Overwrites the output dir set in the config file")
+        '--main_dir', 
+        help = "Overwrites the config setting for the main directory containing input and output data")
     parser.add_argument(
-        '--output_dir_train', 
-        help = "Overwrites the output dir train set in the config file")
+        '--model_dir', 
+        help = "Overwrites the config setting for the model and train regime specific output")
     if section == 'train':
         parser.add_argument(
             '--learning_rate', 
-            help = "Overwrites the learning rate set in the config file")
+            type = float,
+            help = "Overwrites the config setting for the learning rate")
     
 def load_config(fpath_config):
     with open(fpath_config) as f:
@@ -38,8 +39,8 @@ def get_configuration(section, description = ''):
     
     opt_dict = vars(opt)
     opt_dict = {k : v for k, v in opt_dict.items() if not (v is None)}
-    config['general'].update(opt_dict)
-    config[section].update(opt_dict)
+    config['general'].update({ k:v for k, v in opt_dict.items() if k in config['general']})
+    config[section].update({ k:v for k, v in opt_dict.items() if k in config[section]})
     
     filepaths = get_file_paths(config['general'])
     return config[section], filepaths
