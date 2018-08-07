@@ -5,6 +5,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def predict(decoder, predict_data, SOS_index, max_length):
     results = []
     decoder.to(device)
+    decoder.eval()
     with torch.no_grad():
         for batch in predict_data:
             image_features = batch.to(device)

@@ -14,15 +14,19 @@ class DecoderRNN(nn.Module):
         self.lstm = nn.LSTM(hidden_size, hidden_size, batch_first=True)
         self.out = nn.Linear(hidden_size, output_size)
         self.logsoftmax = nn.LogSoftmax(dim=2)
+        
+        self.dropout_hidden = nn.Dropout(p = 0.3)
+        self.dropout_embedding = nn.Dropout(p = 0.3)
+        self.dropout_lstm = nn.Dropout(p = 0.3)
 
     def forward(self, hidden, input_data, seq_lengths):
-        output = self.embedding(input_data)
+        output = self.dropout_embedding(self.embedding(input_data))
         packed = pack_padded_sequence (
             output, seq_lengths, batch_first=True)
-        output, hidden = self.lstm(packed, hidden)
+        output, hidden = self.lstm(packed, self.dropout_hidden(hidden))
         unpacked = pad_packed_sequence(
             output, batch_first=True, padding_value=self.pad_index, total_length=None)
-        output = self.out(unpacked[0])
+        output = self.out(self.dropout_lstm(unpacked[0]))
         output = self.logsoftmax(output)
         return output, hidden
         

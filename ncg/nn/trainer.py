@@ -19,6 +19,7 @@ class Trainer:
                    fn_stop_criterion,
                    fn_batch_listeners = [], fn_epoch_listeners = []):
         self.decoder.to(self.device)
+        self.decoder.train()
         self.loss_criterion.to(self.device)
         self.set_optimizer()
         
@@ -62,6 +63,7 @@ class Trainer:
     def calculate_validation_loss(self, val_data):
         # TODO: use teacher forcing or not?
         # TODO: take token length into account?
+        self.decoder.eval()
         with torch.no_grad():
             total_loss = 0.
             total_tokens = 0
