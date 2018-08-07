@@ -28,7 +28,7 @@ class TestTrain(unittest.TestCase):
         
     def check_train_iter(self, decoder, lr, do_predict = True):
         loss_criterion = nn.NLLLoss()
-        optimizer = optim.SGD(decoder.parameters(), lr = lr)
+        optimizer = 'SGD'
         ds = MockEmbeddingDescriptionDataset(range(3), range(1))
         collate = lambda b: collate_image_features_descriptions(b, 1000)
         dl_params = {
@@ -42,7 +42,7 @@ class TestTrain(unittest.TestCase):
         def stop_criterion(epoch):
             return epoch > max_epochs
         
-        trainer = Trainer(decoder, loss_criterion, optimizer)
+        trainer = Trainer(decoder, loss_criterion, optimizer, lr)
 
         trainer.train_iter(train_data, stop_criterion, 
                    fn_batch_listeners = [lambda e,i,s,l: losses.append(l)])        

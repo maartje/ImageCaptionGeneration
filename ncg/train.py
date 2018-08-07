@@ -1,8 +1,6 @@
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils import data
 import torch
 import torch.nn as nn
-from torch import optim
 from datetime import datetime, timedelta
 from torch.nn.utils import clip_grad_norm_
 
@@ -21,9 +19,9 @@ def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
           hidden_size, fpath_vocab, max_length,
           fpath_loss_data_out, fpath_bleu_scores_out, fpath_model, fpath_model_best, 
-          learning_rate = 0.005, max_epochs = 50, max_hours = 72, 
+          optimizer, learning_rate, max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
-          print_loss_every = 1000):
+          print_loss_every = 1000, fpath_out = None):
 
     # text info
     text_mapper = torch.load(fpath_vocab)
@@ -46,21 +44,12 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
     
     # optimization
-    optimizer = optim.SGD(decoder.parameters(), lr = learning_rate)
     loss_criterion = nn.NLLLoss(ignore_index = PAD_index)
-    scheduler = ReduceLROnPlateau(
-        optimizer, 
-        mode = 'min', 
-        factor = 0.5, 
-        patience = 5, 
-        verbose=True,
-        min_lr = 0.001 * learning_rate
-    )
     if clip:
         clip_grad_norm_(decoder.parameters(), clip)
     
     # trainer    
-    trainer = Trainer(decoder, loss_criterion, optimizer, scheduler)
+    trainer = Trainer(decoder, loss_criterion, optimizer, learning_rate)
 
     # loss collection
     loss_collector = LossCollector(
@@ -73,22 +62,37 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     bleu_collector = BleuCollector(
         dl_image_features_val, references, text_mapper, max_length, 
         len(dataset_train), fpath_bleu_scores_out)
-
-    # reporting
-    output_writer = TrainOutputWriter(loss_collector, bleu_collector, print_loss_every, start_time) 
     
     # save intermediate results
     model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best)
         
+    
+    # writing log output
+    f_out = open(fpath_out, 'a') if fpath_out else None
+    output_writer = TrainOutputWriter(
+        loss_collector, 
+        bleu_collector, 
+        print_loss_every, 
+        start_time,
+        f_out) 
+    
+    # print config
+    print('TRAIN CONFIG: ', file=f_out)
+    print('#examples train', len(dataset_train), 
+          '#captions per image', len(fpaths_captions_train), file=f_out)
+    print('#examples valid', len(dataset_val), 
+          '#captions per image', len(fpaths_captions_val), file=f_out)
+    print('CUDA available: ', torch.cuda.is_available(), file=f_out)
+    print('model: ', 'show_and_tell', file=f_out)
+    print('optimizer', 'SGD', file=f_out)
+    print('learning rate', learning_rate, file=f_out)
+
     # stopper
     def stop_criterion(epoch):
         if datetime.now() > end_time:
-            print(f'exceeded max hours {max_hours}')
+            print(f'exceeded max hours {max_hours}', file=f_out)
             return True
         return epoch > max_epochs
-    
-    # print cuda available
-    print('CUDA available: ', torch.cuda.is_available())
     
     # train model and 
     # collect validation loss data

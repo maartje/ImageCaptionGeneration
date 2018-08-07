@@ -40,22 +40,31 @@ def get_file_paths(config):
     fpath_best_model = os.path.join(main_dir, 'train', model_dir, f'{config["model"]}_best.pt')
 
     # predict
-    fpath_predictions_val = os.path.join(main_dir, 'predictions_val.txt')
-    fpath_predictions_test = os.path.join(main_dir, 'predictions_test.txt')
-    fpath_predictions_train = os.path.join(main_dir, 'predictions_train.txt')
+    fpath_predictions_val = os.path.join(main_dir, 'predict', model_dir, 'predictions_val.txt')
+    fpath_predictions_test = os.path.join(main_dir, 'predict', model_dir, 'predictions_test.txt')
+    fpath_predictions_train = os.path.join(main_dir, 'predict', model_dir, 'predictions_train.txt')
     
     # report
-    fpath_plot_epoch_loss = os.path.join(main_dir, 'epoch_losses.png')
-    fpath_plot_batch_loss = os.path.join(main_dir, 'batch_losses.png')
-    fpath_plot_bleu = os.path.join(main_dir, 'bleu.png')
-    fpath_bleu_val = os.path.join(main_dir, 'BLEU_val.txt')
-    fpath_bleu_test = os.path.join(main_dir, 'BLEU_test.txt')
-    fpath_bleu_train = os.path.join(main_dir, 'BLEU_train.txt')
-    fpath_bleu_human_test = os.path.join(main_dir, 'human_BLEU_test.txt')
+    fpath_plot_epoch_loss = os.path.join(main_dir, 'report', model_dir, 'epoch_losses.png')
+    fpath_plot_batch_loss = os.path.join(main_dir, 'report', model_dir, 'batch_losses.png')
+    fpath_plot_bleu = os.path.join(main_dir, 'report', model_dir, 'bleu.png')
+    fpath_bleu_val = os.path.join(main_dir, 'report', model_dir, 'BLEU_val.txt')
+    fpath_bleu_test = os.path.join(main_dir, 'report', model_dir, 'BLEU_test.txt')
+    fpath_bleu_train = os.path.join(main_dir, 'report', model_dir, 'BLEU_train.txt')
+    fpath_bleu_human_test = os.path.join(main_dir, 'report', model_dir, 'human_BLEU_test.txt')
     
     # statistics
-    fpath_word_frequencies = os.path.join(main_dir, 'word_frequencies.png')
-    fpath_sentence_lengths = os.path.join(main_dir, 'sentence_lengths.png')
+    fpath_word_frequencies = os.path.join(main_dir, 'statistics', 'word_frequencies.png')
+    fpath_sentence_lengths = os.path.join(main_dir, 'statistics', 'sentence_lengths.png')
+
+    # logging
+    fpath_train_out = None
+    fpath_predict_out = None
+    fpath_report_out = None
+    if config.get('fname_out'):
+        fpath_train_out = os.path.join(main_dir, 'train', model_dir, config['fname_out'])
+        fpath_predict_out = os.path.join(main_dir, 'predict', model_dir, config['fname_out'])
+        fpath_report_out = os.path.join(main_dir, 'report', model_dir, config['fname_out'])
     
     return {
         'captions_train' : fpaths_captions_train,
@@ -68,13 +77,17 @@ def get_file_paths(config):
         'image_features_train' : fpath_im_features_train,
         'image_features_val': fpath_im_features_val,
         'image_features_test': fpath_im_features_test,
+        
         'losses' : fpath_losses,
         'bleu_scores' : fpath_bleu_scores,
         'model' : fpath_model,
         'best_model' : fpath_best_model,
+        'train_out' : fpath_train_out,
+        
         'predictions_test' : fpath_predictions_test,
         'predictions_val' : fpath_predictions_val,
         'predictions_train' : fpath_predictions_train,
+        'predict_out' : fpath_predict_out,
         
         'plot_epoch_loss' : fpath_plot_epoch_loss,
         'plot_batch_loss' : fpath_plot_batch_loss,
@@ -83,6 +96,7 @@ def get_file_paths(config):
         'bleu_test' : fpath_bleu_test,
         'bleu_train' : fpath_bleu_train,
         'bleu_human_test' : fpath_bleu_human_test,
+        'report_out' : fpath_report_out,
         
         'word_frequencies' : fpath_word_frequencies,
         'sentence_lengths' : fpath_sentence_lengths

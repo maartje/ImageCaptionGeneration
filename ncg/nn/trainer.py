@@ -1,19 +1,26 @@
 import torch
+from torch.optim.lr_scheduler import MultiStepLR
+from torch import optim
 
 class Trainer:
 
-    def __init__(self, decoder, loss_criterion, optimizer, lr_scheduler = None):
+    def __init__(self, decoder, loss_criterion, optimizer_type, lr):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.decoder = decoder
         self.loss_criterion = loss_criterion 
-        self.optimizer = optimizer
-        self.lr_scheduler = lr_scheduler
+        self.optimizer_type = optimizer_type
+        self.learning_rate = lr
+        
+        # construct after move model to cuda
+        self.lr_scheduler = None
+        self.optimizer = None 
 
     def train_iter(self, train_data, 
                    fn_stop_criterion,
                    fn_batch_listeners = [], fn_epoch_listeners = []):
         self.decoder.to(self.device)
         self.loss_criterion.to(self.device)
+        self.set_optimizer()
         
         for fn_on_epoch_completed in fn_epoch_listeners:
             fn_on_epoch_completed(-1, self)
@@ -65,4 +72,8 @@ class Trainer:
                 total_tokens += token_length
         return total_loss / total_tokens
 
-
+    def set_optimizer(self):
+        if self.optimizer_type == 'SGD':
+            self.optimizer = optim.SGD(self.decoder.parameters(), lr = self.learning_rate)
+            self.scheduler = MultiStepLR(self.optimizer, milestones = list(range(15,31)), gamma=0.5)
+    
