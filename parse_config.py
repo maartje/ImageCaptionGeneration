@@ -26,6 +26,9 @@ def options(parser, section):
             '--learning_rate', 
             type = float,
             help = "Overwrites the config setting for the learning rate")
+        parser.add_argument(
+            '--optimizer', 
+            help = "Overwrites the config setting for the optimizer")
     
 def load_config(fpath_config):
     with open(fpath_config) as f:

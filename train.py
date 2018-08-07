@@ -30,7 +30,7 @@ def train_model(config, filepaths):
           filepaths['image_features_val'], filepaths['caption_vectors_val'], 
           config['hidden_size'], filepaths['vocab'], config['max_length'],
           filepaths['losses'], filepaths['bleu_scores'], filepaths['model'], filepaths['best_model'],
-          optimizer = 'SGD', learning_rate = config['learning_rate'], 
+          optimizer = config['optimizer'], learning_rate = config['learning_rate'], 
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 
           dl_params_train = config['dl_params_train'], dl_params_val = config['dl_params_val'],
           clip = config['clip'], fpath_out = filepaths.get('train_out'))

@@ -7,9 +7,11 @@ cp -r "$HOME"/ImageCaptionGeneration/flickr_demo/predict "$TMPDIR"
 cd "$HOME"/ImageCaptionGeneration
 python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_sgd_1 &
 
-python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_sgd_05 &
+python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_adam_min5 &
 
-python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_sgd_2 &
+python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_adam_min4 &
+
+python3 -W ignore report.py --config "$HOME"/ImageCaptionGeneration/configs/config_maartje.json --model_dir show_tell_adam_min3 &
 
 wait
 

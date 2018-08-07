@@ -76,4 +76,6 @@ class Trainer:
         if self.optimizer_type == 'SGD':
             self.optimizer = optim.SGD(self.decoder.parameters(), lr = self.learning_rate)
             self.scheduler = MultiStepLR(self.optimizer, milestones = list(range(15,31)), gamma=0.5)
+        if self.optimizer_type == 'ADAM':
+            self.optimizer = optim.Adam(self.decoder.parameters(), lr = self.learning_rate)
     

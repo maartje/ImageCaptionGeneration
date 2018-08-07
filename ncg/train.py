@@ -84,7 +84,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
           '#captions per image', len(fpaths_captions_val), file=f_out)
     print('CUDA available: ', torch.cuda.is_available(), file=f_out)
     print('model: ', 'show_and_tell', file=f_out)
-    print('optimizer', 'SGD', file=f_out)
+    print('optimizer', optimizer, file=f_out)
     print('learning rate', learning_rate, file=f_out)
 
     # stopper
