@@ -2,7 +2,6 @@ from parse_config import get_configuration
 
 from ncg.predict import predict
 
-from filepaths import fpaths_image_split
 from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 
 def predict_image_descriptions(config, filepaths):

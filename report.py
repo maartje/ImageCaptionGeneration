@@ -2,6 +2,7 @@ from helpers import check_files_exist, check_files_not_exist, ensure_paths_exist
 from parse_config import get_configuration
 
 from ncg.report import plot_losses, plot_bleu_scores, calculate_metrics, compare_with_human_performance
+#import os
 
 def report(config, filepaths):
     ensure_paths_exist([filepaths['plot_epoch_loss']])
@@ -26,6 +27,8 @@ def main():
 
 
 if __name__ == "__main__":
+#    current_dir = os.path.dirname(__file__)
+#    print(os.path.join(current_dir, 'ncg', 'scripts', 'multi-bleu.perl'))
     main()
      
       
