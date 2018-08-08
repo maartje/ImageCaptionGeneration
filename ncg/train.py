@@ -64,7 +64,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         len(dataset_train), fpath_bleu_scores_out)
     
     # save intermediate results
-    model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best)
+    model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best, f_out)
         
     
     # writing log output

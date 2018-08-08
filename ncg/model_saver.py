@@ -3,11 +3,12 @@ import os
 
 class ModelSaver():
 
-    def __init__(self, model, bleu_collector, fpath_model, fpath_model_best):
+    def __init__(self, model, bleu_collector, fpath_model, fpath_model_best, f_out):
         self.model = model
         self.bleu_collector = bleu_collector
         self.fpath_model = fpath_model
         self.fpath_model_best = fpath_model_best
+        self.f_out = f_out
         
     def on_epoch_completed(self, epoch, trainer):
         torch.save(self.model, self.fpath_model % epoch)
@@ -19,7 +20,9 @@ class ModelSaver():
             last_bleu = self.bleu_collector.bleu_val[-1]
             if last_bleu == max_bleu:
                 torch.save(self.model, self.fpath_model_best)
-                print (f"Best model so far saved on epoch '{epoch}' with BLEU score '{last_bleu}'")
+                print (
+                    f"Best model so far saved on epoch '{epoch}' with BLEU score '{last_bleu}'", 
+                    file = self.f_out)
                 
 
 
