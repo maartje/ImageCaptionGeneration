@@ -2,9 +2,12 @@ import torch
 from ncg.nn.predict import predict as model_predict
 from torch.utils import data
 from ncg.io.image_features_dataset import ImageFeaturesDataset
+from datetime import datetime
 
 def predict(fpath_imfeats, fpath_decoder, fpath_vocab,
             fpath_save_predictions, max_length = 50, dl_params = {'batch_size' : 256}):
+
+    start = datetime.now()
 
     # create models and data
     decoder = torch.load(fpath_decoder)
@@ -22,3 +25,6 @@ def predict(fpath_imfeats, fpath_decoder, fpath_vocab,
     # save to disk
     open(fpath_save_predictions, "w").write('\n'.join(predicted_sentences))
     #open(f'{fpath_save_predictions}.debug', "w").write('\n'.join(predicted_sentences_debug))
+    
+    print('START', start, 'END', datetime.now(), fpath_decoder)
+

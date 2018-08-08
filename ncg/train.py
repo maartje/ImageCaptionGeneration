@@ -92,6 +92,8 @@ def train(fpath_imfeats_train, fpaths_captions_train,
             print(f'exceeded max hours {max_hours}', file=f_out)
             return True
         return epoch > max_epochs
+
+    start_training = datetime.now()
     
     # train model and 
     # collect validation loss data
@@ -105,4 +107,9 @@ def train(fpath_imfeats_train, fpaths_captions_train,
                )
                
     
+    end_training = datetime.now()
+    print(file=f_out)
+    print('   START', start_training, file=f_out)
+    print('     END', end_training, file=f_out)
+    print('DURATION', format_duration(start_training, end_training), file=f_out)
 
