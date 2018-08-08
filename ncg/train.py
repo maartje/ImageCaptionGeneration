@@ -61,11 +61,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     references = [torch.load(fpath) for fpath in fpaths_captions_val]
     bleu_collector = BleuCollector(
         dl_image_features_val, references, text_mapper, max_length, 
-        len(dataset_train), fpath_bleu_scores_out)
-    
-    # save intermediate results
-    model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best, f_out)
-        
+        len(dataset_train), fpath_bleu_scores_out)        
     
     # writing log output
     f_out = open(fpath_out, 'a') if fpath_out else None
@@ -75,7 +71,10 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         print_loss_every, 
         start_time,
         f_out) 
-    
+        
+    # save intermediate results
+    model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best, f_out)
+
     # print config
     print('TRAIN CONFIG: ', file=f_out)
     print('#examples train', len(dataset_train), 
