@@ -1,7 +1,7 @@
 #Set job requirements
 #PBS -S /bin/bash
 #PBS -lnodes=1
-#PBS -lwalltime=0:05:00
+#PBS -lwalltime=0:15:00
 #PBS -qgpu
 
 #Loading modules
