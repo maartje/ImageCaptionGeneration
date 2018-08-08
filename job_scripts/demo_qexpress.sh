@@ -26,6 +26,8 @@ python3 -W ignore report.py --config configs/config_lisa.json --model_dir demo_q
 
 
 #Copy output data to persistent disk 
-cp -r "$TMPDIR" "$HOME"/ImageCaptionGeneration/flickr_demo
+cp -r "$TMPDIR"/train "$HOME"/ImageCaptionGeneration/flickr_demo
+cp -r "$TMPDIR"/predict "$HOME"/ImageCaptionGeneration/flickr_demo
+cp -r "$TMPDIR"/report "$HOME"/ImageCaptionGeneration/flickr_demo
 
 
