@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 class DecoderRNN(nn.Module):
-    def __init__(self, hidden_size, output_size, pad_index):
+    def __init__(self, hidden_size, output_size, pad_index, drop_out):
         super(DecoderRNN, self).__init__()
         self.hidden_size = hidden_size
         self.output_size = output_size
@@ -15,15 +15,14 @@ class DecoderRNN(nn.Module):
         self.out = nn.Linear(hidden_size, output_size)
         self.logsoftmax = nn.LogSoftmax(dim=2)
         
-        self.dropout_hidden = nn.Dropout(p = 0.3)
-        self.dropout_embedding = nn.Dropout(p = 0.3)
-        self.dropout_lstm = nn.Dropout(p = 0.3)
+        self.dropout_embedding = nn.Dropout(p = drop_out)
+        self.dropout_lstm = nn.Dropout(p = drop_out)
 
     def forward(self, hidden, input_data, seq_lengths):
         output = self.dropout_embedding(self.embedding(input_data))
         packed = pack_padded_sequence (
             output, seq_lengths, batch_first=True)
-        output, hidden = self.lstm(packed, self.dropout_hidden(hidden))
+        output, hidden = self.lstm(packed, hidden)
         unpacked = pad_packed_sequence(
             output, batch_first=True, padding_value=self.pad_index, total_length=None)
         output = self.out(self.dropout_lstm(unpacked[0]))
@@ -31,14 +30,16 @@ class DecoderRNN(nn.Module):
         return output, hidden
         
 class ShowTell(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, pad_index):
+    def __init__(self, input_size, hidden_size, output_size, pad_index, drop_out = 0.3):
         super(ShowTell, self).__init__()
         self.encoder = nn.Linear(input_size, hidden_size)
-        self.decoder = DecoderRNN(hidden_size, output_size, pad_index)
+        self.decoder = DecoderRNN(hidden_size, output_size, pad_index, drop_out)
+
+        self.dropout_hidden = nn.Dropout(p = drop_out)
     
     def forward(self, features, input_data, seq_lengths, state = None, device=None):
         if state is None:
-            h_0 = F.relu(self.encoder(features))
+            h_0 = self.dropout_hidden(F.relu(self.encoder(features)))
             c_0 = torch.zeros(h_0.size()) # TODO GPU
             if not (device is None):
                 c_0 = c_0.to(device)

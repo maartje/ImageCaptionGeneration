@@ -19,7 +19,6 @@ class Trainer:
                    fn_stop_criterion,
                    fn_batch_listeners = [], fn_epoch_listeners = []):
         self.decoder.to(self.device)
-        self.decoder.train()
         self.loss_criterion.to(self.device)
         self.set_optimizer()
         
@@ -27,6 +26,7 @@ class Trainer:
             fn_on_epoch_completed(-1, self)
         epoch = 0
         while not fn_stop_criterion(epoch):
+            self.decoder.train()
             total_train_loss = 0
             for batch_index, batch in enumerate(train_data):
                 token_loss = self.train(batch)

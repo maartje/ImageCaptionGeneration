@@ -23,7 +23,7 @@ class TestTrain(unittest.TestCase):
         show_tell = ShowTell(
             MockEmbeddingDescriptionDataset.encoding_size, 
             hidden_size, 
-            MockEmbeddingDescriptionDataset.vocab_size, -1)
+            MockEmbeddingDescriptionDataset.vocab_size, -1, 0.005)
         self.check_train_iter(show_tell, 1.5)
         
     def check_train_iter(self, decoder, lr, do_predict = True):
@@ -50,10 +50,10 @@ class TestTrain(unittest.TestCase):
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
         
-#        print()
-#        print(losses_1)
-#        print(losses_2)
-#        print(losses_3)
+        print()
+        print(losses_1)
+        print(losses_2)
+        print(losses_3)
         
         is_decreasing = lambda l: all(l[i] > l[i+1] for i in range(len(l)-1))
         self.assertTrue(is_decreasing(losses_1))
