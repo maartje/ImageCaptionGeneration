@@ -18,8 +18,8 @@
 	"train" : {
 	    "optimizer" : "ADAM",
 		"learning_rate" : 0.001,
-		"max_epochs" : 6,
-		"max_hours" : 0.5,
+		"max_epochs" : 31,
+		"max_hours" : 0.9,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
 		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},

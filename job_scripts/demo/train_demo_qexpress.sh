@@ -19,6 +19,7 @@ python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/Image
 for i in {1..12};
 do
     sleep 3
+    vmstat
     nvidia-smi
 done
 

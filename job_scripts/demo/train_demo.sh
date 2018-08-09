@@ -22,9 +22,10 @@ CUDA_VISIBLE_DEVICES=2 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py
 
 CUDA_VISIBLE_DEVICES=3 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_lisa.json --model_dir show_tell_adam_min3 --learning_rate 0.001 &
 
-for i in {1..12};
+for i in {1..100};
 do
     sleep 10
+    vmstat
     nvidia-smi
 done
 
