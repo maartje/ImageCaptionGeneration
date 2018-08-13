@@ -19,9 +19,10 @@ def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
           hidden_size, fpath_vocab, max_length,
           fpath_loss_data_out, fpath_bleu_scores_out, fpath_model, fpath_model_best, 
-          optimizer, learning_rate, max_epochs = 50, max_hours = 72, 
+          optimizer, learning_rate, lr_decay_start = 15, lr_decay_end = 30,
+          max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
-          print_loss_every = 1000, fpath_out = None):
+          print_loss_every = 1000, fpath_out = None, fpath_model_resume = None):
 
     # text info
     text_mapper = torch.load(fpath_vocab)
@@ -42,15 +43,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     # model
     encoding_size = dataset_val[0][0].size()[0]
     decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
-    
-    # optimization
-    loss_criterion = nn.NLLLoss(ignore_index = PAD_index)
-    if clip:
-        clip_grad_norm_(decoder.parameters(), clip)
-    
-    # trainer    
-    trainer = Trainer(decoder, loss_criterion, optimizer, learning_rate)
-
+        
     # loss collection
     loss_collector = LossCollector(
         len(dataset_train), dl_params_train['batch_size'], fpath_loss_data_out, dataloader_val)  
@@ -63,17 +56,39 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         dl_image_features_val, references, text_mapper, max_length, 
         len(dataset_train), fpath_bleu_scores_out)        
     
-    # writing log output
     f_out = open(fpath_out, 'a') if fpath_out else None
+    if fpath_model_resume:
+        (_, bleu_val) = torch.load(fpath_bleu_scores_out)
+        losses = torch.load(fpath_loss_data_out)
+        (_, _, _, epoch_losses_train, _, epoch_losses_val) = losses
+        decoder = torch.load(fpath_model_resume) #TODO
+        
+        bleu_collector.bleu_val = bleu_val
+        loss_collector.epoch_losses_val = epoch_losses_val
+        loss_collector.epoch_losses_train = epoch_losses_train
+        print (file=f_out)
+        print ('Resume ...', file=f_out)
+        print (file=f_out)
+
+    # writing log output
     output_writer = TrainOutputWriter(
         loss_collector, 
         bleu_collector, 
         print_loss_every, 
         start_time,
         f_out) 
-        
+
     # save intermediate results
     model_saver = ModelSaver(decoder, bleu_collector, fpath_model, fpath_model_best, f_out)
+    
+    # optimization
+    loss_criterion = nn.NLLLoss(ignore_index = PAD_index)
+    if clip:
+        clip_grad_norm_(decoder.parameters(), clip)
+        
+    # trainer    
+    trainer = Trainer(decoder, loss_criterion, optimizer, learning_rate, 
+                      lr_decay_start, lr_decay_end)
 
     # print config
     print('TRAIN CONFIG: ', file=f_out)
@@ -85,6 +100,7 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     print('model: ', 'show_and_tell', file=f_out)
     print('optimizer', optimizer, file=f_out)
     print('learning rate', learning_rate, file=f_out)
+    print('learning rate decay', lr_decay_start, lr_decay_end, file=f_out)
 
     # stopper
     def stop_criterion(epoch):

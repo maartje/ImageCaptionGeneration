@@ -4,16 +4,22 @@ from torch import optim
 
 class Trainer:
 
-    def __init__(self, decoder, loss_criterion, optimizer_type, lr):
+    def __init__(self, decoder, loss_criterion, optimizer_type, lr,
+            lr_decay_start = 15, lr_decay_end = 30):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.decoder = decoder
         self.loss_criterion = loss_criterion 
+
+        # construct after move model to cuda
+        self.scheduler = None
+        self.optimizer = None 
+        
+        # used for configuring the optimizer
         self.optimizer_type = optimizer_type
         self.learning_rate = lr
+        self.lr_decay_start = lr_decay_start 
+        self.lr_decay_end = lr_decay_end
         
-        # construct after move model to cuda
-        self.lr_scheduler = None
-        self.optimizer = None 
 
     def train_iter(self, train_data, 
                    fn_stop_criterion,
@@ -36,8 +42,8 @@ class Trainer:
                     fn_on_batch_completed(epoch, batch_index, batch_size, token_loss)
             for fn_on_epoch_completed in fn_epoch_listeners:
                 fn_on_epoch_completed(epoch, self)
-            if not self.lr_scheduler is None: 
-                self.lr_scheduler.step(total_train_loss)
+            if not self.scheduler is None: 
+                self.scheduler.step()
             epoch += 1
         
     def train(self, batch):
@@ -74,10 +80,14 @@ class Trainer:
                 total_tokens += token_length
         return total_loss / total_tokens
 
+    # TODO: move to separate classes (SGD_builder, adam_builder)
     def set_optimizer(self):
         if self.optimizer_type == 'SGD':
             self.optimizer = optim.SGD(self.decoder.parameters(), lr = self.learning_rate)
-            self.scheduler = MultiStepLR(self.optimizer, milestones = list(range(15,31)), gamma=0.5)
+            self.scheduler = MultiStepLR(
+                self.optimizer, 
+                milestones = list(range(self.lr_decay_start, self.lr_decay_end)), 
+                gamma = 0.5)
         if self.optimizer_type == 'ADAM':
             self.optimizer = optim.Adam(self.decoder.parameters(), lr = self.learning_rate)
     
