@@ -20,7 +20,7 @@
 		"model" : "show_attend_tell",
 		"alpha_c" : 1.0,
 		"max_epochs" : 6,
-		"max_hours" : 1,
+		"max_hours" : 2.8,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
 		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},
