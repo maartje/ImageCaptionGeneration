@@ -27,22 +27,24 @@ def train_model(config, filepaths):
     if config.get('fname_resume'):
         dir_model_resume = os.path.dirname(filepaths['model'])
         fpath_model_resume = os.path.join(dir_model_resume, config.get('fname_resume'))
+        check_files_exist([fpath_model_resume])
 
     check_files_exist([filepaths['image_features_train'], 
-                       filepaths['image_features_val'],
-                       fpath_model_resume])
+                       filepaths['image_features_val']])
     #check_files_not_exist([filepaths['losses'], filepaths['model']])
     ensure_paths_exist([filepaths['losses'], filepaths['model']])
     
     train(filepaths['image_features_train'], filepaths['caption_vectors_train'],
           filepaths['image_features_val'], filepaths['caption_vectors_val'], 
+          config["model"],
           config['hidden_size'], filepaths['vocab'], config['max_length'],
           filepaths['losses'], filepaths['bleu_scores'], filepaths['model'], filepaths['best_model'],
           optimizer = config['optimizer'], learning_rate = config['learning_rate'], 
-          lr_decay_start = config['lr_decay']['start'], lr_decay_end = config['lr_decay']['end'],
+          lr_decay = config['lr_decay'],
           max_epochs = config['max_epochs'], max_hours = config['max_hours'], 
           dl_params_train = config['dl_params_train'], dl_params_val = config['dl_params_val'],
-          clip = config['clip'], fpath_out = filepaths.get('train_out'), 
+          clip = config['clip'], alpha_c = config['alpha_c'],
+          fpath_out = filepaths.get('train_out'), 
           fpath_model_resume = fpath_model_resume)
 
      

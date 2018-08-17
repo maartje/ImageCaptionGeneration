@@ -5,7 +5,7 @@ from torch import optim
 class Trainer:
 
     def __init__(self, decoder, loss_criterion, optimizer_type, lr,
-            lr_decay_start = 15, lr_decay_end = 30):
+            lr_decay = [], alpha_c = 1.):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.decoder = decoder
         self.loss_criterion = loss_criterion 
@@ -17,8 +17,8 @@ class Trainer:
         # used for configuring the optimizer
         self.optimizer_type = optimizer_type
         self.learning_rate = lr
-        self.lr_decay_start = lr_decay_start 
-        self.lr_decay_end = lr_decay_end
+        self.lr_decay = lr_decay
+        self.alpha_c = alpha_c
         
 
     def train_iter(self, train_data, 
@@ -60,10 +60,14 @@ class Trainer:
         caption_targets = caption_targets.to(self.device)
         caption_lengths = caption_lengths.to(self.device)
 
-        output_probs, _ = self.decoder(
-            image_features.unsqueeze(0), caption_inputs, caption_lengths, device = self.device
+        output_probs, *k = self.decoder(
+            image_features, caption_inputs, caption_lengths, device = self.device
         )    
         loss = self.loss_criterion(output_probs.permute(0, 2, 1), caption_targets)
+        if len(k) > 1: # HACK
+            # Add doubly stochastic attention regularization for show_attend_tell
+            alphas = k[1]
+            loss += self.alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
         return loss
 
     def calculate_validation_loss(self, val_data):
@@ -86,7 +90,7 @@ class Trainer:
             self.optimizer = optim.SGD(self.decoder.parameters(), lr = self.learning_rate)
             self.scheduler = MultiStepLR(
                 self.optimizer, 
-                milestones = list(range(self.lr_decay_start, self.lr_decay_end)), 
+                milestones = self.lr_decay, 
                 gamma = 0.5)
         if self.optimizer_type == 'ADAM':
             self.optimizer = optim.Adam(self.decoder.parameters(), lr = self.learning_rate)

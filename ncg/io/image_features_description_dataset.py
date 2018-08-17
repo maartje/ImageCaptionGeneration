@@ -7,26 +7,28 @@ import math
 
 class ImageFeaturesDescriptionsDataset(data.Dataset):
 
-    def __init__(self, fpath_image_features, fpaths_description_vectors):
+    def __init__(self, fpath_image_features, fpaths_description_vectors, global_feats = True):
         super(ImageFeaturesDescriptionsDataset, self).__init__()
         
         # image features
         self.fpath_image_features = fpath_image_features
         self.h5file = tables.open_file(fpath_image_features, mode="r")
-        self.global_feats = self.h5file.root.global_feats
-        
+        if global_feats :
+            self.im_feats = self.h5file.root.global_feats
+        else :
+            self.im_feats = self.h5file.root.local_feats
         # descriptions
         self.description_lists = [torch.load(fpath) for fpath in fpaths_description_vectors]
         
 
     def __len__(self):
-        return len(self.global_feats) * len(self.description_lists)
+        return len(self.im_feats) * len(self.description_lists)
 
     def __getitem__(self, index):
-        nr_of_embeddings = len(self.global_feats)
+        nr_of_embeddings = len(self.im_feats)
         index_embedding = index % nr_of_embeddings
         index_description_list = math.floor(index / nr_of_embeddings)
-        embedding = self.global_feats[index_embedding]
+        embedding = self.im_feats[index_embedding]
         description_vector = self.description_lists[index_description_list][index_embedding]
         return torch.FloatTensor(embedding), torch.LongTensor(description_vector)
 

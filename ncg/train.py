@@ -7,6 +7,8 @@ from torch.nn.utils import clip_grad_norm_
 from ncg.io.image_features_description_dataset import ImageFeaturesDescriptionsDataset, collate_image_features_descriptions
 from ncg.io.image_features_dataset import ImageFeaturesDataset
 
+from ncg.nn.show_attend_tell import DecoderWithAttention
+
 from ncg.nn.models import ShowTell
 from ncg.nn.trainer import Trainer
 from ncg.reporting.loss_collector import LossCollector
@@ -17,33 +19,51 @@ from ncg.model_saver import ModelSaver
 
 def train(fpath_imfeats_train, fpaths_captions_train,
           fpath_imfeats_val, fpaths_captions_val, 
-          hidden_size, fpath_vocab, max_length,
+          model, hidden_size, 
+          fpath_vocab, max_length,
           fpath_loss_data_out, fpath_bleu_scores_out, fpath_model, fpath_model_best, 
-          optimizer, learning_rate, lr_decay_start = 15, lr_decay_end = 30,
+          optimizer, learning_rate, lr_decay = [],
           max_epochs = 50, max_hours = 72, 
           dl_params_train = {}, dl_params_val = {}, clip = 5,
+          alpha_c = 1.,
           print_loss_every = 1000, fpath_out = None, fpath_model_resume = None):
 
     # text info
     text_mapper = torch.load(fpath_vocab)
     vocab_size = text_mapper.vocab.n_words
     PAD_index = text_mapper.PAD_index()
+        
+    # model
+    if model == "show_tell":
+        encoding_size = 2048 #dataset_val[0][0].size()[0]
+        decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
+        global_feats = True
+    elif model == "show_attend_tell":
+        decoder = DecoderWithAttention(
+            hidden_size, 
+            hidden_size, 
+            hidden_size, 
+            vocab_size, 
+            512, 
+            0.3
+        )
+        global_feats = False
+    else:
+        raise ValueError(f'model type {model} is unknown.')
     
     # data loaders
-    dataset_imfeats_val = ImageFeaturesDataset(fpath_imfeats_val)
+    dataset_imfeats_val = ImageFeaturesDataset(fpath_imfeats_val, global_feats)
     dl_image_features_val = data.DataLoader(dataset_imfeats_val, **dl_params_val)
     collate_fn = lambda b: collate_image_features_descriptions(b, PAD_index)
     dl_params_train['collate_fn'] = collate_fn
     dl_params_val['collate_fn'] = collate_fn
-    dataset_train = ImageFeaturesDescriptionsDataset(fpath_imfeats_train, fpaths_captions_train)
+    dataset_train = ImageFeaturesDescriptionsDataset(
+        fpath_imfeats_train, fpaths_captions_train, global_feats)
     dataloader_train = data.DataLoader(dataset_train, **dl_params_train)
-    dataset_val = ImageFeaturesDescriptionsDataset(fpath_imfeats_val, fpaths_captions_val)
+    dataset_val = ImageFeaturesDescriptionsDataset(
+        fpath_imfeats_val, fpaths_captions_val, global_feats)
     dataloader_val = data.DataLoader(dataset_val, **dl_params_val)
-    
-    # model
-    encoding_size = dataset_val[0][0].size()[0]
-    decoder = ShowTell(encoding_size, hidden_size, vocab_size, PAD_index)
-        
+
     # loss collection
     loss_collector = LossCollector(
         len(dataset_train), dl_params_train['batch_size'], fpath_loss_data_out, dataloader_val)  
@@ -88,10 +108,11 @@ def train(fpath_imfeats_train, fpaths_captions_train,
         
     # trainer    
     trainer = Trainer(decoder, loss_criterion, optimizer, learning_rate, 
-                      lr_decay_start, lr_decay_end)
+                      lr_decay, alpha_c = alpha_c)
 
     # print config
     print('TRAIN CONFIG: ', file=f_out)
+    print('model', model, file=f_out)
     print('#examples train', len(dataset_train), 
           '#captions per image', len(fpaths_captions_train), file=f_out)
     print('#examples valid', len(dataset_val), 
@@ -100,7 +121,8 @@ def train(fpath_imfeats_train, fpaths_captions_train,
     print('model: ', 'show_and_tell', file=f_out)
     print('optimizer', optimizer, file=f_out)
     print('learning rate', learning_rate, file=f_out)
-    print('learning rate decay', lr_decay_start, lr_decay_end, file=f_out)
+    print('learning rate decay', lr_decay, file=f_out)
+    print('alpha_c', alpha_c, file = f_out)
 
     # stopper
     def stop_criterion(epoch):

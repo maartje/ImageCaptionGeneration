@@ -38,6 +38,7 @@ class ShowTell(nn.Module):
         self.dropout_hidden = nn.Dropout(p = drop_out)
     
     def forward(self, features, input_data, seq_lengths, state = None, device=None):
+        features = features.unsqueeze(0)
         if state is None:
             h_0 = self.dropout_hidden(F.relu(self.encoder(features)))
             c_0 = torch.zeros(h_0.size()) # TODO GPU

@@ -15,16 +15,35 @@ from test.test_helpers import MockEmbeddingDescriptionDataset
 
 from ncg.nn.trainer import Trainer
 from ncg.nn.predict import predict
+from ncg.nn.show_attend_tell import DecoderWithAttention
 
 class TestTrain(unittest.TestCase):
+
+    def test_train_iter_ShowAttendTell(self):
+        attention_dim = 60
+        embed_dim = 60
+        decoder_dim = 60
+        vocab_size = MockEmbeddingDescriptionDataset.vocab_size
+        encoder_dim = 16 # MockEmbeddingDescriptionDataset.encoding_size / 4 
+        dropout = 0.005
+            
+        show_att_tell = DecoderWithAttention(
+            attention_dim, 
+            embed_dim, 
+            decoder_dim, 
+            vocab_size, 
+            encoder_dim, 
+            dropout)
+        self.check_train_iter(show_att_tell, 1.0)
+
        
-    def test_train_iter_ShowTell(self):
+    def xtest_train_iter_ShowTell(self):
         hidden_size = 60
         show_tell = ShowTell(
             MockEmbeddingDescriptionDataset.encoding_size, 
             hidden_size, 
             MockEmbeddingDescriptionDataset.vocab_size, -1, 0.005)
-        self.check_train_iter(show_tell, 1.5)
+        self.check_train_iter(show_tell, 1.0)
         
     def check_train_iter(self, decoder, lr, do_predict = True):
         loss_criterion = nn.NLLLoss()
@@ -42,7 +61,7 @@ class TestTrain(unittest.TestCase):
         def stop_criterion(epoch):
             return epoch > max_epochs
         
-        trainer = Trainer(decoder, loss_criterion, optimizer, lr)
+        trainer = Trainer(decoder, loss_criterion, optimizer, lr, alpha_c = 0.05)
 
         trainer.train_iter(train_data, stop_criterion, 
                    fn_batch_listeners = [lambda e,i,s,l: losses.append(l)])        
@@ -50,10 +69,10 @@ class TestTrain(unittest.TestCase):
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
         
-#        print()
-#        print(losses_1)
-#        print(losses_2)
-#        print(losses_3)
+        print()
+        print(losses_1)
+        print(losses_2)
+        print(losses_3)
         
         is_decreasing = lambda l: all(l[i] > l[i+1] for i in range(len(l)-1))
         self.assertTrue(is_decreasing(losses_1))
@@ -62,7 +81,7 @@ class TestTrain(unittest.TestCase):
         
         if do_predict:
             # Make sure to overfit by doing another training cycle
-            max_epochs = 15
+            max_epochs = 25
             def stop_criterion(epoch):
                 return epoch > max_epochs
             trainer.train_iter(train_data, stop_criterion, 
@@ -83,10 +102,10 @@ class TestTrain(unittest.TestCase):
                 target = targets[i]
                 intersection = set(predicted) & set(target)
 
-                #print()
-                #print(predicted, 'predicted')
-                #print(target, 'target')
-                #print(intersection, 'intersection')
+                print()
+                print(predicted, 'predicted')
+                print(target, 'target')
+                print(intersection, 'intersection')
 
                 self.assertTrue(len(intersection) > 0.5*len(target))
              

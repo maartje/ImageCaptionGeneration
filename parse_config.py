@@ -29,6 +29,13 @@ def options(parser, section):
         parser.add_argument(
             '--optimizer', 
             help = "Overwrites the config setting for the optimizer")
+        parser.add_argument(
+            '--model', 
+            help = "Overwrites the config setting for the model type, i.e. 'show_tell', 'show_attend_tell'.")
+        parser.add_argument(
+            '--alpha_c', 
+            type = float,
+            help = "Overwrites the config setting for the alpha regulizer in the 'show_attend_tell' model")
     
 def load_config(fpath_config):
     with open(fpath_config) as f:

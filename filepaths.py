@@ -36,8 +36,8 @@ def get_file_paths(config):
         main_dir, 'preprocess', config['fname_image_features_test'])
     fpath_losses = os.path.join(main_dir, 'train', model_dir, 'losses.pt')
     fpath_bleu_scores = os.path.join(main_dir, 'train', model_dir, 'bleu_scores.pt')
-    fpath_model = os.path.join(main_dir, 'train', model_dir, f'{config["model"]}.%d.pt')
-    fpath_best_model = os.path.join(main_dir, 'train', model_dir, f'{config["model"]}_best.pt')
+    fpath_model = os.path.join(main_dir, 'train', model_dir, f'model.%d.pt')
+    fpath_best_model = os.path.join(main_dir, 'train', model_dir, f'model_best.pt')
 
     # predict
     fpath_predictions_val = os.path.join(main_dir, 'predict', model_dir, 'predictions_val.txt')
