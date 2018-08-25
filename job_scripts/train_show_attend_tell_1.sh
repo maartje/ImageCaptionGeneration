@@ -1,7 +1,7 @@
 #Set job requirements
 #PBS -S /bin/bash
 #PBS -lnodes=1
-#PBS -lwalltime=06:00:00
+#PBS -lwalltime=09:00:00
 #PBS -qgpu
 
 #Loading modules
@@ -16,11 +16,11 @@ cp -r "$HOME"/ImageCaptionGeneration/flickr30k/preprocess "$TMPDIR"
 #Run program
 CUDA_VISIBLE_DEVICES=0 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_sgd_1 --learning_rate 1.0 --optimizer SGD  --model show_attend_tell --alpha_c 1.0 &
 
-CUDA_VISIBLE_DEVICES=1 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_5min5 --learning_rate 0.00005 --optimizer ADAM --model show_attend_tell --alpha_c 1.0 &
+CUDA_VISIBLE_DEVICES=1 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_sgd_1_alpha_01 --learning_rate 1.0 --optimizer SGD  --model show_attend_tell --alpha_c 0.1 &
 
-CUDA_VISIBLE_DEVICES=2 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_5min4 --learning_rate 0.0005 --optimizer ADAM  --model show_attend_tell  --alpha_c 1.0 &
+CUDA_VISIBLE_DEVICES=2 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min2 --learning_rate 0.01 --optimizer ADAM  --model show_attend_tell  --alpha_c 1.0 &
 
-CUDA_VISIBLE_DEVICES=3 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_5min3 --learning_rate 0.005 --optimizer ADAM  --model show_attend_tell  --alpha_c 1.0 &
+CUDA_VISIBLE_DEVICES=3 python3 -W ignore "$HOME"/ImageCaptionGeneration/train.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min3 --learning_rate 0.001 --optimizer ADAM  --model show_attend_tell  --alpha_c 1.0 &
 
 sleep 30
 for i in {1..3};
