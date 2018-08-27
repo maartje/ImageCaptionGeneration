@@ -34,16 +34,16 @@ class TestTrain(unittest.TestCase):
             vocab_size, 
             encoder_dim, 
             dropout)
-        self.check_train_iter(show_att_tell, 1.0)
+        self.check_train_iter(show_att_tell, 0.5)
 
        
-    def xtest_train_iter_ShowTell(self):
+    def test_train_iter_ShowTell(self):
         hidden_size = 60
         show_tell = ShowTell(
             MockEmbeddingDescriptionDataset.encoding_size, 
             hidden_size, 
             MockEmbeddingDescriptionDataset.vocab_size, -1, 0.005)
-        self.check_train_iter(show_tell, 1.0)
+        self.check_train_iter(show_tell, 0.5)
         
     def check_train_iter(self, decoder, lr, do_predict = True):
         loss_criterion = nn.NLLLoss()
@@ -69,10 +69,10 @@ class TestTrain(unittest.TestCase):
         losses_2 = losses[1::3]
         losses_3 = losses[2::3]
         
-        print()
-        print(losses_1)
-        print(losses_2)
-        print(losses_3)
+        #print()
+        #print(losses_1)
+        #print(losses_2)
+        #print(losses_3)
         
         is_decreasing = lambda l: all(l[i] > l[i+1] for i in range(len(l)-1))
         self.assertTrue(is_decreasing(losses_1))
@@ -81,7 +81,7 @@ class TestTrain(unittest.TestCase):
         
         if do_predict:
             # Make sure to overfit by doing another training cycle
-            max_epochs = 25
+            max_epochs = 40
             def stop_criterion(epoch):
                 return epoch > max_epochs
             trainer.train_iter(train_data, stop_criterion, 
@@ -102,10 +102,10 @@ class TestTrain(unittest.TestCase):
                 target = targets[i]
                 intersection = set(predicted) & set(target)
 
-                print()
-                print(predicted, 'predicted')
-                print(target, 'target')
-                print(intersection, 'intersection')
+         #       print()
+         #       print(predicted, 'predicted')
+         #       print(target, 'target')
+         #       print(intersection, 'intersection')
 
                 self.assertTrue(len(intersection) > 0.5*len(target))
              
