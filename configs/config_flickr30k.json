@@ -21,10 +21,10 @@
 		"alpha_c" : 1.0,
 		"max_epochs" : 31,
         "lr_decay" : [15,20,25,30],
-		"max_hours" : 8,
+		"max_hours" : 15,
 		"hidden_size" : 512,
-		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
-		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},
+		"dl_params_train" : {"batch_size" : 128 , "shuffle" : true},
+		"dl_params_val" : {"batch_size" : 128, "shuffle" : false},
 		"clip" : 5,
         "max_length" : 30
 	},
