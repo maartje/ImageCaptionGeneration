@@ -31,7 +31,7 @@
 	
 	"predict" : {
         "max_length" : 50,
-        "dl_params" : {"batch_size" : 2048}
+        "dl_params" : {"batch_size" : 128}
     },
 
 
