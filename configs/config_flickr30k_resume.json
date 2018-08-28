@@ -21,7 +21,7 @@
 		"alpha_c" : 1.0,
 		"max_epochs" : 12,
         "lr_decay" : [5,10],
-		"max_hours" : 9,
+		"max_hours" : 8,
 		"hidden_size" : 512,
 		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
 		"dl_params_val" : {"batch_size" : 128, "shuffle" : false},
