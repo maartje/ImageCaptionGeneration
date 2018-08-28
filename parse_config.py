@@ -33,9 +33,13 @@ def options(parser, section):
             '--model', 
             help = "Overwrites the config setting for the model type, i.e. 'show_tell', 'show_attend_tell'.")
         parser.add_argument(
+            '--fname_resume', 
+            help = "Overwrites the config setting for the name of the file that stores the model used to resume training.")
+        parser.add_argument(
             '--alpha_c', 
             type = float,
             help = "Overwrites the config setting for the alpha regulizer in the 'show_attend_tell' model")
+    
     
 def load_config(fpath_config):
     with open(fpath_config) as f:
