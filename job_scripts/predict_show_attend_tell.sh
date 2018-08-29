@@ -17,8 +17,6 @@ cp -r "$HOME"/ImageCaptionGeneration/flickr30k/train "$TMPDIR"
 #Run program
 CUDA_VISIBLE_DEVICES=0 python3 -W ignore "$HOME"/ImageCaptionGeneration/predict.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_tell_sgd_1_fixed &
 
-CUDA_VISIBLE_DEVICES=1 python3 -W ignore "$HOME"/ImageCaptionGeneration/predict.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min4_01 &
-
 CUDA_VISIBLE_DEVICES=2 python3 -W ignore "$HOME"/ImageCaptionGeneration/predict.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min4 &
 
 CUDA_VISIBLE_DEVICES=3 python3 -W ignore "$HOME"/ImageCaptionGeneration/predict.py --config "$HOME"/ImageCaptionGeneration/configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min5 &

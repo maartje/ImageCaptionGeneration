@@ -16,9 +16,8 @@ cp -r "$HOME"/ImageCaptionGeneration/flickr30k/predict "$TMPDIR"
 
 #Run program
 cd "$HOME"/ImageCaptionGeneration
-python3 -W ignore report.py --config configs/config_flickr30k.json --model_dir show_tell_sgd_1_fixed &
 
-python3 -W ignore report.py --config configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min4_01 &
+python3 -W ignore report.py --config configs/config_flickr30k.json --model_dir show_tell_sgd_1_fixed &
 
 python3 -W ignore report.py --config configs/config_flickr30k.json --model_dir show_attend_tell_adam_1min4 &
 
